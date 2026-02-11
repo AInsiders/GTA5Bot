@@ -1,0 +1,505 @@
+/* GTA Bot Website - GTA 5 themed, parallax, responsive */
+/* ========== Reset & Base ========== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg-dark);
+  color: var(--text-light);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ========== GTA Theme Variables ========== */
+:root {
+  --gta-green: #00ff00;
+  --gta-green-dim: #00cc00;
+  --gta-gold: #ffd700;
+  --gta-gold-dim: #b8860b;
+  --gta-red: #8b0000;
+  --gta-red-bright: #e74c3c;
+  --bg-dark: #0d0d0d;
+  --bg-section: #1a1a1a;
+  --bg-card: #252525;
+  --text-light: #e0e0e0;
+  --text-muted: #888;
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* ========== Typography ========== */
+h1, h2, h3, .nav-brand {
+  font-family: 'Oswald', 'Impact', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+h1 { font-size: clamp(2rem, 5vw, 3.5rem); }
+h2 { font-size: clamp(1.5rem, 3vw, 2.2rem); margin-bottom: 1rem; }
+h3 { font-size: 1.25rem; margin-bottom: 0.5rem; }
+
+a {
+  color: var(--gta-green);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+a:hover { color: var(--gta-gold); }
+
+/* ========== Layout ========== */
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+section {
+  padding: 4rem 0;
+  position: relative;
+}
+
+/* ========== Navigation ========== */
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(13, 13, 13, 0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 0.75rem 1.5rem;
+}
+
+.nav-inner {
+  max-width: 960px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-brand {
+  font-size: 1.5rem;
+  color: var(--gta-green);
+}
+.nav-brand:hover { color: var(--gta-green); }
+
+.nav-links {
+  display: flex;
+  gap: 1.5rem;
+  list-style: none;
+}
+
+.nav-links a {
+  color: var(--text-light);
+  font-weight: 500;
+}
+.nav-links a:hover,
+.nav-links a.active { color: var(--gta-green); }
+
+.nav-toggle {
+  display: none;
+  background: none;
+  border: 1px solid var(--border-subtle);
+  color: var(--text-light);
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+/* ========== Hero (Parallax) ========== */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  padding: 6rem 1.5rem 4rem;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(13,13,13,0.7) 0%, rgba(13,13,13,0.95) 100%),
+    linear-gradient(135deg, #0d0d0d 0%, #1a2a1a 50%, #0d0d0d 100%);
+  background-attachment: fixed;
+  background-size: cover;
+  z-index: -2;
+}
+
+.hero-bg-layer {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 50% at 50% 20%, rgba(0, 255, 0, 0.08) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.hero h1 {
+  color: var(--gta-green);
+  text-shadow: 0 0 30px rgba(0, 255, 0, 0.3);
+  margin-bottom: 0.5rem;
+}
+
+.hero-tagline {
+  font-size: 1.25rem;
+  color: var(--text-muted);
+  margin-bottom: 2rem;
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.hero-cta {
+  display: inline-block;
+  background: var(--gta-green);
+  color: var(--bg-dark);
+  padding: 0.9rem 1.8rem;
+  font-weight: 700;
+  border-radius: 4px;
+  transition: background 0.2s, transform 0.2s;
+}
+.hero-cta:hover {
+  background: var(--gta-gold);
+  color: var(--bg-dark);
+  transform: scale(1.02);
+}
+
+/* ========== Features Section ========== */
+.features {
+  background: var(--bg-section);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.features h2 {
+  text-align: center;
+  color: var(--text-light);
+  margin-bottom: 2rem;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  list-style: none;
+}
+
+.features-grid li {
+  background: var(--bg-card);
+  padding: 1.25rem;
+  border-radius: 6px;
+  border-left: 3px solid var(--gta-green);
+  font-weight: 500;
+}
+
+/* ========== Help Section & Accordions ========== */
+.help {
+  background: var(--bg-dark);
+}
+
+.help h2 {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: var(--gta-green);
+}
+
+.accordion {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.accordion-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+  overflow: hidden;
+}
+
+.accordion-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  background: var(--bg-card);
+  border: none;
+  color: var(--text-light);
+  font-size: 1.05rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.accordion-trigger:hover {
+  background: #2a2a2a;
+  color: var(--gta-green);
+}
+
+.accordion-trigger::after {
+  content: '';
+  width: 12px;
+  height: 12px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform 0.25s;
+  flex-shrink: 0;
+  margin-left: 0.5rem;
+}
+
+.accordion-item.is-open .accordion-trigger::after {
+  transform: rotate(-135deg);
+}
+
+.accordion-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s ease;
+}
+
+.accordion-item.is-open .accordion-panel {
+  grid-template-rows: 1fr;
+}
+
+.accordion-content {
+  overflow: hidden;
+}
+
+.accordion-body {
+  padding: 0 1.25rem 1.25rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.accordion-body h3 {
+  color: var(--gta-gold-dim);
+  font-size: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 0.35rem;
+}
+
+.accordion-body h3:first-child { margin-top: 0; }
+
+.accordion-body ul,
+.accordion-body p {
+  margin-bottom: 0.75rem;
+  color: var(--text-light);
+  font-size: 0.95rem;
+}
+
+.accordion-body ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.accordion-body li {
+  padding: 0.2rem 0 0.2rem 1rem;
+  position: relative;
+}
+.accordion-body li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: var(--gta-green);
+}
+
+.accordion-body strong { color: var(--gta-gold-dim); }
+
+/* Commands table inside Help */
+.commands-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+.commands-table th,
+.commands-table td {
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.commands-table th {
+  color: var(--gta-gold-dim);
+  font-weight: 600;
+}
+
+.commands-table code {
+  background: rgba(0, 255, 0, 0.1);
+  color: var(--gta-green);
+  padding: 0.15rem 0.4rem;
+  border-radius: 3px;
+  font-size: 0.85em;
+}
+
+/* ========== Support Section ========== */
+.support {
+  background: var(--bg-section);
+  text-align: center;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.support h2 {
+  color: var(--text-light);
+  margin-bottom: 0.75rem;
+}
+
+.support p {
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.support-cta {
+  display: inline-block;
+  background: var(--gta-red-bright);
+  color: #fff;
+  padding: 1rem 2rem;
+  font-weight: 700;
+  border-radius: 6px;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.support-cta:hover {
+  background: #c0392b;
+  color: #fff;
+  transform: scale(1.02);
+}
+
+/* ========== Footer ========== */
+.site-footer {
+  background: var(--bg-dark);
+  border-top: 1px solid var(--border-subtle);
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  list-style: none;
+  margin-bottom: 1rem;
+}
+
+.footer-links a {
+  color: var(--text-muted);
+}
+.footer-links a:hover { color: var(--gta-green); }
+
+.footer-back {
+  margin-top: 0.5rem;
+}
+
+.footer-back a {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.footer-copy {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin-top: 1rem;
+}
+
+/* ========== Legal Pages (shared) ========== */
+.legal-page {
+  padding-top: 5rem;
+  padding-bottom: 4rem;
+  min-height: 100vh;
+}
+
+.legal-page .container {
+  max-width: 720px;
+}
+
+.legal-page h1 {
+  color: var(--gta-green);
+  margin-bottom: 1.5rem;
+}
+
+.legal-page h2 {
+  font-size: 1.25rem;
+  color: var(--gta-gold-dim);
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.legal-page p,
+.legal-page ul {
+  margin-bottom: 1rem;
+  color: var(--text-light);
+}
+
+.legal-page ul {
+  padding-left: 1.5rem;
+}
+
+.legal-page li { margin-bottom: 0.35rem; }
+
+/* ========== Parallax section backgrounds ========== */
+.parallax-section {
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+}
+
+.features.parallax-section {
+  background-image: linear-gradient(180deg, rgba(26,26,26,0.98) 0%, rgba(13,13,13,0.98) 100%);
+}
+
+.support.parallax-section {
+  background-image: linear-gradient(180deg, rgba(26,26,26,0.98) 0%, rgba(20,10,10,0.98) 100%);
+}
+
+/* ========== Responsive ========== */
+@media (max-width: 768px) {
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: rgba(13, 13, 13, 0.98);
+    flex-direction: column;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .nav-links.is-open { display: flex; }
+
+  .nav-toggle { display: block; }
+
+  section { padding: 3rem 0; }
+
+  .accordion-trigger { font-size: 0.95rem; padding: 0.9rem 1rem; }
+
+  .commands-table {
+    font-size: 0.8rem;
+  }
+
+  .commands-table th,
+  .commands-table td {
+    padding: 0.4rem 0.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .accordion-panel,
+  .accordion-trigger::after { transition: none; }
+}
