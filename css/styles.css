@@ -239,6 +239,8 @@ section {
 .features {
   background: var(--bg-section);
   border-top: 1px solid var(--border-subtle);
+  position: relative;
+  overflow: hidden;
 }
 
 .features h2 {
@@ -456,6 +458,8 @@ section {
   background: var(--bg-section);
   text-align: center;
   border-top: 1px solid var(--border-subtle);
+  position: relative;
+  overflow: hidden;
 }
 
 .support h2 {
@@ -485,6 +489,55 @@ section {
   background: #c0392b;
   color: #fff;
   transform: scale(1.02);
+}
+
+/* Section grid overlays for futuristic background */
+.features::before,
+.support::before {
+  content: '';
+  position: absolute;
+  left: -20%;
+  right: -20%;
+  top: -40%;
+  bottom: -40%;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.25;
+  mix-blend-mode: screen;
+  background-image:
+    linear-gradient(rgba(0, 255, 0, 0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 0, 0.12) 1px, transparent 1px);
+  background-size: 120px 60px, 120px 60px;
+  background-position: 0 0, 0 0;
+  animation: section-grid-pan 40s linear infinite;
+}
+
+.features::before {
+  transform-origin: center top;
+  transform:
+    perspective(900px)
+    rotateX(70deg)
+    translate3d(0, 0, 0);
+}
+
+.support::before {
+  transform-origin: center bottom;
+  transform:
+    perspective(900px)
+    rotateX(78deg)
+    translate3d(0, 0, 0);
+}
+
+@keyframes section-grid-pan {
+  0% {
+    background-position: 0 0, 0 0;
+  }
+  50% {
+    background-position: 120px 60px, -120px -60px;
+  }
+  100% {
+    background-position: 240px 120px, -240px -120px;
+  }
 }
 
 /* ========== Scroll reveal utility ========== */
