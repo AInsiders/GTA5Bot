@@ -145,6 +145,31 @@ section {
   z-index: -1;
 }
 
+.hero-parallax {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  opacity: 0.16;
+  z-index: -1;
+}
+
+.hero-parallax--top {
+  background:
+    linear-gradient(115deg, transparent 0%, rgba(0, 255, 0, 0.18) 35%, transparent 60%),
+    linear-gradient(295deg, transparent 10%, rgba(255, 215, 0, 0.15) 40%, transparent 80%);
+}
+
+.hero-parallax--bottom {
+  background:
+    radial-gradient(circle at 15% 85%, rgba(255, 215, 0, 0.15) 0%, transparent 55%),
+    radial-gradient(circle at 85% 90%, rgba(0, 255, 0, 0.2) 0%, transparent 55%);
+}
+
+.hero-content {
+  transform: translateY(0);
+}
+
 .hero h1 {
   color: var(--gta-green);
   text-shadow: 0 0 30px rgba(0, 255, 0, 0.3);
@@ -200,6 +225,15 @@ section {
   border-radius: 6px;
   border-left: 3px solid var(--gta-green);
   font-weight: 500;
+  box-shadow: var(--shadow);
+  transform: translateY(0) scale(1);
+  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out, border-color 0.2s ease-out;
+}
+
+.features-grid li:hover {
+  transform: translateY(-4px) scale(1.02);
+  border-left-color: var(--gta-gold);
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.7);
 }
 
 /* ========== Help Section & Accordions ========== */
@@ -213,6 +247,39 @@ section {
   color: var(--gta-green);
 }
 
+.help-instructions {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-left: 4px solid var(--gta-green);
+  border-radius: 6px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 2rem;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.help-instructions h3 {
+  color: var(--gta-gold-dim);
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  font-size: 1.1rem;
+}
+
+.help-instructions ol {
+  margin: 0;
+  padding-left: 1.25rem;
+  color: var(--text-light);
+}
+
+.help-instructions li {
+  margin-bottom: 0.5rem;
+}
+
+.help-instructions li:last-child {
+  margin-bottom: 0;
+}
+
 .accordion {
   max-width: 800px;
   margin: 0 auto;
@@ -224,6 +291,11 @@ section {
   border-radius: 6px;
   margin-bottom: 0.5rem;
   overflow: hidden;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+}
+
+.accordion-item.is-open {
+  border-color: var(--gta-green-dim);
 }
 
 .accordion-trigger {
@@ -378,6 +450,18 @@ section {
   background: #c0392b;
   color: #fff;
   transform: scale(1.02);
+}
+
+/* ========== Scroll reveal utility ========== */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* ========== Footer ========== */

@@ -26,7 +26,9 @@
   <header id="hero" class="hero">
     <div class="hero-bg"></div>
     <div class="hero-bg-layer" data-parallax-speed="0.15"></div>
-    <div>
+    <div class="hero-parallax hero-parallax--top" data-parallax-speed="0.06"></div>
+    <div class="hero-parallax hero-parallax--bottom" data-parallax-speed="0.1"></div>
+    <div class="hero-content reveal">
       <h1>GTA BOT</h1>
       <p class="hero-tagline">Los Santos in Discord. Jobs, heists, businesses, warehouses & the streets. Build your criminal empire—all in text.</p>
       <a href="#support" class="hero-cta">Join Support Server</a>
@@ -34,7 +36,7 @@
   </header>
 
   <section id="features" class="features parallax-section">
-    <div class="container">
+    <div class="container reveal">
       <h2>What You Can Do</h2>
       <ul class="features-grid">
         <li>Jobs (Robbery, Hitman, Racing, Car Theft)</li>
@@ -52,9 +54,22 @@
   <section id="help" class="help">
     <div class="container">
       <h2>Help & How to Play</h2>
-      <p style="text-align: center; color: var(--text-muted); margin-bottom: 2rem;">Choose a category to expand the guide.</p>
+      <p style="text-align: center; color: var(--text-muted); margin-bottom: 1rem;">Follow the steps below, then use the guide for details.</p>
 
-      <div class="accordion">
+      <div class="help-instructions">
+        <h3>Quick start instructions</h3>
+        <ol>
+          <li><strong>Invite the bot</strong> — Ask your server admin to add GTA Bot, or use an invite from the <a href="https://discord.gg/fkQ972fmAs" target="_blank" rel="noopener noreferrer">support server</a>.</li>
+          <li><strong>Accept the Terms</strong> — In Discord, run <code>/start</code> and accept the Terms of Service to create your character.</li>
+          <li><strong>Open the main menu</strong> — Run <code>/menu</code> to see your wallet, bank, and all activities (Jobs, Shop, Bank, Heists, etc.).</li>
+          <li><strong>Earn and protect</strong> — Do jobs or heists to earn cash, then use <code>/bank</code> to deposit money so it can’t be stolen.</li>
+          <li><strong>Get in-Discord help</strong> — Use <code>/help</code> in any server with the bot for the full help menu.</li>
+        </ol>
+      </div>
+
+      <p style="text-align: center; color: var(--text-muted); margin-bottom: 2rem;">Expand a category below for the full guide.</p>
+
+      <div class="accordion reveal">
         <div class="accordion-item">
           <button type="button" class="accordion-trigger" aria-expanded="false">Getting Started</button>
           <div class="accordion-panel">
@@ -378,12 +393,38 @@
             </div>
           </div>
         </div>
+
+        <div class="accordion-item" id="faq">
+          <button type="button" class="accordion-trigger" aria-expanded="false">FAQ — Frequently Asked Questions</button>
+          <div class="accordion-panel">
+            <div class="accordion-content">
+              <div class="accordion-body">
+                <h3>How do I start playing?</h3>
+                <p>Run <code>/start</code> in a server that has the bot, accept the Terms of Service, then use <code>/menu</code> to open the main interface. From there you can do jobs, bank, shop, and more.</p>
+                <h3>How do I invite the bot to my server?</h3>
+                <p>You need the bot invite link from the bot owner or the <a href="https://discord.gg/fkQ972fmAs" target="_blank" rel="noopener noreferrer">support server</a>. Server admins can add the bot there; regular users can join the support server to play and get help.</p>
+                <h3>What is RP / Reputation?</h3>
+                <p>RP (Reputation) is your criminal standing. You earn it from jobs, heists, and other activities. Higher rep unlocks better heists and can make you harder to steal from. Your level is based on total RP (GTA Online–style progression).</p>
+                <h3>Can my bank be robbed?</h3>
+                <p>No. Money in your <strong>bank</strong> cannot be stolen. Only <strong>wallet</strong> (cash) can be taken by other players via <code>/steal</code> or <code>/mug</code>. Keep most of your money in the bank and only carry what you need.</p>
+                <h3>What are cooldowns?</h3>
+                <p>Many actions (jobs, heists, stealing, daily reward) have a cooldown—a wait time before you can do them again. The bot will tell you how long is left. Use <code>/menu</code> to see your stats and try again when ready.</p>
+                <h3>Where do I get help in Discord?</h3>
+                <p>Use <code>/help</code> in any server with the bot for the in-game help menu with categories. For bugs, suggestions, or community help, join the <a href="https://discord.gg/fkQ972fmAs" target="_blank" rel="noopener noreferrer">GTA Bot Support server</a>.</p>
+                <h3>Is the bot free? Is it real money?</h3>
+                <p>The bot is for entertainment; all in-game currency and items are virtual and have no real-world value. There is no real-money gambling or trading. Check your server for any server-specific rules.</p>
+                <h3>Why can’t I use a command?</h3>
+                <p>You must accept the Terms first (<code>/start</code>). Some commands are restricted (e.g. <code>/setlevelingchannel</code> is Server Owner only, <code>/reset-tos</code> is admin). If the bot says “database unavailable,” try again later.</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
   <section id="support" class="support parallax-section">
-    <div class="container">
+    <div class="container reveal">
       <h2>Support</h2>
       <p>Join the official GTA Bot support server for help, updates, and community.</p>
       <a href="https://discord.gg/fkQ972fmAs" target="_blank" rel="noopener noreferrer" class="support-cta">Join Discord — GTA Bot Support</a>
