@@ -6,441 +6,368 @@
   <title>GTA Bot — Los Santos in Discord</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
   <nav class="nav">
     <div class="nav-inner">
-      <a href="#" class="nav-brand">GTA BOT</a>
+      <a href="#" class="nav-brand" data-page="home">GTA BOT</a>
       <ul class="nav-links">
-        <li><a href="#hero">Home</a></li>
-        <li><a href="#features">Features</a></li>
-        <li><a href="#help">Help</a></li>
-        <li><a href="#support">Support</a></li>
+        <li><a href="#" class="nav-link active" data-page="home">Home</a></li>
+        <li><a href="#" class="nav-link" data-page="features">Features</a></li>
+        <li><a href="#" class="nav-link" data-page="commands">Commands</a></li>
+        <li><a href="#" class="nav-link" data-page="stats">Stats</a></li>
+        <li><a href="#" class="nav-link" data-page="help">Help</a></li>
+        <li><a href="#" class="nav-link" data-page="support">Support</a></li>
       </ul>
       <button type="button" class="nav-toggle" aria-label="Toggle menu">Menu</button>
     </div>
   </nav>
 
-  <header id="hero" class="hero">
-    <div class="hero-bg"></div>
-    <div class="hero-bg-layer" data-parallax-speed="0.15"></div>
-    <div class="hero-parallax hero-parallax--top" data-parallax-speed="0.06"></div>
-    <div class="hero-parallax hero-parallax--bottom" data-parallax-speed="0.1"></div>
-    <div class="hero-grid" data-parallax-speed="0.04"></div>
-    <div class="hero-content reveal">
-      <h1>GTA BOT</h1>
-      <p class="hero-tagline">Los Santos in Discord. Jobs, heists, businesses, warehouses & the streets. Build your criminal empire—all in text.</p>
-      <a href="#support" class="hero-cta">Join Support Server</a>
-    </div>
-  </header>
+  <main class="app-pages">
+    <!-- PAGE: Home -->
+    <section id="page-home" class="page page--full is-active" data-page="home">
+      <header class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-bg-layer" data-parallax-speed="0.15"></div>
+        <div class="hero-parallax hero-parallax--top" data-parallax-speed="0.06"></div>
+        <div class="hero-parallax hero-parallax--bottom" data-parallax-speed="0.1"></div>
+        <div class="hero-grid" data-parallax-speed="0.04"></div>
+        <div class="hero-dust hero-dust--fast" data-parallax-speed="0.02"></div>
+        <div class="hero-dust hero-dust--slow" data-parallax-speed="0.01"></div>
+        <div class="hero-content reveal">
+          <div class="hero-badge">LOS SANTOS</div>
+          <h1>GTA BOT</h1>
+          <p class="hero-tagline">Los Santos in Discord. Jobs, heists, businesses, warehouses & the streets. Build your criminal empire—all in text.</p>
+          <div class="hero-actions">
+            <a href="https://discord.com/oauth2/authorize?client_id=1430646453033767013" target="_blank" rel="noopener noreferrer" class="hero-cta hero-cta--primary">Invite GTA Bot</a>
+            <a href="#" class="hero-cta hero-cta--secondary" data-page="support">Support &amp; Guide</a>
+          </div>
+        </div>
+      </header>
+    </section>
 
-  <section id="features" class="features parallax-section">
-    <div class="container reveal">
-      <h2>What You Can Do</h2>
-      <ul class="features-grid">
-        <li>Jobs (Robbery, Hitman, Racing, Car Theft)</li>
-        <li>Heists (Quick & Major)</li>
-        <li>Businesses (MC, Nightclub, Specialty)</li>
-        <li>Warehouses (Cargo & Vehicles)</li>
-        <li>Casino & Mini-Games</li>
-        <li>Banking & Protection</li>
-        <li>Stealing (PvP)</li>
-        <li>Leveling & Leaderboards</li>
-      </ul>
-    </div>
-  </section>
-
-  <section id="help" class="help">
-    <div class="container">
-      <h2>Help & How to Play</h2>
-      <p style="text-align: center; color: var(--text-muted); margin-bottom: 1rem;">Follow the steps below, then use the guide for details.</p>
-
-      <div class="help-instructions">
-        <h3>Quick start instructions</h3>
-        <ol>
-          <li><strong>Invite the bot</strong> — Ask your server admin to add GTA Bot, or use an invite from the <a href="https://discord.gg/fkQ972fmAs" target="_blank" rel="noopener noreferrer">support server</a>.</li>
-          <li><strong>Accept the Terms</strong> — In Discord, run <code>/start</code> and accept the Terms of Service to create your character.</li>
-          <li><strong>Open the main menu</strong> — Run <code>/menu</code> to see your wallet, bank, and all activities (Jobs, Shop, Bank, Heists, etc.).</li>
-          <li><strong>Earn and protect</strong> — Do jobs or heists to earn cash, then use <code>/bank</code> to deposit money so it can’t be stolen.</li>
-          <li><strong>Get in-Discord help</strong> — Use <code>/help</code> in any server with the bot for the full help menu.</li>
-        </ol>
+    <!-- PAGE: Features -->
+    <section id="page-features" class="page page--full" data-page="features">
+      <div class="page-bg page-bg--grid" data-parallax-speed="0.08"></div>
+      <div class="page-scroll">
+        <div class="container reveal">
+          <h2 class="page-title">What You Can Do</h2>
+          <ul class="features-grid features-grid--3d">
+            <li class="feature-card"><span class="feature-icon">💼</span> Jobs (Robbery, Hitman, Racing, Car Theft)</li>
+            <li class="feature-card"><span class="feature-icon">🎭</span> Heists (Quick & Major)</li>
+            <li class="feature-card"><span class="feature-icon">🏢</span> Businesses (MC, Nightclub, Specialty)</li>
+            <li class="feature-card"><span class="feature-icon">📦</span> Warehouses (Cargo & Vehicles)</li>
+            <li class="feature-card"><span class="feature-icon">🎰</span> Casino & Mini-Games</li>
+            <li class="feature-card"><span class="feature-icon">🏦</span> Banking & Protection</li>
+            <li class="feature-card"><span class="feature-icon">🔫</span> Stealing (PvP)</li>
+            <li class="feature-card"><span class="feature-icon">📊</span> Leveling & Leaderboards</li>
+          </ul>
+        </div>
       </div>
+    </section>
 
-      <p style="text-align: center; color: var(--text-muted); margin-bottom: 2rem;">Expand a category below for the full guide.</p>
-
-      <div class="accordion reveal">
-        <div class="accordion-item">
-          <button type="button" class="accordion-trigger" aria-expanded="false">Getting Started</button>
-          <div class="accordion-panel">
-            <div class="accordion-content">
-              <div class="accordion-body">
-                <h3>First Steps</h3>
-                <ul>
-                  <li><strong>Use /menu</strong> — Access the main game interface</li>
-                  <li><strong>Check your profile</strong> — See your current stats</li>
-                  <li><strong>Start with easy jobs</strong> — Build your reputation</li>
-                  <li><strong>Open a bank account</strong> — Protect your earnings</li>
-                </ul>
-                <h3>Understanding Money</h3>
-                <ul>
-                  <li><strong>Wallet Money</strong> — Cash you carry (can be stolen)</li>
-                  <li><strong>Bank Money</strong> — Protected funds (safe from theft)</li>
-                  <li><strong>Chips</strong> — Casino currency (buy/sell at Cashier's Cage)</li>
-                  <li><strong>Net Worth</strong> — Total value of all your assets</li>
-                </ul>
-                <h3>Your Stats</h3>
-                <ul>
-                  <li><strong>Cash</strong> — Money in your wallet</li>
-                  <li><strong>Reputation</strong> — Your criminal standing</li>
-                  <li><strong>Rank</strong> — Your criminal title</li>
-                  <li><strong>Wanted Level</strong> — How much heat you're carrying</li>
-                </ul>
-                <h3>Job Progression</h3>
-                <ul>
-                  <li><strong>Start Easy</strong> — Higher success rates, lower payouts</li>
-                  <li><strong>Build Reputation</strong> — Unlock better opportunities</li>
-                  <li><strong>Advance to Medium/Hard</strong> — Higher risk, better rewards</li>
-                </ul>
-                <h3>Protection Strategy</h3>
-                <ul>
-                  <li>Keep spending money in wallet; deposit savings in bank</li>
-                  <li>Stay below $500 wallet to be immune to stealing</li>
-                </ul>
-                <h3>Pro Tips</h3>
-                <ul>
-                  <li>Check cooldowns; read job descriptions before committing</li>
-                  <li>Use the shop wisely; join heists for bigger scores</li>
-                </ul>
+    <!-- PAGE: Commands -->
+    <section id="page-commands" class="page page--full" data-page="commands">
+      <div class="page-bg page-bg--money" data-parallax-speed="0.06"></div>
+      <div class="page-bg page-bg--grid-alt" data-parallax-speed="0.12"></div>
+      <div class="page-scroll">
+        <div class="container reveal">
+          <h2 class="page-title">Commands</h2>
+          <p class="page-subtitle">Every slash command at a glance. Use in Discord with the bot.</p>
+          <div class="commands-deck">
+            <div class="commands-category" data-category="core">
+              <h3 class="commands-category-title">Core</h3>
+              <div class="command-cards">
+                <div class="command-card"><code>/start</code><span>Accept TOS; redirects to menu if already accepted</span></div>
+                <div class="command-card"><code>/menu</code><span>Main GTA Bot interface</span></div>
+                <div class="command-card"><code>/profile</code><span>View criminal profile (level, RP, stats)</span></div>
+                <div class="command-card"><code>/help</code><span>Help center</span></div>
+              </div>
+            </div>
+            <div class="commands-category" data-category="money">
+              <h3 class="commands-category-title">Banking & Money</h3>
+              <div class="command-cards">
+                <div class="command-card"><code>/bank</code><span>Banking interface</span></div>
+                <div class="command-card"><code>/deposit</code><span>Deposit amount to bank</span></div>
+                <div class="command-card"><code>/withdraw</code><span>Withdraw amount from bank</span></div>
+                <div class="command-card"><code>/daily</code><span>Daily reward (24h cooldown, streak bonus)</span></div>
+              </div>
+            </div>
+            <div class="commands-category" data-category="crime">
+              <h3 class="commands-category-title">Crime & Jobs</h3>
+              <div class="command-cards">
+                <div class="command-card"><code>/jobs</code><span>Criminal jobs menu</span></div>
+                <div class="command-card"><code>/steal</code><span>PvP steal (target required)</span></div>
+                <div class="command-card"><code>/mug</code><span>PvP mug (target required)</span></div>
+                <div class="command-card"><code>/heist</code><span>Heist Central (dynamic + classic)</span></div>
+                <div class="command-card"><code>/wanted</code><span>Wanted level status</span></div>
+              </div>
+            </div>
+            <div class="commands-category" data-category="business">
+              <h3 class="commands-category-title">Business & Shop</h3>
+              <div class="command-cards">
+                <div class="command-card"><code>/shop</code><span>Black market shop</span></div>
+                <div class="command-card"><code>/business</code><span>Business management</span></div>
+                <div class="command-card"><code>/warehouse</code><span>Cargo & Vehicle warehouses</span></div>
+              </div>
+            </div>
+            <div class="commands-category" data-category="casino">
+              <h3 class="commands-category-title">Casino & Games</h3>
+              <div class="command-cards">
+                <div class="command-card"><code>/casino</code><span>Casino games</span></div>
+                <div class="command-card"><code>/minesweeper</code><span>Minesweeper mini-game</span></div>
+              </div>
+            </div>
+            <div class="commands-category" data-category="other">
+              <h3 class="commands-category-title">Other</h3>
+              <div class="command-cards">
+                <div class="command-card"><code>/leaderboard</code><span>Player leaderboards</span></div>
+                <div class="command-card"><code>/setlevelingchannel</code><span>Set level-up channel (Server Owner only)</span></div>
+                <div class="command-card"><code>/reset-tos</code><span>Admin TOS reset</span></div>
               </div>
             </div>
           </div>
         </div>
+      </div>
+    </section>
 
-        <div class="accordion-item">
-          <button type="button" class="accordion-trigger" aria-expanded="false">Banking System</button>
-          <div class="accordion-panel">
-            <div class="accordion-content">
-              <div class="accordion-body">
-                <h3>Dual Currency System</h3>
-                <ul>
-                  <li><strong>Wallet Money</strong> — Stealable by other players</li>
-                  <li><strong>Bank Money</strong> — Cannot be stolen</li>
-                  <li>Keep spending money in wallet, savings in bank</li>
-                </ul>
-                <h3>Banking Commands</h3>
-                <ul>
-                  <li><code>/bank</code> — Open banking interface</li>
-                  <li><code>/deposit &lt;amount&gt;</code> — Deposit wallet to bank</li>
-                  <li><code>/withdraw &lt;amount&gt;</code> — Withdraw bank to wallet</li>
-                </ul>
-                <h3>Transaction Fees & Limits</h3>
-                <ul>
-                  <li>Deposit fee: 2%; Withdrawal fee: 2%</li>
-                  <li>Minimum withdrawal: $100</li>
-                  <li>Bank balance limit and daily withdrawal limits may apply</li>
-                  <li>Interest: 1% daily on bank balance</li>
-                </ul>
-                <h3>Strategy</h3>
-                <ul>
-                  <li>Keep $500–1000 in wallet for daily expenses</li>
-                  <li>Deposit excess immediately; plan large withdrawals ahead</li>
-                </ul>
+    <!-- PAGE: Stats (live graphs + top 100 leaderboards from Supabase) -->
+    <section id="page-stats" class="page page--full" data-page="stats">
+      <div class="page-bg page-bg--grid" data-parallax-speed="0.06"></div>
+      <div class="page-bg page-bg--money" data-parallax-speed="0.03"></div>
+      <div class="page-scroll">
+        <div class="container container--wide reveal">
+          <h2 class="page-title">Live Statistics</h2>
+          <p class="page-subtitle">Total users, economy totals, and top 100 leaderboards. Data from Neon (GTA Bot database).</p>
+
+          <div id="stats-connect-msg" class="stats-connect-msg" style="display: none;">
+            <p><strong>Neon (recommended):</strong> Run the stats API from the bot root: <code>python -m src.services.stats_api</code>, then in <code>index.html</code> set <code>window.__NEON_STATS_API_URL__ = 'http://localhost:8765'</code> before loading scripts.</p>
+            <p><strong>Or use Supabase:</strong> Set <code>__SUPABASE_URL__</code> and <code>__SUPABASE_ANON_KEY__</code> in <code>js/supabase-config.js</code> and run <code>Website/sql/supabase_stats_setup.sql</code> in your Supabase SQL Editor.</p>
+          </div>
+
+          <div id="stats-global" class="stats-global">
+            <div class="stats-cards">
+              <div class="stat-card stat-card--users">
+                <span class="stat-label">Total Players</span>
+                <span class="stat-value" id="stat-total-users">—</span>
+              </div>
+              <div class="stat-card stat-card--cash">
+                <span class="stat-label">Total Cash in Economy</span>
+                <span class="stat-value stat-value--cash" id="stat-total-cash">—</span>
+              </div>
+              <div class="stat-card stat-card--earned">
+                <span class="stat-label">Total Cash Earned (All Time)</span>
+                <span class="stat-value stat-value--cash" id="stat-total-earned">—</span>
+              </div>
+              <div class="stat-card stat-card--chips">
+                <span class="stat-label">Total Chips</span>
+                <span class="stat-value" id="stat-total-chips">—</span>
+              </div>
+              <div class="stat-card stat-card--level">
+                <span class="stat-label">Highest Level</span>
+                <span class="stat-value" id="stat-highest-level">—</span>
+              </div>
+              <div class="stat-card stat-card--active">
+                <span class="stat-label">Active (24h)</span>
+                <span class="stat-value" id="stat-active-24h">—</span>
+              </div>
+            </div>
+
+            <div class="stats-charts">
+              <div class="stats-chart-wrap">
+                <h3 class="stats-chart-title">Economy & Activity</h3>
+                <canvas id="chart-stats" class="stats-chart" width="400" height="200"></canvas>
               </div>
             </div>
           </div>
-        </div>
 
-        <div class="accordion-item">
-          <button type="button" class="accordion-trigger" aria-expanded="false">Stealing System</button>
-          <div class="accordion-panel">
-            <div class="accordion-content">
-              <div class="accordion-body">
-                <h3>Basics</h3>
-                <ul>
-                  <li>Target <strong>wallet only</strong> — Bank money is protected</li>
-                  <li>Players need $500+ in wallet to be targeted</li>
-                  <li>Cooldowns: 30 minutes between attempts</li>
-                </ul>
-                <h3>Commands</h3>
-                <ul>
-                  <li><code>/steal @player</code> — Regular theft (60% success)</li>
-                  <li><code>/mug @player</code> — High-risk mugging (higher reward)</li>
-                </ul>
-                <h3>Success Factors</h3>
-                <ul>
-                  <li>Reputation difference; target's wanted level</li>
-                  <li>Steal: 10–50% of wallet; Mug: 30–80% of wallet</li>
-                </ul>
-                <h3>Consequences of Failure</h3>
-                <ul>
-                  <li>Lose 10% of your wallet; +1 or +2 wanted stars; reputation loss; 30min cooldown</li>
-                </ul>
-                <h3>Protection</h3>
-                <ul>
-                  <li>Bank your money; keep wallet under $500; build reputation</li>
-                </ul>
-              </div>
+          <div class="stats-leaderboards">
+            <h3 class="page-title">Top 100 Leaderboards</h3>
+            <div class="leaderboard-tabs">
+              <button type="button" class="leaderboard-tab active" data-board="net_worth">💰 Net Worth</button>
+              <button type="button" class="leaderboard-tab" data-board="cash">💵 Cash</button>
+              <button type="button" class="leaderboard-tab" data-board="chips">🎰 Chips</button>
+              <button type="button" class="leaderboard-tab" data-board="level">🎖️ Level</button>
+              <button type="button" class="leaderboard-tab" data-board="rep">⭐ Notorious (Rep)</button>
+              <button type="button" class="leaderboard-tab" data-board="bank">🏦 Bank</button>
             </div>
-          </div>
-        </div>
-
-        <div class="accordion-item">
-          <button type="button" class="accordion-trigger" aria-expanded="false">Jobs System</button>
-          <div class="accordion-panel">
-            <div class="accordion-content">
-              <div class="accordion-body">
-                <h3>Job Categories</h3>
-                <ul>
-                  <li><strong>Robbery</strong> — Easy / Medium / Hard tiers</li>
-                  <li><strong>Hitman</strong> — Assassination contracts</li>
-                  <li><strong>Racing</strong> — Street, Circuit, Grand Prix</li>
-                  <li><strong>Car Theft</strong> — Steal and sell vehicles</li>
-                </ul>
-                <h3>Difficulty Tiers</h3>
-                <ul>
-                  <li>Easy — High success (80%), lower payouts</li>
-                  <li>Medium — Balanced (75% success)</li>
-                  <li>Hard — High risk, high reward (70% success)</li>
-                </ul>
-                <h3>Robbery Examples</h3>
-                <ul>
-                  <li>Easy: $1,000–1,500, 1⭐ wanted</li>
-                  <li>Medium: $1,500–2,500, 2⭐ wanted</li>
-                  <li>Hard: $2,500–3,000, 3⭐ wanted</li>
-                </ul>
-                <h3>Tips</h3>
-                <ul>
-                  <li>Start easy; manage cooldowns; balance risk; use /menu to check availability</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="accordion-item">
-          <button type="button" class="accordion-trigger" aria-expanded="false">Heist System</button>
-          <div class="accordion-panel">
-            <div class="accordion-content">
-              <div class="accordion-body">
-                <h3>Heist Types</h3>
-                <ul>
-                  <li><strong>Quick Heists</strong> — Fast, solo (e.g. Corner Store, Jewelry Store, Armored Truck)</li>
-                  <li><strong>Major Heists</strong> — Crew-based (Bank Vault, Casino Vault, Art Gallery, Drug Lab)</li>
-                </ul>
-                <h3>Crew System</h3>
-                <ul>
-                  <li>Solo to 4 members; more members = higher success; profits split</li>
-                </ul>
-                <h3>Approach Strategies</h3>
-                <ul>
-                  <li><strong>Stealth</strong> — Low detection</li>
-                  <li><strong>Smart</strong> — Balanced</li>
-                  <li><strong>Loud</strong> — High risk, high reward</li>
-                </ul>
-                <h3>Tips</h3>
-                <ul>
-                  <li>Start small; build a reliable crew; plan major heists; manage wanted level</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="accordion-item">
-          <button type="button" class="accordion-trigger" aria-expanded="false">Business System</button>
-          <div class="accordion-panel">
-            <div class="accordion-content">
-              <div class="accordion-body">
-                <h3>Business Types</h3>
-                <ul>
-                  <li>MC: Document Forgery, Weed, Counterfeit, Meth, Coke, Nightclub</li>
-                  <li>Bunker; Specialty businesses (e.g. Vehicle Warehouse)</li>
-                </ul>
-                <h3>Getting Started</h3>
-                <ul>
-                  <li>Use <code>/business</code>; purchase with cash; start with cheaper ones first</li>
-                </ul>
-                <h3>Supply System</h3>
-                <ul>
-                  <li>Supply blocks (0–5 per business); ~$15,000 per block; restock via guessing game or instant</li>
-                </ul>
-                <h3>Production & Selling</h3>
-                <ul>
-                  <li>Produce goods; sell (Local, Los Santos, Split, or Quick Cashout); Nightclub uses technicians, no supply blocks</li>
-                </ul>
-                <h3>Upgrades</h3>
-                <ul>
-                  <li>Equipment, Staff, Security; daily fees apply</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="accordion-item">
-          <button type="button" class="accordion-trigger" aria-expanded="false">Casino Games</button>
-          <div class="accordion-panel">
-            <div class="accordion-content">
-              <div class="accordion-body">
-                <h3>Available Games</h3>
-                <ul>
-                  <li>Blackjack, Slots, Roulette, Poker, Dice, Coin Flip, Lucky Numbers</li>
-                  <li>Rock Paper Scissors, Connect 4, Tic Tac Toe</li>
-                </ul>
-                <h3>Mechanics</h3>
-                <ul>
-                  <li>Play with chips (exchange at Cashier's Cage); house has an edge; bet within your limits</li>
-                </ul>
-                <h3>Responsible Gambling</h3>
-                <ul>
-                  <li>Set limits; take breaks; quit while ahead; treat it as entertainment</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="accordion-item">
-          <button type="button" class="accordion-trigger" aria-expanded="false">Shop System</button>
-          <div class="accordion-panel">
-            <div class="accordion-content">
-              <div class="accordion-body">
-                <h3>Categories</h3>
-                <ul>
-                  <li><strong>Vehicles</strong> — Cars, multiple classes</li>
-                  <li><strong>Properties</strong> — Apartments, garages, offices, nightclubs, facilities, etc.</li>
-                  <li><strong>Collectables</strong> — Rare items</li>
-                  <li><strong>Boosters</strong> — Temporary bonuses (RP, Cash, Luck)</li>
-                </ul>
-                <h3>Purchasing</h3>
-                <ul>
-                  <li>Wallet payment; garage and inventory limits apply</li>
-                </ul>
-                <h3>Strategy</h3>
-                <ul>
-                  <li>Prioritize essentials; invest in properties for passive income; manage inventory</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="accordion-item">
-          <button type="button" class="accordion-trigger" aria-expanded="false">Commands List</button>
-          <div class="accordion-panel">
-            <div class="accordion-content">
-              <div class="accordion-body">
-                <table class="commands-table">
+            <div class="leaderboard-content">
+              <div class="leaderboard-loading" id="leaderboard-loading">Loading…</div>
+              <div class="leaderboard-table-wrap" id="leaderboard-table-wrap" style="display: none;">
+                <table class="leaderboard-table" id="leaderboard-table">
                   <thead>
-                    <tr><th>Command</th><th>Description</th></tr>
+                    <tr>
+                      <th>#</th>
+                      <th>User ID</th>
+                      <th>Value</th>
+                    </tr>
                   </thead>
-                  <tbody>
-                    <tr><td><code>/start</code></td><td>Accept TOS; redirects to menu if already accepted</td></tr>
-                    <tr><td><code>/menu</code></td><td>Main GTA Bot interface</td></tr>
-                    <tr><td><code>/profile</code></td><td>View criminal profile (level, RP, stats)</td></tr>
-                    <tr><td><code>/bank</code></td><td>Banking interface</td></tr>
-                    <tr><td><code>/deposit</code></td><td>Deposit amount to bank</td></tr>
-                    <tr><td><code>/withdraw</code></td><td>Withdraw amount from bank</td></tr>
-                    <tr><td><code>/shop</code></td><td>Black market shop</td></tr>
-                    <tr><td><code>/business</code></td><td>Business management</td></tr>
-                    <tr><td><code>/warehouse</code></td><td>Cargo & Vehicle warehouses</td></tr>
-                    <tr><td><code>/jobs</code></td><td>Criminal jobs menu</td></tr>
-                    <tr><td><code>/steal</code></td><td>PvP steal (target required)</td></tr>
-                    <tr><td><code>/mug</code></td><td>PvP mug (target required)</td></tr>
-                    <tr><td><code>/casino</code></td><td>Casino games</td></tr>
-                    <tr><td><code>/heist</code></td><td>Heist Central (dynamic + classic)</td></tr>
-                    <tr><td><code>/leaderboard</code></td><td>Player leaderboards</td></tr>
-                    <tr><td><code>/wanted</code></td><td>Wanted level status</td></tr>
-                    <tr><td><code>/daily</code></td><td>Daily reward (24h cooldown, streak bonus)</td></tr>
-                    <tr><td><code>/help</code></td><td>Help center</td></tr>
-                    <tr><td><code>/minesweeper</code></td><td>Minesweeper mini-game</td></tr>
-                    <tr><td><code>/setlevelingchannel</code></td><td>Set level-up channel (Server Owner only)</td></tr>
-                    <tr><td><code>/reset-tos</code></td><td>Admin TOS reset</td></tr>
-                  </tbody>
+                  <tbody id="leaderboard-tbody"></tbody>
                 </table>
               </div>
+              <div class="leaderboard-error" id="leaderboard-error" style="display: none;"></div>
             </div>
           </div>
         </div>
+      </div>
+    </section>
 
-        <div class="accordion-item">
-          <button type="button" class="accordion-trigger" aria-expanded="false">Game Rules</button>
-          <div class="accordion-panel">
-            <div class="accordion-content">
-              <div class="accordion-body">
-                <h3>General Rules</h3>
-                <ul>
-                  <li>Be respectful; no spam; fair play; English only in chat</li>
-                </ul>
-                <h3>Economy Rules</h3>
-                <ul>
-                  <li>No real money trading; stealing is part of the game; no scamming; respect cooldowns</li>
-                </ul>
-                <h3>PvP Rules</h3>
-                <ul>
-                  <li>Stealing is allowed; no harassment; accept consequences; bank money to stay safe</li>
-                </ul>
-                <h3>Prohibited</h3>
-                <ul>
-                  <li>Exploiting bugs; account sharing; botting; toxic behavior</li>
-                </ul>
-                <h3>Getting Help</h3>
-                <ul>
-                  <li>Use <code>/help</code> in Discord; ask moderators; read documentation</li>
-                </ul>
+    <!-- PAGE: Help -->
+    <section id="page-help" class="page page--full" data-page="help">
+      <div class="page-bg page-bg--grid" data-parallax-speed="0.05"></div>
+      <div class="page-scroll">
+        <div class="container">
+          <h2 class="page-title reveal">Help & How to Play</h2>
+          <p class="page-subtitle reveal" style="text-align: center; margin-bottom: 1.5rem;">Follow the steps below, then use the guide for details.</p>
+
+          <div class="help-instructions reveal">
+            <h3>Quick start instructions</h3>
+            <ol>
+              <li><strong>Invite the bot</strong> — Ask your server admin to add GTA Bot, or use an invite from the <a href="https://discord.gg/fkQ972fmAs" target="_blank" rel="noopener noreferrer">support server</a>.</li>
+              <li><strong>Accept the Terms</strong> — In Discord, run <code>/start</code> and accept the Terms of Service to create your character.</li>
+              <li><strong>Open the main menu</strong> — Run <code>/menu</code> to see your wallet, bank, and all activities (Jobs, Shop, Bank, Heists, etc.).</li>
+              <li><strong>Earn and protect</strong> — Do jobs or heists to earn cash, then use <code>/bank</code> to deposit money so it can't be stolen.</li>
+              <li><strong>Get in-Discord help</strong> — Use <code>/help</code> in any server with the bot for the full help menu.</li>
+            </ol>
+          </div>
+
+          <p class="page-subtitle reveal" style="text-align: center; margin-bottom: 2rem;">Expand a category below for the full guide.</p>
+
+          <div class="accordion reveal">
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">Getting Started</button>
+              <div class="accordion-panel">
+                <div class="accordion-content">
+                  <div class="accordion-body">
+                    <h3>First Steps</h3>
+                    <ul>
+                      <li><strong>Use /menu</strong> — Access the main game interface</li>
+                      <li><strong>Check your profile</strong> — See your current stats</li>
+                      <li><strong>Start with easy jobs</strong> — Build your reputation</li>
+                      <li><strong>Open a bank account</strong> — Protect your earnings</li>
+                    </ul>
+                    <h3>Understanding Money</h3>
+                    <ul>
+                      <li><strong>Wallet Money</strong> — Cash you carry (can be stolen)</li>
+                      <li><strong>Bank Money</strong> — Protected funds (safe from theft)</li>
+                      <li><strong>Chips</strong> — Casino currency (buy/sell at Cashier's Cage)</li>
+                      <li><strong>Net Worth</strong> — Total value of all your assets</li>
+                    </ul>
+                    <h3>Your Stats</h3>
+                    <ul>
+                      <li><strong>Cash</strong> — Money in your wallet</li>
+                      <li><strong>Reputation</strong> — Your criminal standing</li>
+                      <li><strong>Rank</strong> — Your criminal title</li>
+                      <li><strong>Wanted Level</strong> — How much heat you're carrying</li>
+                    </ul>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-
-        <div class="accordion-item" id="faq">
-          <button type="button" class="accordion-trigger" aria-expanded="false">FAQ — Frequently Asked Questions</button>
-          <div class="accordion-panel">
-            <div class="accordion-content">
-              <div class="accordion-body">
-                <h3>How do I start playing?</h3>
-                <p>Run <code>/start</code> in a server that has the bot, accept the Terms of Service, then use <code>/menu</code> to open the main interface. From there you can do jobs, bank, shop, and more.</p>
-                <h3>How do I invite the bot to my server?</h3>
-                <p>You need the bot invite link from the bot owner or the <a href="https://discord.gg/fkQ972fmAs" target="_blank" rel="noopener noreferrer">support server</a>. Server admins can add the bot there; regular users can join the support server to play and get help.</p>
-                <h3>What is RP / Reputation?</h3>
-                <p>RP (Reputation) is your criminal standing. You earn it from jobs, heists, and other activities. Higher rep unlocks better heists and can make you harder to steal from. Your level is based on total RP (GTA Online–style progression).</p>
-                <h3>Can my bank be robbed?</h3>
-                <p>No. Money in your <strong>bank</strong> cannot be stolen. Only <strong>wallet</strong> (cash) can be taken by other players via <code>/steal</code> or <code>/mug</code>. Keep most of your money in the bank and only carry what you need.</p>
-                <h3>What are cooldowns?</h3>
-                <p>Many actions (jobs, heists, stealing, daily reward) have a cooldown—a wait time before you can do them again. The bot will tell you how long is left. Use <code>/menu</code> to see your stats and try again when ready.</p>
-                <h3>Where do I get help in Discord?</h3>
-                <p>Use <code>/help</code> in any server with the bot for the in-game help menu with categories. For bugs, suggestions, or community help, join the <a href="https://discord.gg/fkQ972fmAs" target="_blank" rel="noopener noreferrer">GTA Bot Support server</a>.</p>
-                <h3>Is the bot free? Is it real money?</h3>
-                <p>The bot is for entertainment; all in-game currency and items are virtual and have no real-world value. There is no real-money gambling or trading. Check your server for any server-specific rules.</p>
-                <h3>Why can’t I use a command?</h3>
-                <p>You must accept the Terms first (<code>/start</code>). Some commands are restricted (e.g. <code>/setlevelingchannel</code> is Server Owner only, <code>/reset-tos</code> is admin). If the bot says “database unavailable,” try again later.</p>
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">Banking System</button>
+              <div class="accordion-panel">
+                <div class="accordion-content">
+                  <div class="accordion-body">
+                    <h3>Dual Currency System</h3>
+                    <ul>
+                      <li><strong>Wallet Money</strong> — Stealable by other players</li>
+                      <li><strong>Bank Money</strong> — Cannot be stolen</li>
+                      <li>Keep spending money in wallet, savings in bank</li>
+                    </ul>
+                    <h3>Banking Commands</h3>
+                    <ul>
+                      <li><code>/bank</code> — Open banking interface</li>
+                      <li><code>/deposit &lt;amount&gt;</code> — Deposit wallet to bank</li>
+                      <li><code>/withdraw &lt;amount&gt;</code> — Withdraw bank to wallet</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">Stealing System</button>
+              <div class="accordion-panel">
+                <div class="accordion-content">
+                  <div class="accordion-body">
+                    <h3>Basics</h3>
+                    <ul>
+                      <li>Target <strong>wallet only</strong> — Bank money is protected</li>
+                      <li>Players need $500+ in wallet to be targeted</li>
+                      <li>Cooldowns: 30 minutes between attempts</li>
+                    </ul>
+                    <h3>Commands</h3>
+                    <ul>
+                      <li><code>/steal @player</code> — Regular theft (60% success)</li>
+                      <li><code>/mug @player</code> — High-risk mugging (higher reward)</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <button type="button" class="accordion-trigger" aria-expanded="false">Jobs, Heists, Business, Casino, Shop</button>
+              <div class="accordion-panel">
+                <div class="accordion-content">
+                  <div class="accordion-body">
+                    <p>Full details for Jobs, Heists, Business, Casino, and Shop are available in the in-Discord <code>/help</code> menu. Use <code>/menu</code> to access all activities.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item" id="faq">
+              <button type="button" class="accordion-trigger" aria-expanded="false">FAQ</button>
+              <div class="accordion-panel">
+                <div class="accordion-content">
+                  <div class="accordion-body">
+                    <h3>How do I start?</h3>
+                    <p>Run <code>/start</code>, accept the Terms, then <code>/menu</code>.</p>
+                    <h3>Can my bank be robbed?</h3>
+                    <p>No. Only <strong>wallet</strong> cash can be stolen. Keep savings in the bank.</p>
+                    <h3>Where do I get help?</h3>
+                    <p>Use <code>/help</code> in Discord or join the <a href="https://discord.gg/fkQ972fmAs" target="_blank" rel="noopener noreferrer">Support server</a>.</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section id="support" class="support parallax-section">
-    <div class="container reveal">
-      <h2>Support</h2>
-      <p>Join the official GTA Bot support server for help, updates, and community.</p>
-      <a href="https://discord.gg/fkQ972fmAs" target="_blank" rel="noopener noreferrer" class="support-cta">Join Discord — GTA Bot Support</a>
-    </div>
-  </section>
+    <!-- PAGE: Support -->
+    <section id="page-support" class="page page--full" data-page="support">
+      <div class="page-bg page-bg--support" data-parallax-speed="0.1"></div>
+      <div class="page-scroll page-scroll--center">
+        <div class="container reveal">
+          <h2 class="page-title">Support</h2>
+          <p class="page-subtitle">Invite the bot to your server or join the official Los Santos hub for help, updates, and community.</p>
+          <div class="support-actions">
+            <a href="https://discord.com/oauth2/authorize?client_id=1430646453033767013" target="_blank" rel="noopener noreferrer" class="support-cta support-cta--primary">Invite GTA Bot</a>
+            <a href="https://discord.gg/fkQ972fmAs" target="_blank" rel="noopener noreferrer" class="support-cta support-cta--secondary">Join Support Server</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
 
   <footer class="site-footer">
     <ul class="footer-links">
       <li><a href="privacy.html">Privacy Policy</a></li>
       <li><a href="terms.html">Terms and Conditions</a></li>
     </ul>
-    <p class="footer-back"><a href="#hero">Back to top</a></p>
+    <p class="footer-back"><a href="#" class="nav-link" data-page="home">Back to top</a></p>
     <p class="footer-copy">GTA Bot. Los Santos in Discord. For entertainment only.</p>
   </footer>
 
+  <div id="bg-canvas" class="bg-canvas" aria-hidden="true"></div>
+  <script src="js/supabase-config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js"></script>
+  <script src="js/stats.js"></script>
+  <script src="js/interactive-bg.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

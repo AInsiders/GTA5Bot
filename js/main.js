@@ -1,13 +1,78 @@
 (function () {
   'use strict';
 
-  // ---------- Parallax (scroll-based layer movement) ----------
-  var parallaxLayers = document.querySelectorAll('[data-parallax-speed]');
+  // ---------- Page switching (single-page app) ----------
+  var pages = document.querySelectorAll('.page');
+  var navLinks = document.querySelectorAll('.nav-link, .nav-brand[data-page]');
+  var pageContainer = document.querySelector('.app-pages');
+
+  function showPage(pageId) {
+    if (!pageId) return;
+    var target = document.getElementById('page-' + pageId);
+    if (!target) return;
+
+    pages.forEach(function (p) {
+      p.classList.remove('is-active');
+    });
+    target.classList.add('is-active');
+
+    navLinks.forEach(function (link) {
+      var linkPage = link.getAttribute('data-page');
+      link.classList.toggle('active', linkPage === pageId);
+    });
+
+    // Reset scroll of the activated page's scroll area (optional: keep scroll per page)
+    var scrollEl = target.querySelector('.page-scroll');
+    if (scrollEl) scrollEl.scrollTop = 0;
+
+    // Reveal triggers for the new page
+    target.querySelectorAll('.reveal').forEach(function (el) {
+      el.classList.add('is-visible');
+    });
+  }
+
+  navLinks.forEach(function (link) {
+    link.addEventListener('click', function (e) {
+      var pageId = link.getAttribute('data-page');
+      if (!pageId) return;
+      e.preventDefault();
+      showPage(pageId);
+      var navLinksEl = document.querySelector('.nav-links');
+      if (navLinksEl && navLinksEl.classList.contains('is-open')) {
+        navLinksEl.classList.remove('is-open');
+      }
+    });
+  });
+
+  // Optional: hash on load
+  var initialHash = (window.location.hash || '').replace('#', '');
+  if (initialHash && document.getElementById('page-' + initialHash)) {
+    showPage(initialHash);
+  } else {
+    showPage('home');
+  }
+
+  // ---------- Parallax (scroll-based; scoped to active page) ----------
   var ticking = false;
 
+  function getScrollTop() {
+    var activePage = document.querySelector('.page.is-active');
+    if (!activePage) return 0;
+    var scrollEl = activePage.querySelector('.page-scroll');
+    if (scrollEl) return scrollEl.scrollTop;
+    return window.pageYOffset || document.documentElement.scrollTop;
+  }
+
+  function getParallaxRoot() {
+    var activePage = document.querySelector('.page.is-active');
+    return activePage || document.body;
+  }
+
   function updateParallax() {
-    var scrollY = window.pageYOffset || document.documentElement.scrollTop;
-    parallaxLayers.forEach(function (el) {
+    var scrollY = getScrollTop();
+    var root = getParallaxRoot();
+    var layers = root.querySelectorAll('[data-parallax-speed]');
+    layers.forEach(function (el) {
       var speed = parseFloat(el.getAttribute('data-parallax-speed')) || 0.2;
       var y = scrollY * speed;
       el.style.transform = 'translate3d(0, ' + y + 'px, 0)';
@@ -22,24 +87,30 @@
     }
   }
 
-  if (parallaxLayers.length) {
+  function attachParallaxListeners() {
+    pages.forEach(function (page) {
+      var scrollEl = page.querySelector('.page-scroll');
+      if (scrollEl) {
+        scrollEl.removeEventListener('scroll', requestParallaxTick);
+        scrollEl.addEventListener('scroll', requestParallaxTick, { passive: true });
+      }
+    });
+    window.removeEventListener('scroll', requestParallaxTick);
     window.addEventListener('scroll', requestParallaxTick, { passive: true });
-    updateParallax();
   }
 
-  // ---------- Smooth scroll for anchor links ----------
-  document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
-    var href = anchor.getAttribute('href');
-    if (href === '#') return;
-    var target = document.querySelector(href);
-    if (!target) return;
-    anchor.addEventListener('click', function (e) {
-      e.preventDefault();
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-  });
+  attachParallaxListeners();
+  updateParallax();
 
-  // ---------- Accordions (single open by default) ----------
+  // Re-run parallax when page changes
+  var observer = new MutationObserver(function () {
+    requestParallaxTick();
+  });
+  if (pageContainer) {
+    observer.observe(pageContainer, { attributes: true, subtree: true, attributeFilter: ['class'] });
+  }
+
+  // ---------- Accordions ----------
   var accordionItems = document.querySelectorAll('.accordion-item');
   accordionItems.forEach(function (item) {
     var trigger = item.querySelector('.accordion-trigger');
@@ -57,61 +128,29 @@
     });
   });
 
-  // Optional: open first accordion on load
   if (accordionItems.length) {
     accordionItems[0].classList.add('is-open');
   }
 
-  // ---------- Nav: highlight current section on scroll ----------
-  var navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
-  var sections = [];
-  navLinks.forEach(function (link) {
-    var id = link.getAttribute('href').slice(1);
-    var section = document.getElementById(id);
-    if (section) sections.push({ id: id, el: section, link: link });
-  });
-
-  function updateNavActive() {
-    var scrollY = window.pageYOffset;
-    var viewportMid = scrollY + window.innerHeight * 0.4;
-    var current = null;
-    sections.forEach(function (s) {
-      var top = s.el.offsetTop;
-      var height = s.el.offsetHeight;
-      if (viewportMid >= top && viewportMid < top + height) current = s;
-    });
-    sections.forEach(function (s) {
-      s.link.classList.toggle('active', s === current);
-    });
-  }
-
-  if (sections.length) {
-    window.addEventListener('scroll', updateNavActive, { passive: true });
-    updateNavActive();
-  }
-
-  // ---------- Scroll reveal for elements with .reveal ----------
+  // ---------- Scroll reveal (only for visible page) ----------
   var revealEls = document.querySelectorAll('.reveal');
-  if (revealEls.length) {
-    if ('IntersectionObserver' in window) {
-      var observer = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-visible');
-            observer.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.18 });
+  if (revealEls.length && 'IntersectionObserver' in window) {
+    var revealObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, root: null });
 
-      revealEls.forEach(function (el) {
-        observer.observe(el);
-      });
-    } else {
-      // Fallback: show everything if IntersectionObserver is not supported
-      revealEls.forEach(function (el) {
-        el.classList.add('is-visible');
-      });
-    }
+    revealEls.forEach(function (el) {
+      revealObserver.observe(el);
+    });
+  } else {
+    revealEls.forEach(function (el) {
+      el.classList.add('is-visible');
+    });
   }
 
   // ---------- Mobile nav toggle ----------
