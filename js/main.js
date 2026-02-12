@@ -1,34 +1,58 @@
 (function () {
   'use strict';
 
-  // ---------- Page switching (single-page app) ----------
+  var PAGE_ORDER = ['home', 'commands', 'stats', 'help', 'support'];
   var pages = document.querySelectorAll('.page');
   var navLinks = document.querySelectorAll('.nav-link, .nav-brand[data-page]');
   var pageContainer = document.querySelector('.app-pages');
+  var pagesInner = document.getElementById('app-pages-inner');
+  var currentIndex = 0;
+
+  function indexOfPage(pageId) {
+    var i = PAGE_ORDER.indexOf(pageId);
+    return i >= 0 ? i : 0;
+  }
+
+  function setStripPosition(index) {
+    if (!pagesInner) return;
+    currentIndex = index;
+    var tx = -index * 20;
+    pagesInner.style.transform = 'translateX(' + tx + '%)';
+  }
 
   function showPage(pageId) {
     if (!pageId) return;
     var target = document.getElementById('page-' + pageId);
     if (!target) return;
 
+    var nextIndex = indexOfPage(pageId);
+    setStripPosition(nextIndex);
+
     pages.forEach(function (p) {
-      p.classList.remove('is-active');
+      p.classList.toggle('is-active', p === target);
     });
-    target.classList.add('is-active');
 
     navLinks.forEach(function (link) {
       var linkPage = link.getAttribute('data-page');
       link.classList.toggle('active', linkPage === pageId);
     });
 
-    // Reset scroll of the activated page's scroll area (optional: keep scroll per page)
     var scrollEl = target.querySelector('.page-scroll');
     if (scrollEl) scrollEl.scrollTop = 0;
 
-    // Reveal triggers for the new page
     target.querySelectorAll('.reveal').forEach(function (el) {
       el.classList.add('is-visible');
     });
+  }
+
+  function goPrev() {
+    if (currentIndex <= 0) return;
+    showPage(PAGE_ORDER[currentIndex - 1]);
+  }
+
+  function goNext() {
+    if (currentIndex >= PAGE_ORDER.length - 1) return;
+    showPage(PAGE_ORDER[currentIndex + 1]);
   }
 
   navLinks.forEach(function (link) {
@@ -44,11 +68,29 @@
     });
   });
 
-  // Optional: hash on load
+  var touchStartX = 0;
+  var touchEndX = 0;
+  if (pageContainer) {
+    pageContainer.addEventListener('touchstart', function (e) {
+      touchStartX = e.changedTouches ? e.changedTouches[0].screenX : e.screenX;
+    }, { passive: true });
+    pageContainer.addEventListener('touchend', function (e) {
+      touchEndX = e.changedTouches ? e.changedTouches[0].screenX : e.screenX;
+      var diff = touchStartX - touchEndX;
+      if (Math.abs(diff) > 60) {
+        if (diff > 0) goNext();
+        else goPrev();
+      }
+    }, { passive: true });
+  }
+
   var initialHash = (window.location.hash || '').replace('#', '');
   if (initialHash && document.getElementById('page-' + initialHash)) {
+    currentIndex = indexOfPage(initialHash);
+    setStripPosition(currentIndex);
     showPage(initialHash);
   } else {
+    setStripPosition(0);
     showPage('home');
   }
 

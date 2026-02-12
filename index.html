@@ -35,9 +35,11 @@
   </nav>
 
   <main class="app-pages">
+    <div class="app-pages-inner" id="app-pages-inner">
     <!-- PAGE: Home (hero + features at bottom) -->
     <section id="page-home" class="page page--full is-active" data-page="home">
-      <header class="hero">
+      <header class="hero" id="hero">
+        <div class="hero-mouse-glow" id="hero-mouse-glow" aria-hidden="true"></div>
         <div class="hero-bg"></div>
         <div class="hero-bg-layer" data-parallax-speed="0.15"></div>
         <div class="hero-parallax hero-parallax--top" data-parallax-speed="0.06"></div>
@@ -150,8 +152,8 @@
           <p class="stats-connection" id="stats-connection" aria-live="polite"></p>
 
           <div id="stats-connect-msg" class="stats-connect-msg" style="display: none;">
-            <p>Start the stats API from the bot project root: <code>python -m src.services.stats_api</code>. It runs on <code>http://127.0.0.1:8765</code> by default. On localhost this site will use it automatically.</p>
-            <p>For production, set <code>window.__NEON_STATS_API_URL__</code> in <code>js/config.js</code> to your deployed stats API URL.</p>
+            <p>On <strong>localhost</strong>: run <code>python -m src.services.stats_api</code> from the project root; the site will use <code>http://127.0.0.1:8765</code> automatically.</p>
+            <p>When hosted on <strong>GitHub Pages</strong>: deploy the project’s <code>api/</code> folder to <a href="https://vercel.com" target="_blank" rel="noopener">Vercel</a>, add your Neon connection string as <code>DATABASE_URL</code> in Vercel, then set <code>window.__NEON_STATS_API_URL__</code> in <code>js/config.js</code> to your Vercel URL (e.g. <code>https://your-project.vercel.app</code>).</p>
           </div>
 
           <div id="stats-global" class="stats-global">
@@ -183,9 +185,13 @@
             </div>
 
             <div class="stats-charts">
-              <div class="stats-chart-wrap">
+              <div class="stats-chart-wrap stats-chart-wrap--bar">
                 <h3 class="stats-chart-title">Economy & Activity</h3>
                 <canvas id="chart-stats" class="stats-chart" width="400" height="200"></canvas>
+              </div>
+              <div class="stats-chart-wrap stats-chart-wrap--donut">
+                <h3 class="stats-chart-title">Economy Split</h3>
+                <canvas id="chart-donut" class="stats-chart stats-chart--donut" width="260" height="260"></canvas>
               </div>
             </div>
           </div>
@@ -359,6 +365,7 @@
         </div>
       </div>
     </section>
+    </div>
   </main>
 
   <footer class="site-footer">
@@ -380,6 +387,7 @@
   <script src="js/stats-config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script src="js/stats.js"></script>
+  <script src="js/hero-interactive.js"></script>
   <script src="js/interactive-bg.js"></script>
   <script src="js/main.js"></script>
 </body>

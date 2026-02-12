@@ -3,6 +3,7 @@
 
   var config = typeof window.GTA_STATS_CONFIG !== 'undefined' ? window.GTA_STATS_CONFIG : {};
   var chartInstance = null;
+  var chartDonutInstance = null;
 
   function getNeonApiBase() {
     return (config.neonStatsApiUrl || '').replace(/\/$/, '');
@@ -41,6 +42,28 @@
     if (el) el.textContent = value;
   }
 
+  function animateStat(id, endValue, formatter, prefix) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    prefix = prefix || '';
+    formatter = formatter || function (x) { return String(x); };
+    var start = 0;
+    var startStr = el.getAttribute('data-last-num');
+    if (startStr !== null && startStr !== '') start = parseFloat(startStr, 10) || 0;
+    el.setAttribute('data-last-num', String(endValue));
+    var duration = 700;
+    var startTime = null;
+    function step(now) {
+      if (!startTime) startTime = now;
+      var t = Math.min((now - startTime) / duration, 1);
+      var ease = 1 - Math.pow(1 - t, 2);
+      var current = start + (endValue - start) * ease;
+      el.textContent = prefix + formatter(current);
+      if (t < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
   function fetchGlobalStats() {
     if (!hasConfig()) {
       setConnectionStatus('', '');
@@ -57,13 +80,20 @@
       })
       .then(function (d) {
         setConnectionStatus('live', 'Connected to Neon');
-        setStat('stat-total-users', formatCash(d.total_users));
-        setStat('stat-total-cash', '$' + formatCash(d.total_cash_in_economy));
-        setStat('stat-total-earned', '$' + formatCash(d.total_earned_all_users));
-        setStat('stat-total-chips', formatCash(d.total_chips));
-        setStat('stat-highest-level', d.highest_level != null ? d.highest_level : '—');
-        setStat('stat-active-24h', formatCash(d.active_users_24h));
+        var numUsers = Number(d.total_users) || 0;
+        var numCash = Number(d.total_cash_in_economy) || 0;
+        var numEarned = Number(d.total_earned_all_users) || 0;
+        var numChips = Number(d.total_chips) || 0;
+        var level = d.highest_level != null ? Number(d.highest_level) : 0;
+        var active = Number(d.active_users_24h) || 0;
+        animateStat('stat-total-users', numUsers, formatCash, '');
+        animateStat('stat-total-cash', numCash, formatCash, '$');
+        animateStat('stat-total-earned', numEarned, formatCash, '$');
+        animateStat('stat-total-chips', numChips, formatCash, '');
+        if (level === 0) setStat('stat-highest-level', '—'); else animateStat('stat-highest-level', level, function (x) { return String(Math.round(x)); }, '');
+        animateStat('stat-active-24h', active, formatCash, '');
         drawChart(d);
+        drawDonutChart(d);
       })
       .catch(function (err) {
         setConnectionStatus('error', 'Connection failed. Start the stats API or check config.');
@@ -83,10 +113,15 @@
     var totalUsers = Number(data.total_users) || 0;
     var active24h = Number(data.active_users_24h) || 0;
 
+    var grad = ctx.createLinearGradient(0, 0, 0, 200);
+    grad.addColorStop(0, 'rgba(0, 255, 136, 0.85)');
+    grad.addColorStop(0.5, 'rgba(0, 230, 118, 0.7)');
+    grad.addColorStop(1, 'rgba(0, 200, 100, 0.5)');
+
     chartInstance = new window.Chart(ctx, {
       type: 'bar',
       data: {
-        labels: ['Total economy $', 'Total earned $', 'Total chips', 'Total players', 'Active (24h)'],
+        labels: ['Economy $', 'Earned $', 'Chips', 'Players', 'Active 24h'],
         datasets: [{
           label: 'Value',
           data: [
@@ -96,32 +131,98 @@
             totalUsers,
             active24h
           ],
-          backgroundColor: [
-            'rgba(0, 255, 136, 0.6)',
-            'rgba(0, 230, 118, 0.6)',
-            'rgba(255, 215, 0, 0.6)',
-            'rgba(0, 255, 136, 0.4)',
-            'rgba(255, 179, 0, 0.6)'
-          ],
-          borderColor: ['#00ff88', '#00e676', '#ffd700', '#00cc6a', '#ffb300'],
-          borderWidth: 1
+          backgroundColor: grad,
+          borderColor: '#00ff88',
+          borderWidth: 1,
+          borderRadius: 6,
+          borderSkipped: false
         }]
       },
       options: {
         responsive: true,
         maintainAspectRatio: true,
+        animation: { duration: 800 },
         plugins: {
-          legend: { display: false }
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: 'rgba(10, 14, 10, 0.95)',
+            titleColor: '#00ff88',
+            bodyColor: '#e8f0e8',
+            borderColor: 'rgba(0, 255, 136, 0.4)',
+            borderWidth: 1
+          }
         },
         scales: {
           y: {
             beginAtZero: true,
-            grid: { color: 'rgba(0, 255, 136, 0.1)' },
+            grid: { color: 'rgba(0, 255, 136, 0.12)' },
             ticks: { color: '#7a8a7a' }
           },
           x: {
             grid: { display: false },
             ticks: { color: '#7a8a7a', maxRotation: 25 }
+          }
+        }
+      }
+    });
+  }
+
+  function drawDonutChart(data) {
+    var canvas = document.getElementById('chart-donut');
+    if (!canvas || typeof window.Chart === 'undefined') return;
+    var ctx = canvas.getContext('2d');
+    if (chartDonutInstance) chartDonutInstance.destroy();
+
+    var wallet = Number(data.total_wallet_money) || 0;
+    var bank = Number(data.total_bank_money) || 0;
+    var chips = Number(data.total_chips) || 0;
+    var total = wallet + bank + chips;
+    var labels = ['Wallet', 'Bank', 'Chips'];
+    var values = [wallet, bank, chips];
+    var colors = ['rgba(0, 255, 136, 0.8)', 'rgba(0, 230, 118, 0.7)', 'rgba(255, 215, 0, 0.8)'];
+    var borders = ['#00ff88', '#00e676', '#ffd700'];
+    if (total <= 0) {
+      values = [1];
+      labels = ['No data'];
+      colors = ['rgba(122, 138, 122, 0.5)'];
+      borders = ['#7a8a7a'];
+    }
+
+    chartDonutInstance = new window.Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: values,
+          backgroundColor: colors,
+          borderColor: borders,
+          borderWidth: 2,
+          hoverOffset: 8
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        animation: { duration: 900 },
+        cutout: '62%',
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: { color: '#7a8a7a', padding: 12 }
+          },
+          tooltip: {
+            callbacks: {
+              label: function (item) {
+                var v = item.raw;
+                var pct = total > 0 ? ((v / total) * 100).toFixed(1) : 0;
+                return item.label + ': ' + formatCash(v) + ' (' + pct + '%)';
+              }
+            },
+            backgroundColor: 'rgba(10, 14, 10, 0.95)',
+            titleColor: '#00ff88',
+            bodyColor: '#e8f0e8',
+            borderColor: 'rgba(0, 255, 136, 0.4)',
+            borderWidth: 1
           }
         }
       }

@@ -90,27 +90,46 @@ section {
   position: relative;
 }
 
-/* ========== Multi-page app (views inside index.html) ========== */
+/* ========== Multi-page app (slide strip + transitions) ========== */
 .app-pages {
   position: relative;
   min-height: 100vh;
+  overflow: hidden;
+  width: 100%;
 }
 
-.page {
-  display: none;
-  position: absolute;
-  inset: 0;
+.app-pages-inner {
+  display: flex;
+  flex-direction: row;
+  width: 500%;
   min-height: 100vh;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.35s var(--transition-ui), visibility 0.35s;
+  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
 }
 
-.page.is-active {
-  display: block;
+@media (prefers-reduced-motion: reduce) {
+  .app-pages-inner {
+    transition: none;
+  }
+}
+
+.app-pages-inner .page {
+  width: 20%;
+  min-width: 20%;
+  flex-shrink: 0;
+  min-height: 100vh;
   position: relative;
   opacity: 1;
   visibility: visible;
+}
+
+.page:not(.is-active) {
+  pointer-events: none;
+  visibility: visible;
+}
+
+.page.is-active {
+  pointer-events: auto;
 }
 
 .page--full {
@@ -246,7 +265,7 @@ section {
   font-size: 1rem;
 }
 
-/* ========== Hero (Parallax) ========== */
+/* ========== Hero (Parallax + interactive mouse glow) ========== */
 .hero {
   min-height: 100vh;
   display: flex;
@@ -256,6 +275,25 @@ section {
   position: relative;
   padding: 6rem 1.5rem 4rem;
 }
+
+.hero-mouse-glow {
+  position: absolute;
+  width: 120%;
+  height: 120%;
+  left: -10%;
+  top: -10%;
+  pointer-events: none;
+  z-index: 0;
+  background: radial-gradient(
+    circle 280px at var(--hero-mouse-x, 50%) var(--hero-mouse-y, 50%),
+    rgba(0, 255, 136, 0.12) 0%,
+    rgba(255, 215, 0, 0.06) 35%,
+    transparent 55%
+  );
+  opacity: 0.9;
+  transition: opacity 0.2s ease;
+}
+.hero:hover .hero-mouse-glow { opacity: 1; }
 
 .hero-bg {
   position: absolute;
@@ -849,6 +887,13 @@ section {
 
 .stats-charts {
   margin-top: 1.5rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+@media (max-width: 720px) {
+  .stats-charts { grid-template-columns: 1fr; }
 }
 .stats-chart-wrap {
   background: var(--bg-card);
@@ -857,6 +902,12 @@ section {
   padding: 1.25rem;
   max-height: 280px;
 }
+.stats-chart-wrap--donut {
+  max-height: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 .stats-chart-title {
   margin-bottom: 0.75rem;
   color: var(--gta-gold-dim);
@@ -864,6 +915,12 @@ section {
 }
 .stats-chart {
   max-height: 220px;
+}
+.stats-chart--donut {
+  max-height: 260px;
+}
+.stat-value[data-animating="true"] {
+  transition: opacity 0.15s ease;
 }
 
 .stats-leaderboards {
