@@ -2,29 +2,14 @@
   'use strict';
 
   var config = typeof window.GTA_STATS_CONFIG !== 'undefined' ? window.GTA_STATS_CONFIG : {};
-  var supabaseConfig = typeof window.GTA_STATS_SUPABASE !== 'undefined' ? window.GTA_STATS_SUPABASE : {};
-  var supabase = null;
   var chartInstance = null;
-
-  function useNeonApi() {
-    var base = (config.neonStatsApiUrl || '').replace(/\/$/, '');
-    return base.length > 0;
-  }
 
   function getNeonApiBase() {
     return (config.neonStatsApiUrl || '').replace(/\/$/, '');
   }
 
   function hasConfig() {
-    return useNeonApi() || !!(supabaseConfig.url && supabaseConfig.anonKey);
-  }
-
-  function initClient() {
-    if (useNeonApi()) return { _neon: true };
-    if (!(supabaseConfig.url && supabaseConfig.anonKey) || typeof window.supabase === 'undefined') return null;
-    if (supabase) return supabase;
-    supabase = window.supabase.createClient(supabaseConfig.url, supabaseConfig.anonKey);
-    return supabase;
+    return getNeonApiBase().length > 0;
   }
 
   function formatCash(n) {
@@ -44,6 +29,13 @@
     if (global) global.style.display = show ? 'none' : 'block';
   }
 
+  function setConnectionStatus(status, text) {
+    var el = document.getElementById('stats-connection');
+    if (!el) return;
+    el.textContent = text || '';
+    el.className = 'stats-connection' + (status ? ' stats-connection--' + status : '');
+  }
+
   function setStat(id, value) {
     var el = document.getElementById(id);
     if (el) el.textContent = value;
@@ -51,38 +43,20 @@
 
   function fetchGlobalStats() {
     if (!hasConfig()) {
+      setConnectionStatus('', '');
       showConnectMsg(true);
       return;
     }
     showConnectMsg(false);
-    if (useNeonApi()) {
-      var base = getNeonApiBase();
-      fetch(base + '/api/stats/global')
-        .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error(r.statusText)); })
-        .then(function (d) {
-          setStat('stat-total-users', formatCash(d.total_users));
-          setStat('stat-total-cash', '$' + formatCash(d.total_cash_in_economy));
-          setStat('stat-total-earned', '$' + formatCash(d.total_earned_all_users));
-          setStat('stat-total-chips', formatCash(d.total_chips));
-          setStat('stat-highest-level', d.highest_level != null ? d.highest_level : '—');
-          setStat('stat-active-24h', formatCash(d.active_users_24h));
-          drawChart(d);
-        })
-        .catch(function () { showConnectMsg(true); });
-      return;
-    }
-    var client = initClient();
-    if (!client) {
-      showConnectMsg(true);
-      return;
-    }
-    client.rpc('get_server_stats')
-      .then(function (res) {
-        if (res.error) {
-          showConnectMsg(true);
-          return;
-        }
-        var d = res.data || {};
+    setConnectionStatus('checking', 'Checking connection…');
+    var base = getNeonApiBase();
+    fetch(base + '/api/stats/global')
+      .then(function (r) {
+        if (!r.ok) return Promise.reject(new Error(r.statusText || 'Connection failed'));
+        return r.json();
+      })
+      .then(function (d) {
+        setConnectionStatus('live', 'Connected to Neon');
         setStat('stat-total-users', formatCash(d.total_users));
         setStat('stat-total-cash', '$' + formatCash(d.total_cash_in_economy));
         setStat('stat-total-earned', '$' + formatCash(d.total_earned_all_users));
@@ -91,7 +65,8 @@
         setStat('stat-active-24h', formatCash(d.active_users_24h));
         drawChart(d);
       })
-      .catch(function () {
+      .catch(function (err) {
+        setConnectionStatus('error', 'Connection failed. Start the stats API or check config.');
         showConnectMsg(true);
       });
   }
@@ -186,38 +161,15 @@
 
     if (!hasConfig()) {
       if (loading) loading.style.display = 'none';
-      if (errEl) { errEl.textContent = 'Configure Neon Stats API or Supabase to load leaderboards.'; errEl.style.display = 'block'; }
+      if (errEl) { errEl.textContent = 'Set Neon Stats API URL to load leaderboards.'; errEl.style.display = 'block'; }
       return;
     }
-    if (useNeonApi()) {
-      var base = getNeonApiBase();
-      fetch(base + '/api/stats/leaderboard?type=' + encodeURIComponent(type) + '&limit=100')
-        .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error(r.statusText)); })
-        .then(function (data) {
-          var valueLabel = (type === 'net_worth' || type === 'wealth' || type === 'cash' || type === 'bank') ? 'cash' : 'number';
-          renderLeaderboard(Array.isArray(data) ? data : [], valueLabel);
-        })
-        .catch(function (e) {
-          if (loading) loading.style.display = 'none';
-          if (errEl) { errEl.textContent = e.message || 'Request failed.'; errEl.style.display = 'block'; }
-        });
-      return;
-    }
-    var client = initClient();
-    if (!client) {
-      if (loading) loading.style.display = 'none';
-      if (errEl) { errEl.textContent = 'Supabase not available.'; errEl.style.display = 'block'; }
-      return;
-    }
-    client.rpc('get_leaderboard_top', { leaderboard_type: type, limit_count: 100 })
-      .then(function (res) {
-        if (res.error) {
-          if (loading) loading.style.display = 'none';
-          if (errEl) { errEl.textContent = res.error.message || 'Failed to load.'; errEl.style.display = 'block'; }
-          return;
-        }
+    var base = getNeonApiBase();
+    fetch(base + '/api/stats/leaderboard?type=' + encodeURIComponent(type) + '&limit=100')
+      .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error(r.statusText)); })
+      .then(function (data) {
         var valueLabel = (type === 'net_worth' || type === 'wealth' || type === 'cash' || type === 'bank') ? 'cash' : 'number';
-        renderLeaderboard(res.data || [], valueLabel);
+        renderLeaderboard(Array.isArray(data) ? data : [], valueLabel);
       })
       .catch(function (e) {
         if (loading) loading.style.display = 'none';

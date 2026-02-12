@@ -58,6 +58,7 @@
   function getScrollTop() {
     var activePage = document.querySelector('.page.is-active');
     if (!activePage) return 0;
+    if (activePage.id === 'page-home') return window.pageYOffset || document.documentElement.scrollTop;
     var scrollEl = activePage.querySelector('.page-scroll');
     if (scrollEl) return scrollEl.scrollTop;
     return window.pageYOffset || document.documentElement.scrollTop;

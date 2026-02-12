@@ -134,6 +134,14 @@ section {
   padding: 6rem 0;
 }
 
+.home-features {
+  position: relative;
+  padding-top: 3rem;
+  padding-bottom: 4rem;
+}
+.home-features .page-title { margin-bottom: 0.5rem; }
+.home-features .page-subtitle { margin-bottom: 1.5rem; }
+
 .page-title {
   text-align: center;
   color: var(--gta-green);
@@ -770,6 +778,22 @@ section {
 }
 
 /* ========== Stats page ========== */
+.stats-connection {
+  text-align: center;
+  margin: -0.5rem 0 1rem;
+  font-size: 0.9rem;
+  min-height: 1.5em;
+}
+.stats-connection.stats-connection--live {
+  color: var(--gta-green);
+}
+.stats-connection.stats-connection--error {
+  color: var(--gta-red-bright);
+}
+.stats-connection.stats-connection--checking {
+  color: var(--text-muted);
+}
+
 .stats-connect-msg {
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
@@ -851,6 +875,7 @@ section {
 .leaderboard-tabs {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 0.5rem;
   margin-bottom: 1rem;
 }
@@ -1153,8 +1178,9 @@ section {
   }
   .leaderboard-tabs {
     flex-direction: column;
+    align-items: center;
   }
-  .leaderboard-tab { flex: 1 1 auto; }
+  .leaderboard-tab { flex: 0 1 auto; min-width: 200px; }
 
   .accordion-trigger { font-size: 0.95rem; padding: 0.9rem 1rem; }
 

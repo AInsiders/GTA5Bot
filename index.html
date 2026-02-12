@@ -4,6 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GTA Bot — Los Santos in Discord</title>
+  <script>
+    (function() {
+      var path = location.pathname.replace(/\/[^/]*$/, '/') || '/';
+      if (document.querySelector('base') == null) {
+        var b = document.createElement('base');
+        b.href = path;
+        document.head.insertBefore(b, document.head.firstChild);
+      }
+    })();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -15,7 +25,6 @@
       <a href="#" class="nav-brand" data-page="home">GTA BOT</a>
       <ul class="nav-links">
         <li><a href="#" class="nav-link active" data-page="home">Home</a></li>
-        <li><a href="#" class="nav-link" data-page="features">Features</a></li>
         <li><a href="#" class="nav-link" data-page="commands">Commands</a></li>
         <li><a href="#" class="nav-link" data-page="stats">Stats</a></li>
         <li><a href="#" class="nav-link" data-page="help">Help</a></li>
@@ -26,7 +35,7 @@
   </nav>
 
   <main class="app-pages">
-    <!-- PAGE: Home -->
+    <!-- PAGE: Home (hero + features at bottom) -->
     <section id="page-home" class="page page--full is-active" data-page="home">
       <header class="hero">
         <div class="hero-bg"></div>
@@ -39,21 +48,18 @@
         <div class="hero-content reveal">
           <div class="hero-badge">LOS SANTOS</div>
           <h1>GTA BOT</h1>
-          <p class="hero-tagline">Los Santos in Discord. Jobs, heists, businesses, warehouses & the streets. Build your criminal empire—all in text.</p>
+          <p class="hero-tagline">Los Santos in Discord. Jobs, heists, businesses, warehouses, and the streets. Build your criminal empire—all in text.</p>
           <div class="hero-actions">
             <a href="https://discord.com/oauth2/authorize?client_id=1430646453033767013" target="_blank" rel="noopener noreferrer" class="hero-cta hero-cta--primary">Invite GTA Bot</a>
             <a href="#" class="hero-cta hero-cta--secondary" data-page="support">Support &amp; Guide</a>
           </div>
         </div>
       </header>
-    </section>
-
-    <!-- PAGE: Features -->
-    <section id="page-features" class="page page--full" data-page="features">
-      <div class="page-bg page-bg--grid" data-parallax-speed="0.08"></div>
-      <div class="page-scroll">
+      <div class="page-scroll home-features">
+        <div class="page-bg page-bg--grid" data-parallax-speed="0.08"></div>
         <div class="container reveal">
           <h2 class="page-title">What You Can Do</h2>
+          <p class="page-subtitle">Run jobs, heists, and businesses; bank your cash; climb the leaderboards.</p>
           <ul class="features-grid features-grid--3d">
             <li class="feature-card"><span class="feature-icon">💼</span> Jobs (Robbery, Hitman, Racing, Car Theft)</li>
             <li class="feature-card"><span class="feature-icon">🎭</span> Heists (Quick & Major)</li>
@@ -75,7 +81,7 @@
       <div class="page-scroll">
         <div class="container reveal">
           <h2 class="page-title">Commands</h2>
-          <p class="page-subtitle">Every slash command at a glance. Use in Discord with the bot.</p>
+          <p class="page-subtitle">All slash commands. Use these in any Discord server that has GTA Bot.</p>
           <div class="commands-deck">
             <div class="commands-category" data-category="core">
               <h3 class="commands-category-title">Core</h3>
@@ -133,18 +139,19 @@
       </div>
     </section>
 
-    <!-- PAGE: Stats (live graphs + top 100 leaderboards from Supabase) -->
+    <!-- PAGE: Stats (live graphs + top 100 leaderboards from Neon) -->
     <section id="page-stats" class="page page--full" data-page="stats">
       <div class="page-bg page-bg--grid" data-parallax-speed="0.06"></div>
       <div class="page-bg page-bg--money" data-parallax-speed="0.03"></div>
       <div class="page-scroll">
         <div class="container container--wide reveal">
           <h2 class="page-title">Live Statistics</h2>
-          <p class="page-subtitle">Total users, economy totals, and top 100 leaderboards. Data from Neon (GTA Bot database).</p>
+          <p class="page-subtitle">Economy totals and top 100 leaderboards. Data comes from the GTA Bot Neon database.</p>
+          <p class="stats-connection" id="stats-connection" aria-live="polite"></p>
 
           <div id="stats-connect-msg" class="stats-connect-msg" style="display: none;">
-            <p><strong>Neon (recommended):</strong> Run the stats API from the bot root: <code>python -m src.services.stats_api</code>, then in <code>index.html</code> set <code>window.__NEON_STATS_API_URL__ = 'http://localhost:8765'</code> before loading scripts.</p>
-            <p><strong>Or use Supabase:</strong> Set <code>__SUPABASE_URL__</code> and <code>__SUPABASE_ANON_KEY__</code> in <code>js/supabase-config.js</code> and run <code>Website/sql/supabase_stats_setup.sql</code> in your Supabase SQL Editor.</p>
+            <p>Start the stats API from the bot project root: <code>python -m src.services.stats_api</code>. It runs on <code>http://127.0.0.1:8765</code> by default. On localhost this site will use it automatically.</p>
+            <p>For production, set <code>window.__NEON_STATS_API_URL__</code> in <code>js/config.js</code> to your deployed stats API URL.</p>
           </div>
 
           <div id="stats-global" class="stats-global">
@@ -185,6 +192,7 @@
 
           <div class="stats-leaderboards">
             <h3 class="page-title">Top 100 Leaderboards</h3>
+            <p class="page-subtitle" style="margin-bottom: 1rem;">Rankings by net worth, cash, chips, level, reputation, and bank balance.</p>
             <div class="leaderboard-tabs">
               <button type="button" class="leaderboard-tab active" data-board="net_worth">💰 Net Worth</button>
               <button type="button" class="leaderboard-tab" data-board="cash">💵 Cash</button>
@@ -194,7 +202,7 @@
               <button type="button" class="leaderboard-tab" data-board="bank">🏦 Bank</button>
             </div>
             <div class="leaderboard-content">
-              <div class="leaderboard-loading" id="leaderboard-loading">Loading…</div>
+              <div class="leaderboard-loading" id="leaderboard-loading">Loading leaderboard…</div>
               <div class="leaderboard-table-wrap" id="leaderboard-table-wrap" style="display: none;">
                 <table class="leaderboard-table" id="leaderboard-table">
                   <thead>
@@ -220,10 +228,10 @@
       <div class="page-scroll">
         <div class="container">
           <h2 class="page-title reveal">Help & How to Play</h2>
-          <p class="page-subtitle reveal" style="text-align: center; margin-bottom: 1.5rem;">Follow the steps below, then use the guide for details.</p>
+          <p class="page-subtitle reveal" style="text-align: center; margin-bottom: 1.5rem;">Follow the steps below, then expand a category for more detail.</p>
 
           <div class="help-instructions reveal">
-            <h3>Quick start instructions</h3>
+            <h3>Quick start</h3>
             <ol>
               <li><strong>Invite the bot</strong> — Ask your server admin to add GTA Bot, or use an invite from the <a href="https://discord.gg/fkQ972fmAs" target="_blank" rel="noopener noreferrer">support server</a>.</li>
               <li><strong>Accept the Terms</strong> — In Discord, run <code>/start</code> and accept the Terms of Service to create your character.</li>
@@ -233,7 +241,7 @@
             </ol>
           </div>
 
-          <p class="page-subtitle reveal" style="text-align: center; margin-bottom: 2rem;">Expand a category below for the full guide.</p>
+          <p class="page-subtitle reveal" style="text-align: center; margin-bottom: 2rem;">Expand any category below for the full guide.</p>
 
           <div class="accordion reveal">
             <div class="accordion-item">
@@ -343,7 +351,7 @@
       <div class="page-scroll page-scroll--center">
         <div class="container reveal">
           <h2 class="page-title">Support</h2>
-          <p class="page-subtitle">Invite the bot to your server or join the official Los Santos hub for help, updates, and community.</p>
+          <p class="page-subtitle">Invite the bot to your server or join the support server for help, updates, and community.</p>
           <div class="support-actions">
             <a href="https://discord.com/oauth2/authorize?client_id=1430646453033767013" target="_blank" rel="noopener noreferrer" class="support-cta support-cta--primary">Invite GTA Bot</a>
             <a href="https://discord.gg/fkQ972fmAs" target="_blank" rel="noopener noreferrer" class="support-cta support-cta--secondary">Join Support Server</a>
@@ -363,9 +371,14 @@
   </footer>
 
   <div id="bg-canvas" class="bg-canvas" aria-hidden="true"></div>
-  <script src="js/supabase-config.js"></script>
+  <script src="js/config.js"></script>
+  <script>
+    if (typeof window.__NEON_STATS_API_URL__ === 'undefined' && /^localhost$|^127\.0\.0\.1$/.test((window.location.hostname || ''))) {
+      window.__NEON_STATS_API_URL__ = 'http://127.0.0.1:8765';
+    }
+  </script>
+  <script src="js/stats-config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js"></script>
   <script src="js/stats.js"></script>
   <script src="js/interactive-bg.js"></script>
   <script src="js/main.js"></script>
