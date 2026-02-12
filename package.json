@@ -1,0 +1,20 @@
+{
+  "name": "gta-discord-bot",
+  "version": "1.0.0",
+  "description": "GTA-themed Discord bot with economy, jobs, and interactive features",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "install-python-deps": "pip install -r requirements.txt",
+    "setup": "pip install -r requirements.txt && echo 'Python dependencies installed'",
+    "deploy:api": "vercel --prod"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "keywords": ["discord", "bot", "gta", "economy", "gaming"],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": { "@neondatabase/serverless": "^0.10.0" },
+  "devDependencies": {}
+}
