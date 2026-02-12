@@ -194,14 +194,26 @@
   });
 
   document.addEventListener('DOMContentLoaded', function () {
-    if (document.getElementById('page-stats')) {
-      var observer = new MutationObserver(function () {
-        onStatsPageActive();
-      });
-      observer.observe(document.querySelector('.app-pages') || document.body, { attributes: true, subtree: true, attributeFilter: ['class'] });
-      if (document.getElementById('page-stats').classList.contains('is-active')) {
-        onStatsPageActive();
-      }
+    var statsPage = document.getElementById('page-stats');
+    if (!statsPage) return;
+    var debounceTimer = null;
+    var lastActive = false;
+    function scheduleCheck() {
+      if (debounceTimer) clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(function () {
+        debounceTimer = null;
+        var isActive = statsPage.classList.contains('is-active');
+        if (isActive && !lastActive) onStatsPageActive();
+        lastActive = isActive;
+      }, 80);
+    }
+    var observer = new MutationObserver(function () {
+      scheduleCheck();
+    });
+    observer.observe(document.querySelector('.app-pages') || document.body, { attributes: true, subtree: true, attributeFilter: ['class'] });
+    if (statsPage.classList.contains('is-active')) {
+      lastActive = true;
+      onStatsPageActive();
     }
   });
 })();
