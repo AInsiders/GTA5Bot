@@ -6,6 +6,7 @@
   'use strict';
 
   var USER_KEY = 'gta_dashboard_user';
+  var STATS_CACHE_MS = 5 * 60 * 1000; // 5 minutes – stats fetched once, reused until stale
 
   function getStoredUser() {
     try {
@@ -21,6 +22,15 @@
     try {
       localStorage.setItem(USER_KEY, JSON.stringify(user || {}));
     } catch (e) {}
+  }
+
+  function hasCachedStats(data) {
+    return data && (data.cash !== undefined || (data.counts && typeof data.counts === 'object'));
+  }
+
+  function isStatsCacheFresh(data) {
+    if (!data || !data.stats_fetched_at) return false;
+    return (Date.now() - data.stats_fetched_at) < STATS_CACHE_MS;
   }
 
   function getApiBase() {
@@ -227,6 +237,33 @@
     });
   }
 
+  function refreshDashboardStats() {
+    var auth = typeof window.GTA_AUTH !== 'undefined' ? window.GTA_AUTH : null;
+    var token = auth && auth.getToken ? auth.getToken() : '';
+    if (!token || !auth) return Promise.reject(new Error('Not logged in'));
+    if (window.__GTA_DEBUG__) console.log('[GTA Dashboard] Fetching /api/auth/me and /api/stats/user…');
+    return auth.fetchMe().then(function (me) {
+      if (window.__GTA_DEBUG__) console.log('[GTA Dashboard] /api/auth/me OK', me && me.id ? 'user ' + me.id : 'no id');
+      if (!me || !me.id) return showGuestView();
+      setStoredUser(me);
+      return fetchUserStats().then(function (stats) {
+        if (window.__GTA_DEBUG__) console.log('[GTA Dashboard] /api/stats/user OK', stats && (stats.cash !== undefined) ? 'has stats' : 'no stats');
+        showDashboardStatsError(false);
+        var merged = Object.assign({}, me, stats);
+        merged.stats_fetched_at = Date.now();
+        setStoredUser(merged);
+        showUserView(merged);
+      }).catch(function (err) {
+        if (window.__GTA_DEBUG__) console.warn('[GTA Dashboard] /api/stats/user failed', err && err.message);
+        showUserView(me);
+        showDashboardStatsError(true);
+      });
+    }).catch(function (err) {
+      if (window.__GTA_DEBUG__) console.warn('[GTA Dashboard] /api/auth/me failed', err && err.message);
+      showGuestView();
+    });
+  }
+
   function onDashboardPageActive() {
     var page = document.getElementById('page-dashboard');
     if (!page || !page.classList.contains('is-active')) return;
@@ -242,28 +279,11 @@
     var cached = getStoredUser();
     if (cached) showUserView(cached);
 
-    if (window.__GTA_DEBUG__) console.log('[GTA Dashboard] Fetching /api/auth/me and /api/stats/user…');
-    auth.fetchMe()
-      .then(function (me) {
-        if (window.__GTA_DEBUG__) console.log('[GTA Dashboard] /api/auth/me OK', me && me.id ? 'user ' + me.id : 'no id');
-        if (!me || !me.id) return showGuestView();
-        setStoredUser(me);
-        return fetchUserStats().then(function (stats) {
-          if (window.__GTA_DEBUG__) console.log('[GTA Dashboard] /api/stats/user OK', stats && (stats.cash !== undefined) ? 'has stats' : 'no stats');
-          showDashboardStatsError(false);
-          var merged = Object.assign({}, me, stats);
-          setStoredUser(merged);
-          showUserView(merged);
-        }).catch(function (err) {
-          if (window.__GTA_DEBUG__) console.warn('[GTA Dashboard] /api/stats/user failed', err && err.message);
-          showUserView(me);
-          showDashboardStatsError(true);
-        });
-      })
-      .catch(function (err) {
-        if (window.__GTA_DEBUG__) console.warn('[GTA Dashboard] /api/auth/me failed', err && err.message);
-        showGuestView();
-      });
+    if (hasCachedStats(cached) && isStatsCacheFresh(cached)) {
+      if (window.__GTA_DEBUG__) console.log('[GTA Dashboard] Using cached stats (fresh)');
+      return;
+    }
+    refreshDashboardStats();
   }
 
   document.addEventListener('DOMContentLoaded', function () {
@@ -277,6 +297,15 @@
         if (auth && auth.clearToken) auth.clearToken();
         try { localStorage.removeItem(USER_KEY); } catch (e) {}
         showGuestView();
+      });
+    }
+    var refreshBtn = document.getElementById('dashboard-refresh');
+    if (refreshBtn) {
+      refreshBtn.addEventListener('click', function () {
+        refreshBtn.disabled = true;
+        refreshDashboardStats().finally(function () {
+          refreshBtn.disabled = false;
+        });
       });
     }
 
