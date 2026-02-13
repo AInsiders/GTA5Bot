@@ -4,8 +4,8 @@
  *
  * Redirects back to: `${SITE_URL}?session=<jwt>#dashboard`
  */
-const { parseCookies, serializeCookie } = require('../../../lib/cookies');
-const { signJwt } = require('../../../lib/jwt');
+const { parseCookies, serializeCookie } = require('../../lib/cookies');
+const { signJwt } = require('../../lib/jwt');
 
 function getEnv(name) {
   return (process.env[name] || '').trim();

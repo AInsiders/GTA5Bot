@@ -3,7 +3,7 @@
  * Starts Discord OAuth2 login (authorization code grant).
  */
 const crypto = require('crypto');
-const { serializeCookie } = require('../../../lib/cookies');
+const { serializeCookie } = require('../../lib/cookies');
 
 function buildAuthorizeUrl(params) {
   const url = new URL('https://discord.com/oauth2/authorize');
