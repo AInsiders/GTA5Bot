@@ -24,7 +24,8 @@
   }
 
   function getApiBase() {
-    var raw = (typeof window !== 'undefined' && window.__GTA_API_URL__) ? String(window.__GTA_API_URL__) : '';
+    var raw = (typeof window !== 'undefined' && (window.__GTA_API_URL__ || window.__NEON_STATS_API_URL__))
+      ? String(window.__GTA_API_URL__ || window.__NEON_STATS_API_URL__) : '';
     return raw.replace(/\/$/, '');
   }
 
@@ -79,11 +80,17 @@
     } catch (e) { return '—'; }
   }
 
+  function showDashboardStatsError(show) {
+    var el = document.getElementById('dashboard-stats-error');
+    if (el) el.style.display = show ? 'block' : 'none';
+  }
+
   function showGuestView() {
     var guest = document.getElementById('dashboard-guest');
     var user = document.getElementById('dashboard-user');
     if (guest) guest.style.display = 'block';
     if (user) user.style.display = 'none';
+    showDashboardStatsError(false);
   }
 
   function showUserView(userData) {
@@ -91,7 +98,9 @@
     var user = document.getElementById('dashboard-user');
     if (guest) guest.style.display = 'none';
     if (user) user.style.display = 'block';
-
+    if (userData && (userData.cash !== undefined || (userData.counts && typeof userData.counts === 'object'))) {
+      showDashboardStatsError(false);
+    }
     if (!userData) return;
 
     var username = document.getElementById('dashboard-username');
@@ -238,11 +247,13 @@
         if (!me || !me.id) return showGuestView();
         setStoredUser(me);
         return fetchUserStats().then(function (stats) {
+          showDashboardStatsError(false);
           var merged = Object.assign({}, me, stats);
           setStoredUser(merged);
           showUserView(merged);
-        }).catch(function () {
+        }).catch(function (err) {
           showUserView(me);
+          showDashboardStatsError(true);
         });
       })
       .catch(function () {

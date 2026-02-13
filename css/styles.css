@@ -264,6 +264,11 @@ section {
 }
 .nav-links a:hover { color: var(--gta-green); }
 
+/* Auth nav: Dashboard hidden until logged in; Login visible until then (JS toggles) */
+.nav-item--auth-user {
+  display: none;
+}
+
 .nav-links a.active {
   color: var(--gta-green);
   text-shadow: 0 0 20px var(--gta-green-glow);
@@ -1388,6 +1393,22 @@ section {
 .dashboard-loading {
   color: var(--text-muted);
   font-size: 0.9rem;
+}
+
+.dashboard-stats-error {
+  background: rgba(255, 180, 0, 0.12);
+  border: 1px solid rgba(255, 180, 0, 0.4);
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+}
+
+.dashboard-stats-error code {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
 }
 
 .dashboard-section {

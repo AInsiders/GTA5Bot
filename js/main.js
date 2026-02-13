@@ -59,15 +59,13 @@
   }
 
   function updateNavAuthState(loggedIn) {
-    var guestLinks = document.querySelectorAll('.nav-auth-guest');
-    var userLinks = document.querySelectorAll('.nav-auth-user');
-    guestLinks.forEach(function (el) {
-      el.style.display = loggedIn ? 'none' : '';
-      el.closest('li').style.display = loggedIn ? 'none' : '';
+    var guestItems = document.querySelectorAll('.nav-item--auth-guest');
+    var userItems = document.querySelectorAll('.nav-item--auth-user');
+    guestItems.forEach(function (li) {
+      li.style.display = loggedIn ? 'none' : '';
     });
-    userLinks.forEach(function (el) {
-      el.style.display = loggedIn ? '' : 'none';
-      el.closest('li').style.display = loggedIn ? '' : 'none';
+    userItems.forEach(function (li) {
+      li.style.display = loggedIn ? 'list-item' : 'none';
     });
   }
 
@@ -123,11 +121,15 @@
     showPage('home');
   }
 
-  // Auth-aware nav: hide Login when logged in, hide Dashboard when logged out
+  // Auth-aware nav: show Dashboard when logged in, show Login when logged out
   var auth = typeof window.GTA_AUTH !== 'undefined' ? window.GTA_AUTH : null;
   if (auth && auth.onAuthStateChange && auth.isLoggedIn) {
     auth.onAuthStateChange(updateNavAuthState);
     updateNavAuthState(auth.isLoggedIn());
+    // Refresh again after load (session may be in URL and consumed by auth.js)
+    window.addEventListener('load', function () {
+      updateNavAuthState(auth.isLoggedIn());
+    });
   }
 
   // ---------- Parallax (scroll-based; scoped to active page) ----------

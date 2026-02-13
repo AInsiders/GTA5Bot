@@ -27,8 +27,8 @@
         <li><a href="#" class="nav-link active" data-page="home">Home</a></li>
         <li><a href="#" class="nav-link" data-page="commands">Commands</a></li>
         <li><a href="#" class="nav-link" data-page="stats">Global Stats</a></li>
-        <li><a href="#" class="nav-link nav-auth-guest" data-page="login">Login</a></li>
-        <li><a href="#" class="nav-link nav-auth-user" data-page="dashboard">Dashboard</a></li>
+        <li class="nav-item--auth-guest"><a href="#" class="nav-link nav-auth-guest" data-page="login">Login</a></li>
+        <li class="nav-item--auth-user" style="display: none;"><a href="#" class="nav-link nav-auth-user" data-page="dashboard">Dashboard</a></li>
         <li><a href="#" class="nav-link" data-page="help">Help</a></li>
         <li><a href="#" class="nav-link" data-page="support">Support</a></li>
         <li><a href="#" class="nav-link" data-page="setup">Setup</a></li>
@@ -294,6 +294,7 @@
           </div>
 
           <div id="dashboard-user" class="dashboard-user" style="display: none;">
+            <p id="dashboard-stats-error" class="dashboard-stats-error" style="display: none;" role="alert">Couldn’t load your stats from the server. Check that your Vercel project has <code>DATABASE_URL</code> and <code>AUTH_JWT_SECRET</code> set.</p>
             <!-- Profile header -->
             <header class="dashboard-profile">
               <div class="dashboard-profile-avatar" id="dashboard-avatar">👤</div>
@@ -543,8 +544,9 @@
 
   <script src="js/config.js"></script>
   <script>
-    if (typeof window.__NEON_STATS_API_URL__ === 'undefined' && /^localhost$|^127\.0\.0\.1$/.test((window.location.hostname || ''))) {
-      window.__NEON_STATS_API_URL__ = 'http://127.0.0.1:8765';
+    if (/^localhost$|^127\.0\.0\.1$/.test((window.location.hostname || ''))) {
+      if (typeof window.__NEON_STATS_API_URL__ === 'undefined') window.__NEON_STATS_API_URL__ = 'http://127.0.0.1:8765';
+      if (typeof window.__GTA_API_URL__ === 'undefined') window.__GTA_API_URL__ = 'http://127.0.0.1:8765';
     }
   </script>
   <script src="js/stats-config.js"></script>
