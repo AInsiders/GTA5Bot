@@ -1,7 +1,8 @@
 /**
  * Vercel serverless: GET /api/stats/user
- * Returns the authenticated user's game stats from Neon.
- * Requires Bearer token (JWT). Uses user id from JWT to fetch from users table.
+ * Returns the authenticated user's game stats from Neon (same DB as /api/stats/global).
+ * Connection: DATABASE_URL or NEON_DATABASE_URL (same as global.js).
+ * Requires Bearer token (JWT). Uses user id from JWT to fetch from users table + get_user_activity_stats().
  */
 const crypto = require('crypto');
 const { neon } = require('@neondatabase/serverless');

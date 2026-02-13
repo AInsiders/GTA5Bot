@@ -7,6 +7,7 @@ Endpoints mirror the Python `src.services.stats_api` so the **GitHub Pages** sit
 - `GET /api/stats/health` — check Neon connectivity
 - `GET /api/stats/global` — global stats (users, cash, chips, level, etc.)
 - `GET /api/stats/leaderboard?type=net_worth|cash|chips|level|rep|bank&limit=100` — top 100 leaderboard
+- `GET /api/stats/user` — **dashboard**: logged-in user’s stats from Neon (requires `Authorization: Bearer <JWT>`). Uses same Neon connection as global.
 
 ## Neon: two ways to connect
 
@@ -27,7 +28,13 @@ Get the URL from Neon Console → your project → **Data API** → API URL. The
 
 | Name | Value |
 |------|--------|
-| `DATABASE_URL` | Your Neon PostgreSQL connection string (Neon Console → Connection string, or Neon MCP `get_connection_string`). Do not commit this. |
+| `DATABASE_URL` or `NEON_DATABASE_URL` | Your Neon PostgreSQL connection string (Neon Console → Connection string, or Neon MCP `get_connection_string`). Do not commit this. Used by both global and user stats. |
+
+### Dashboard (user stats) and auth
+
+| Name | Value |
+|------|--------|
+| `AUTH_JWT_SECRET` | Secret used to sign/verify Discord OAuth JWTs. Required for `/api/auth/me` and `/api/stats/user`. Must match the secret used in `/api/auth/discord/callback`. |
 
 ## Deploy to Vercel (one-time)
 

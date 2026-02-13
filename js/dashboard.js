@@ -33,10 +33,16 @@
     return (Date.now() - data.stats_fetched_at) < STATS_CACHE_MS;
   }
 
+  /** Same base URL as Global Stats (GTA_STATS_CONFIG.neonStatsApiUrl) so dashboard and global use the same API. */
+  function getStatsApiBase() {
+    var config = typeof window.GTA_STATS_CONFIG !== 'undefined' ? window.GTA_STATS_CONFIG : {};
+    var url = (config.neonStatsApiUrl || window.__GTA_API_URL__ || window.__NEON_STATS_API_URL__) || '';
+    return String(url).replace(/\/$/, '');
+  }
+
   function getApiBase() {
-    var raw = (typeof window !== 'undefined' && (window.__GTA_API_URL__ || window.__NEON_STATS_API_URL__))
-      ? String(window.__GTA_API_URL__ || window.__NEON_STATS_API_URL__) : '';
-    return raw.replace(/\/$/, '');
+    var url = (window.__GTA_API_URL__ || window.__NEON_STATS_API_URL__) || '';
+    return String(url).replace(/\/$/, '');
   }
 
   function fmt(n) {
@@ -224,7 +230,7 @@
 
   function fetchUserStats() {
     var auth = typeof window.GTA_AUTH !== 'undefined' ? window.GTA_AUTH : null;
-    var base = getApiBase();
+    var base = getStatsApiBase();
     var token = auth && auth.getToken ? auth.getToken() : '';
     if (!base || !token) return Promise.reject(new Error('Missing API or token'));
 
