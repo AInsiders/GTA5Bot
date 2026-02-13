@@ -58,6 +58,8 @@
   }
 
   document.addEventListener('click', function (e) {
+    // Don't intercept login OAuth button - let it navigate to /api/auth/discord/start
+    if (e.target.closest('#login-discord-btn')) return;
     var el = e.target.closest('[data-page]');
     if (!el) return;
     var pageId = el.getAttribute('data-page');
