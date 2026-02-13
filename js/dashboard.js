@@ -242,21 +242,26 @@
     var cached = getStoredUser();
     if (cached) showUserView(cached);
 
+    if (window.__GTA_DEBUG__) console.log('[GTA Dashboard] Fetching /api/auth/me and /api/stats/user…');
     auth.fetchMe()
       .then(function (me) {
+        if (window.__GTA_DEBUG__) console.log('[GTA Dashboard] /api/auth/me OK', me && me.id ? 'user ' + me.id : 'no id');
         if (!me || !me.id) return showGuestView();
         setStoredUser(me);
         return fetchUserStats().then(function (stats) {
+          if (window.__GTA_DEBUG__) console.log('[GTA Dashboard] /api/stats/user OK', stats && (stats.cash !== undefined) ? 'has stats' : 'no stats');
           showDashboardStatsError(false);
           var merged = Object.assign({}, me, stats);
           setStoredUser(merged);
           showUserView(merged);
         }).catch(function (err) {
+          if (window.__GTA_DEBUG__) console.warn('[GTA Dashboard] /api/stats/user failed', err && err.message);
           showUserView(me);
           showDashboardStatsError(true);
         });
       })
-      .catch(function () {
+      .catch(function (err) {
+        if (window.__GTA_DEBUG__) console.warn('[GTA Dashboard] /api/auth/me failed', err && err.message);
         showGuestView();
       });
   }

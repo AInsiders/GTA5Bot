@@ -17,9 +17,11 @@
   function setToken(token) {
     try {
       localStorage.setItem(TOKEN_KEY, token);
+      if (window.__GTA_DEBUG__) console.log('[GTA Auth] Token saved (length ' + (token && token.length) + ')');
       notifyAuthChange(true);
       return true;
     } catch (e) {
+      if (window.__GTA_DEBUG__) console.warn('[GTA Auth] setToken failed', e);
       return false;
     }
   }
@@ -33,6 +35,7 @@
   }
 
   function clearToken() {
+    if (window.__GTA_DEBUG__) console.log('[GTA Auth] Token cleared (logged out)');
     try {
       localStorage.removeItem(TOKEN_KEY);
     } catch (e) {}
@@ -57,6 +60,7 @@
       var session = url.searchParams.get('session');
       if (!session) return;
 
+      if (window.__GTA_DEBUG__) console.log('[GTA Auth] Consuming session from URL');
       setToken(session);
       url.searchParams.delete('session');
       window.history.replaceState({}, document.title, url.toString());
@@ -86,6 +90,7 @@
       method: 'GET',
       headers: { 'Authorization': 'Bearer ' + token }
     }).then(function (r) {
+      if (window.__GTA_DEBUG__) console.log('[GTA Auth] /api/auth/me status', r.status, r.statusText);
       if (r.status === 401) {
         clearToken();
       }
@@ -107,5 +112,11 @@
 
   consumeSessionFromUrl();
   wireLoginButton();
+
+  if (window.__GTA_DEBUG__) {
+    var base = getApiBase();
+    var hasToken = !!(getToken() || '').trim();
+    console.log('[GTA Auth] Ready. API base:', base || '(none)', '| Token:', hasToken ? 'yes' : 'no');
+  }
 })();
 

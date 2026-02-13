@@ -125,10 +125,14 @@
   var auth = typeof window.GTA_AUTH !== 'undefined' ? window.GTA_AUTH : null;
   if (auth && auth.onAuthStateChange && auth.isLoggedIn) {
     auth.onAuthStateChange(updateNavAuthState);
-    updateNavAuthState(auth.isLoggedIn());
+    var initialLoggedIn = auth.isLoggedIn();
+    if (window.__GTA_DEBUG__) console.log('[GTA Nav] Initial isLoggedIn:', initialLoggedIn);
+    updateNavAuthState(initialLoggedIn);
     // Refresh again after load (session may be in URL and consumed by auth.js)
     window.addEventListener('load', function () {
-      updateNavAuthState(auth.isLoggedIn());
+      var afterLoad = auth.isLoggedIn();
+      if (window.__GTA_DEBUG__) console.log('[GTA Nav] After load isLoggedIn:', afterLoad);
+      updateNavAuthState(afterLoad);
     });
   }
 

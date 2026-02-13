@@ -548,6 +548,7 @@
       if (typeof window.__NEON_STATS_API_URL__ === 'undefined') window.__NEON_STATS_API_URL__ = 'http://127.0.0.1:8765';
       if (typeof window.__GTA_API_URL__ === 'undefined') window.__GTA_API_URL__ = 'http://127.0.0.1:8765';
     }
+    window.__GTA_DEBUG__ = /[?&]debug=1/.test(window.location.search) || (typeof localStorage !== 'undefined' && localStorage.getItem('gta_debug') === '1');
   </script>
   <script src="js/stats-config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>

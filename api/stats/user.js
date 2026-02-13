@@ -49,20 +49,9 @@ function verifyJwt(token, secret) {
   return payload;
 }
 
-function allowedOrigin() {
-  const site = (process.env.SITE_URL || '').trim();
-  if (!site) return '*';
-  try {
-    return new URL(site).origin;
-  } catch (e) {
-    return '*';
-  }
-}
-
 function cors(res) {
-  const origin = allowedOrigin();
-  res.setHeader('Access-Control-Allow-Origin', origin);
-  res.setHeader('Vary', 'Origin');
+  // Match global stats: allow any origin so dashboard works from GitHub Pages or Vercel
+  res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   res.setHeader('Content-Type', 'application/json');

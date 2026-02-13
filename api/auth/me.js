@@ -50,20 +50,8 @@ function verifyJwt(token, secret) {
   return payload;
 }
 
-function allowedOrigin() {
-  const site = (process.env.SITE_URL || '').trim();
-  if (!site) return '*';
-  try {
-    return new URL(site).origin;
-  } catch (e) {
-    return '*';
-  }
-}
-
 function cors(req, res) {
-  const origin = allowedOrigin();
-  res.setHeader('Access-Control-Allow-Origin', origin);
-  res.setHeader('Vary', 'Origin');
+  res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   res.setHeader('Content-Type', 'application/json');
