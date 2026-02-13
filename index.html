@@ -43,9 +43,47 @@
     <section id="page-home" class="page page--full is-active" data-page="home">
       <header class="hero" id="hero">
         <div class="hero-bg"></div>
+        <div class="hero-stars" data-parallax-speed="0.01" aria-hidden="true"></div>
+        <svg class="hero-skyline hero-skyline--base" data-parallax-speed="0.08" viewBox="0 0 1200 260" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+          <path d="M0,260 L0,200 L40,200 L40,160 L70,160 L70,210 L120,210 L120,150 L170,150 L170,190 L220,190 L220,130 L290,130 L290,205 L340,205 L340,170 L380,170 L380,215 L430,215 L430,155 L500,155 L500,225 L560,225 L560,145 L630,145 L630,205 L680,205 L680,165 L720,165 L720,220 L770,220 L770,140 L840,140 L840,205 L890,205 L890,175 L940,175 L940,215 L990,215 L990,150 L1060,150 L1060,210 L1120,210 L1120,180 L1160,180 L1160,230 L1200,230 L1200,260 Z"></path>
+        </svg>
+        <svg class="hero-skyline hero-skyline--lights" data-parallax-speed="0.08" viewBox="0 0 1200 260" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+          <g>
+            <rect x="55" y="180" width="10" height="16" rx="1"></rect>
+            <rect x="85" y="190" width="8" height="14" rx="1"></rect>
+            <rect x="135" y="175" width="10" height="18" rx="1"></rect>
+            <rect x="155" y="165" width="7" height="14" rx="1"></rect>
+            <rect x="205" y="170" width="9" height="16" rx="1"></rect>
+            <rect x="245" y="150" width="10" height="18" rx="1"></rect>
+            <rect x="270" y="155" width="8" height="14" rx="1"></rect>
+            <rect x="320" y="185" width="9" height="16" rx="1"></rect>
+            <rect x="360" y="190" width="8" height="14" rx="1"></rect>
+            <rect x="410" y="175" width="10" height="18" rx="1"></rect>
+            <rect x="455" y="170" width="9" height="16" rx="1"></rect>
+            <rect x="485" y="185" width="8" height="14" rx="1"></rect>
+            <rect x="535" y="190" width="9" height="16" rx="1"></rect>
+            <rect x="590" y="165" width="10" height="18" rx="1"></rect>
+            <rect x="610" y="175" width="8" height="14" rx="1"></rect>
+            <rect x="655" y="185" width="9" height="16" rx="1"></rect>
+            <rect x="700" y="190" width="8" height="14" rx="1"></rect>
+            <rect x="745" y="170" width="10" height="18" rx="1"></rect>
+            <rect x="815" y="165" width="9" height="16" rx="1"></rect>
+            <rect x="865" y="185" width="10" height="18" rx="1"></rect>
+            <rect x="915" y="190" width="8" height="14" rx="1"></rect>
+            <rect x="965" y="175" width="10" height="18" rx="1"></rect>
+            <rect x="1015" y="170" width="9" height="16" rx="1"></rect>
+            <rect x="1080" y="185" width="10" height="18" rx="1"></rect>
+            <rect x="1115" y="195" width="8" height="14" rx="1"></rect>
+          </g>
+        </svg>
+        <svg class="hero-foreground" data-parallax-speed="0.14" viewBox="0 0 1200 260" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+          <path d="M0,260 L0,220 C120,205 210,240 320,220 C430,200 520,245 640,222 C760,200 860,250 980,222 C1080,200 1140,230 1200,220 L1200,260 Z"></path>
+        </svg>
+        <div class="hero-vignette" aria-hidden="true"></div>
         <div class="hero-bg-layer" data-parallax-speed="0.15"></div>
         <div class="hero-parallax hero-parallax--top" data-parallax-speed="0.06"></div>
         <div class="hero-parallax hero-parallax--bottom" data-parallax-speed="0.1"></div>
+        <div class="hero-emblem" data-parallax-speed="0.04" role="img" aria-hidden="true"></div>
         <div class="hero-grid" id="hero-grid"></div>
         <div class="hero-content reveal">
           <div class="hero-badge">LOS SANTOS</div>
@@ -63,14 +101,46 @@
           <h2 class="page-title">What You Can Do</h2>
           <p class="page-subtitle">Run jobs, heists, and businesses; bank your cash; climb the leaderboards.</p>
           <ul class="features-grid features-grid--3d">
-            <li class="feature-card"><span class="feature-icon">💼</span> Jobs (Robbery, Hitman, Racing, Car Theft)</li>
-            <li class="feature-card"><span class="feature-icon">🎭</span> Heists (Quick & Major)</li>
-            <li class="feature-card"><span class="feature-icon">🏢</span> Businesses (MC, Nightclub, Specialty)</li>
-            <li class="feature-card"><span class="feature-icon">📦</span> Warehouses (Cargo & Vehicles)</li>
-            <li class="feature-card"><span class="feature-icon">🎰</span> Casino & Mini-Games</li>
-            <li class="feature-card"><span class="feature-icon">🏦</span> Banking & Protection</li>
-            <li class="feature-card"><span class="feature-icon">🔫</span> Stealing (PvP)</li>
-            <li class="feature-card"><span class="feature-icon">📊</span> Leveling & Leaderboards</li>
+            <li class="feature-card">
+              <span class="feature-icon">💼</span>
+              <span class="feature-title">Jobs (Robbery, Hitman, Racing, Car Theft)</span>
+              <span class="feature-desc">Run criminal jobs to earn cash and build reputation. Cooldowns and payouts vary by job type.</span>
+            </li>
+            <li class="feature-card">
+              <span class="feature-icon">🎭</span>
+              <span class="feature-title">Heists (Quick & Major)</span>
+              <span class="feature-desc">Quick heists for fast payouts or major heists for big scores. Team up or go solo from Heist Central.</span>
+            </li>
+            <li class="feature-card">
+              <span class="feature-icon">🏢</span>
+              <span class="feature-title">Businesses (MC, Nightclub, Specialty)</span>
+              <span class="feature-desc">Own and run MCs, nightclubs, and specialty businesses. Restock, deliver, and earn passive income.</span>
+            </li>
+            <li class="feature-card">
+              <span class="feature-icon">📦</span>
+              <span class="feature-title">Warehouses (Cargo & Vehicles)</span>
+              <span class="feature-desc">Source and sell cargo or steal and store vehicles. Manage warehouses for steady criminal income.</span>
+            </li>
+            <li class="feature-card">
+              <span class="feature-icon">🎰</span>
+              <span class="feature-title">Casino & Mini-Games</span>
+              <span class="feature-desc">Play blackjack, slots, and mini-games. Earn chips at the Cashier's Cage; risk it for big wins.</span>
+            </li>
+            <li class="feature-card">
+              <span class="feature-icon">🏦</span>
+              <span class="feature-title">Banking & Protection</span>
+              <span class="feature-desc">Deposit cash to protect it from theft. Daily rewards and streak bonuses keep your empire growing.</span>
+            </li>
+            <li class="feature-card">
+              <span class="feature-icon">🔫</span>
+              <span class="feature-title">Stealing (PvP)</span>
+              <span class="feature-desc">Mug or steal from other players' wallets. Bank money is safe; only carried cash can be taken.</span>
+            </li>
+            <li class="feature-card">
+              <span class="feature-icon">📊</span>
+              <span class="feature-title">Leveling & Leaderboards</span>
+              <span class="feature-desc">Earn XP from activities, rank up your criminal title, and compete on global leaderboards.</span>
+            </li>
           </ul>
         </div>
       </div>
@@ -132,7 +202,7 @@
               <h3 class="commands-category-title">Other</h3>
               <div class="command-cards">
                 <div class="command-card"><code>/leaderboard</code><span>Player leaderboards</span></div>
-                <div class="command-card"><code>/setlevelingchannel</code><span>Set level-up channel (Server Owner only)</span></div>
+                <div class="command-card"><code>/setlevelingchannel</code><span>Set channel for automatic level-up announcements (Administrators)</span></div>
                 <div class="command-card"><code>/reset-tos</code><span>Admin TOS reset</span></div>
               </div>
             </div>
@@ -239,11 +309,11 @@
           <div class="login-card">
             <div class="login-icon" aria-hidden="true">🎮</div>
             <p class="login-desc">Sign in with Discord to access your personal dashboard, track your progress, and see your criminal empire stats.</p>
-            <a href="https://discord.com/oauth2/authorize?client_id=1430646453033767013" id="login-discord-btn" class="login-btn" target="_blank" rel="noopener noreferrer">
+            <a href="#" id="login-discord-btn" class="login-btn">
               <span class="login-btn-icon">discord</span>
               Connect with Discord
             </a>
-            <p class="login-note"><strong>Coming soon:</strong> Full dashboard authentication is being set up. Use <code>/profile</code> in Discord for now.</p>
+            <p class="login-note">This uses Discord OAuth2 to link your account for the website dashboard. (Your bot progress still lives in Discord and the Neon database.)</p>
           </div>
         </div>
       </div>
@@ -481,6 +551,7 @@
   <script src="js/stats-config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script src="js/stats.js"></script>
+  <script src="js/auth.js"></script>
   <script src="js/dashboard.js"></script>
   <script src="js/hero-interactive.js"></script>
   <script src="js/main.js"></script>

@@ -7,6 +7,7 @@
   var pageContainer = document.querySelector('.app-pages');
   var pagesInner = document.getElementById('app-pages-inner');
   var currentIndex = 0;
+  var prefersReducedMotion = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 
   function indexOfPage(pageId) {
     var i = PAGE_ORDER.indexOf(pageId);
@@ -98,6 +99,12 @@
   // ---------- Parallax (scroll-based; scoped to active page) ----------
   var ticking = false;
 
+  function clamp01(v) {
+    if (v < 0) return 0;
+    if (v > 1) return 1;
+    return v;
+  }
+
   function getScrollTop() {
     var activePage = document.querySelector('.page.is-active');
     if (!activePage) return 0;
@@ -116,11 +123,31 @@
     var scrollY = getScrollTop();
     var root = getParallaxRoot();
     var layers = root.querySelectorAll('[data-parallax-speed]');
-    layers.forEach(function (el) {
-      var speed = parseFloat(el.getAttribute('data-parallax-speed')) || 0.2;
-      var y = scrollY * speed;
-      el.style.transform = 'translate3d(0, ' + y + 'px, 0)';
-    });
+
+    if (prefersReducedMotion) {
+      layers.forEach(function (el) {
+        el.style.transform = 'translate3d(0, 0px, 0)';
+      });
+    } else {
+      layers.forEach(function (el) {
+        var speed = parseFloat(el.getAttribute('data-parallax-speed')) || 0.2;
+        var y = scrollY * speed;
+        el.style.transform = 'translate3d(0, ' + y + 'px, 0)';
+      });
+    }
+
+    // Cinematic hero day -> night (Home only; scroll-driven)
+    var hero = root.querySelector('#hero');
+    if (hero) {
+      if (prefersReducedMotion) {
+        hero.style.setProperty('--hero-night', '0');
+      } else {
+        var h = hero.offsetHeight || window.innerHeight || 1;
+        var t = clamp01(scrollY / (h * 0.9));
+        hero.style.setProperty('--hero-night', t.toFixed(4));
+      }
+    }
+
     ticking = false;
   }
 

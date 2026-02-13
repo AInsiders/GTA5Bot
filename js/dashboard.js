@@ -5,25 +5,22 @@
 (function () {
   'use strict';
 
-  var AUTH_KEY = 'gta_dashboard_user';
-
-  function isLoggedIn() {
-    try {
-      var data = localStorage.getItem(AUTH_KEY);
-      return !!data;
-    } catch (e) {
-      return false;
-    }
-  }
+  var USER_KEY = 'gta_dashboard_user';
 
   function getStoredUser() {
     try {
-      var raw = localStorage.getItem(AUTH_KEY);
+      var raw = localStorage.getItem(USER_KEY);
       if (!raw) return null;
       return JSON.parse(raw);
     } catch (e) {
       return null;
     }
+  }
+
+  function setStoredUser(user) {
+    try {
+      localStorage.setItem(USER_KEY, JSON.stringify(user || {}));
+    } catch (e) {}
   }
 
   function showGuestView() {
@@ -75,12 +72,26 @@
     var page = document.getElementById('page-dashboard');
     if (!page || !page.classList.contains('is-active')) return;
 
-    var user = getStoredUser();
-    if (user) {
-      showUserView(user);
-    } else {
-      showGuestView();
-    }
+    // Optimistic render from cached user, then refresh via /api/auth/me if token exists.
+    var cached = getStoredUser();
+    if (cached) showUserView(cached);
+    else showGuestView();
+
+    var auth = typeof window.GTA_AUTH !== 'undefined' ? window.GTA_AUTH : null;
+    if (!auth || !auth.getToken || !auth.fetchMe) return;
+
+    var token = auth.getToken();
+    if (!token) return;
+
+    auth.fetchMe()
+      .then(function (me) {
+        if (!me || !me.id) return;
+        setStoredUser(me);
+        showUserView(me);
+      })
+      .catch(function () {
+        showGuestView();
+      });
   }
 
   document.addEventListener('DOMContentLoaded', function () {

@@ -262,17 +262,151 @@ section {
   text-align: center;
   position: relative;
   padding: 6rem 1.5rem 4rem;
+  overflow: hidden;
+  --hero-night: 0;
 }
 
 .hero-bg {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(180deg, rgba(10,14,10,0.85) 0%, rgba(10,14,10,0.97) 100%),
-    linear-gradient(135deg, var(--bg-dark) 0%, #0f1a0f 40%, #141f14 70%, var(--bg-dark) 100%);
-  background-attachment: fixed;
+    radial-gradient(ellipse 80% 55% at 50% 14%, rgba(255, 215, 0, 0.24) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 55% at 20% 20%, rgba(255, 80, 120, 0.12) 0%, transparent 60%),
+    linear-gradient(180deg, rgba(80, 160, 255, 0.18) 0%, rgba(255, 140, 90, 0.08) 55%, rgba(10, 14, 10, 0.92) 100%),
+    linear-gradient(135deg, #0b1f34 0%, #103047 40%, #1c3b3e 70%, var(--bg-dark) 100%);
   background-size: cover;
   z-index: -2;
+}
+
+.hero-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 75% 55% at 55% 18%, rgba(120, 90, 255, 0.16) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 45% at 25% 22%, rgba(0, 255, 136, 0.08) 0%, transparent 60%),
+    linear-gradient(180deg, rgba(8, 10, 24, 0.88) 0%, rgba(18, 10, 36, 0.78) 55%, rgba(10, 14, 10, 0.98) 100%),
+    linear-gradient(135deg, #070b16 0%, #0b1326 45%, #120a28 75%, #070b16 100%);
+  opacity: var(--hero-night, 0);
+  transition: opacity 0.12s linear;
+  pointer-events: none;
+}
+
+.hero-bg::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  background:
+    radial-gradient(ellipse 70% 55% at 50% 35%, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.55) 70%, rgba(0, 0, 0, 0.8) 100%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.55) 100%);
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+.hero-stars {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  opacity: calc(var(--hero-night, 0) * 0.65);
+  background-image:
+    radial-gradient(circle at 15% 20%, rgba(255, 255, 255, 0.85) 0 1px, transparent 2px),
+    radial-gradient(circle at 35% 12%, rgba(255, 255, 255, 0.7) 0 1px, transparent 2px),
+    radial-gradient(circle at 55% 28%, rgba(255, 255, 255, 0.75) 0 1px, transparent 2px),
+    radial-gradient(circle at 72% 18%, rgba(255, 255, 255, 0.75) 0 1px, transparent 2px),
+    radial-gradient(circle at 82% 35%, rgba(255, 255, 255, 0.6) 0 1px, transparent 2px),
+    radial-gradient(circle at 22% 42%, rgba(255, 255, 255, 0.55) 0 1px, transparent 2px),
+    radial-gradient(circle at 48% 46%, rgba(255, 255, 255, 0.6) 0 1px, transparent 2px),
+    radial-gradient(circle at 66% 52%, rgba(255, 255, 255, 0.5) 0 1px, transparent 2px);
+  filter: blur(0.2px);
+}
+
+.hero-orb {
+  position: absolute;
+  top: 10%;
+  right: 10%;
+  width: min(240px, 32vw);
+  height: min(240px, 32vw);
+  pointer-events: none;
+  z-index: -1;
+  transform: translateZ(0);
+}
+
+.hero-orb::before,
+.hero-orb::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  filter: blur(0.2px);
+}
+
+.hero-orb::before {
+  /* Sun (day) */
+  background:
+    radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0.12) 18%, transparent 40%),
+    radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.45) 0%, rgba(255, 120, 70, 0.14) 45%, transparent 70%);
+  opacity: calc(1 - var(--hero-night, 0));
+}
+
+.hero-orb::after {
+  /* Moon (night) */
+  background:
+    radial-gradient(circle at 45% 40%, rgba(235, 240, 255, 0.55) 0%, rgba(235, 240, 255, 0.12) 26%, transparent 55%),
+    radial-gradient(circle at 50% 50%, rgba(120, 150, 255, 0.18) 0%, rgba(80, 110, 255, 0.08) 50%, transparent 75%);
+  opacity: var(--hero-night, 0);
+}
+
+.hero-skyline {
+  position: absolute;
+  left: -4%;
+  right: -4%;
+  bottom: -2%;
+  height: 28vh;
+  min-height: 180px;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.hero-skyline--base {
+  fill: rgba(0, 0, 0, 0.58);
+  filter: drop-shadow(0 -12px 24px rgba(0, 0, 0, 0.4));
+  opacity: 0.92;
+}
+
+.hero-skyline--lights {
+  fill: rgba(255, 215, 0, 0.85);
+  opacity: calc(var(--hero-night, 0) * 0.95);
+  filter:
+    drop-shadow(0 0 16px rgba(255, 215, 0, 0.18))
+    drop-shadow(0 0 26px rgba(0, 255, 136, 0.12));
+  mix-blend-mode: screen;
+}
+
+.hero-foreground {
+  position: absolute;
+  left: -6%;
+  right: -6%;
+  bottom: -6%;
+  height: 22vh;
+  min-height: 150px;
+  pointer-events: none;
+  z-index: -1;
+  fill: rgba(0, 0, 0, 0.75);
+  opacity: 0.95;
+  filter: drop-shadow(0 -10px 30px rgba(0, 0, 0, 0.55));
+}
+
+.hero-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse 80% 65% at 50% 30%, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.35) 62%, rgba(0, 0, 0, 0.72) 100%),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.02) 0 1px, rgba(0, 0, 0, 0) 1px 3px);
+  opacity: 0.75;
+  mix-blend-mode: multiply;
 }
 
 .hero-bg-layer {
@@ -302,6 +436,16 @@ section {
   background:
     radial-gradient(circle at 15% 85%, rgba(255, 215, 0, 0.15) 0%, transparent 55%),
     radial-gradient(circle at 85% 90%, rgba(0, 255, 0, 0.2) 0%, transparent 55%);
+}
+
+.hero-emblem {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background: url('../assets/gta5_emblem.svg') center / contain no-repeat;
+  opacity: 0.14;
+  mix-blend-mode: screen;
 }
 
 .hero-grid {
@@ -436,7 +580,7 @@ section {
   justify-content: flex-start;
   text-align: center;
   padding: 1.5rem 1rem;
-  min-height: 140px;
+  min-height: 200px;
   aspect-ratio: 3 / 4;
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
@@ -460,8 +604,22 @@ section {
 .feature-icon {
   font-size: 2.25rem;
   flex-shrink: 0;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
   line-height: 1;
+}
+
+.feature-title {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  flex-shrink: 0;
+}
+
+.feature-desc {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--text-muted, rgba(255, 255, 255, 0.65));
+  line-height: 1.35;
+  margin-top: auto;
 }
 
 /* ========== Help Section & Accordions ========== */

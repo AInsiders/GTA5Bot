@@ -4,6 +4,7 @@
   var hero = document.getElementById('hero');
   var grid = document.getElementById('hero-grid');
   if (!hero || !grid) return;
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
   var mouseX = 0.5;
   var mouseY = 0.5;
