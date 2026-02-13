@@ -222,8 +222,8 @@
       method: 'GET',
       headers: { 'Authorization': 'Bearer ' + token }
     }).then(function (r) {
-      if (r.status === 401 && auth && auth.clearToken) auth.clearToken();
-      return r.ok ? r.json() : Promise.reject(new Error('Stats fetch failed'));
+      if (!r.ok) return Promise.reject(new Error('Stats fetch failed'));
+      return r.json();
     });
   }
 

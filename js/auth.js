@@ -9,7 +9,8 @@
   var TOKEN_KEY = 'gta_auth_token';
 
   function getApiBase() {
-    var raw = (typeof window !== 'undefined' && window.__GTA_API_URL__) ? String(window.__GTA_API_URL__) : '';
+    var raw = (typeof window !== 'undefined' && (window.__GTA_API_URL__ || window.__NEON_STATS_API_URL__))
+      ? String(window.__GTA_API_URL__ || window.__NEON_STATS_API_URL__) : '';
     return raw.replace(/\/$/, '');
   }
 
