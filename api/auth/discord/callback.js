@@ -4,8 +4,8 @@
  *
  * Redirects back to: `${SITE_URL}?session=<jwt>#dashboard`
  */
-const { parseCookies, serializeCookie } = require('../../lib/cookies');
-const { signJwt } = require('../../lib/jwt');
+const { parseCookies, serializeCookie } = require('../../../lib/cookies');
+const { signJwt } = require('../../../lib/jwt');
 
 function getEnv(name) {
   return (process.env[name] || '').trim();
@@ -62,96 +62,113 @@ async function fetchDiscordUser(accessToken) {
   }
 }
 
-module.exports = async function handler(req, res) {
-  if (req.method !== 'GET') {
-    res.statusCode = 405;
-    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-    return res.end('Method not allowed');
-  }
-
-  const host = (req.headers && req.headers.host) ? String(req.headers.host) : 'localhost';
-  const url = new URL(req.url, 'https://' + host);
-  const code = url.searchParams.get('code') || '';
-  const state = url.searchParams.get('state') || '';
-  const error = url.searchParams.get('error') || '';
-
-  const siteUrl = safeSiteUrl();
-  const clientId = getEnv('DISCORD_CLIENT_ID');
-  const clientSecret = getEnv('DISCORD_CLIENT_SECRET');
-  const redirectUri = getEnv('DISCORD_REDIRECT_URI');
-  const jwtSecret = getEnv('AUTH_JWT_SECRET');
-
-  if (!siteUrl) {
-    res.statusCode = 500;
-    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-    return res.end('Missing SITE_URL env var');
-  }
-  if (!clientId || !clientSecret || !redirectUri) {
-    res.statusCode = 500;
-    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-    return res.end('Missing Discord OAuth env vars');
-  }
-  if (!jwtSecret) {
-    res.statusCode = 500;
-    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-    return res.end('Missing AUTH_JWT_SECRET env var');
-  }
-
-  if (error) {
-    res.statusCode = 302;
-    res.setHeader('Location', siteUrl + '#login');
-    return res.end();
-  }
-
-  if (!code || !state) {
-    res.statusCode = 400;
-    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-    return res.end('Missing code/state');
-  }
-
-  const cookies = parseCookies(req);
-  const expectedState = cookies.gta_oauth_state || '';
-  if (!expectedState || expectedState !== state) {
-    res.statusCode = 400;
-    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-    return res.end('Invalid state');
-  }
-
+function getQueryParam(req, name) {
   try {
-    const tokenData = await exchangeCodeForToken(code, redirectUri, clientId, clientSecret);
-    const accessToken = tokenData && tokenData.access_token;
-    if (!accessToken) throw new Error('Missing access_token');
-
-    const user = await fetchDiscordUser(accessToken);
-    const now = Math.floor(Date.now() / 1000);
-    const sessionToken = signJwt({
-      sub: user.id,
-      id: user.id,
-      username: user.username,
-      global_name: user.global_name,
-      avatar: user.avatar,
-      iat: now,
-      exp: now + (7 * 24 * 60 * 60), // 7 days
-    }, jwtSecret);
-
-    const clearState = serializeCookie('gta_oauth_state', 'deleted', {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'Lax',
-      path: '/api/auth/discord',
-      maxAge: 0,
-    });
-    res.setHeader('Set-Cookie', clearState);
-
-    const redirect = new URL(siteUrl);
-    redirect.searchParams.set('session', sessionToken);
-    redirect.hash = 'dashboard';
-    res.statusCode = 302;
-    res.setHeader('Location', redirect.toString());
-    return res.end();
+    const host = (req.headers && (req.headers.host || req.headers.Host)) ? String(req.headers.host || req.headers.Host) : 'localhost';
+    const raw = req.url || (req.path || '') + (req.rawQuery ? '?' + req.rawQuery : '');
+    const u = new URL(raw.startsWith('http') ? raw : 'https://' + host + (raw.startsWith('/') ? raw : '/' + raw));
+    return u.searchParams.get(name) || '';
   } catch (e) {
+    if (req.query && typeof req.query[name] === 'string') return req.query[name];
+    return '';
+  }
+}
+
+module.exports = async function handler(req, res) {
+  try {
+    const method = (req.method || req.httpMethod || 'GET').toUpperCase();
+    if (method !== 'GET') {
+      res.statusCode = 405;
+      res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+      return res.end('Method not allowed');
+    }
+
+    const code = getQueryParam(req, 'code');
+    const state = getQueryParam(req, 'state');
+    const error = getQueryParam(req, 'error');
+
+    const siteUrl = safeSiteUrl();
+    const clientId = getEnv('DISCORD_CLIENT_ID');
+    const clientSecret = getEnv('DISCORD_CLIENT_SECRET');
+    const redirectUri = getEnv('DISCORD_REDIRECT_URI');
+    const jwtSecret = getEnv('AUTH_JWT_SECRET');
+
+    if (!siteUrl) {
+      res.statusCode = 500;
+      res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+      return res.end('Missing SITE_URL env var');
+    }
+    if (!clientId || !clientSecret || !redirectUri) {
+      res.statusCode = 500;
+      res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+      return res.end('Missing Discord OAuth env vars');
+    }
+    if (!jwtSecret) {
+      res.statusCode = 500;
+      res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+      return res.end('Missing AUTH_JWT_SECRET env var');
+    }
+
+    if (error) {
+      res.statusCode = 302;
+      res.setHeader('Location', siteUrl + '#login');
+      return res.end();
+    }
+
+    if (!code || !state) {
+      res.statusCode = 400;
+      res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+      return res.end('Missing code/state');
+    }
+
+    const cookies = parseCookies(req);
+    const expectedState = cookies.gta_oauth_state || '';
+    if (!expectedState || expectedState !== state) {
+      res.statusCode = 400;
+      res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+      return res.end('Invalid state');
+    }
+
+    try {
+      const tokenData = await exchangeCodeForToken(code, redirectUri, clientId, clientSecret);
+      const accessToken = tokenData && tokenData.access_token;
+      if (!accessToken) throw new Error('Missing access_token');
+
+      const user = await fetchDiscordUser(accessToken);
+      const now = Math.floor(Date.now() / 1000);
+      const sessionToken = signJwt({
+        sub: user.id,
+        id: user.id,
+        username: user.username,
+        global_name: user.global_name,
+        avatar: user.avatar,
+        iat: now,
+        exp: now + (7 * 24 * 60 * 60), // 7 days
+      }, jwtSecret);
+
+      const clearState = serializeCookie('gta_oauth_state', 'deleted', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'Lax',
+        path: '/api/auth/discord',
+        maxAge: 0,
+      });
+      res.setHeader('Set-Cookie', clearState);
+
+      const redirect = new URL(siteUrl);
+      redirect.searchParams.set('session', sessionToken);
+      redirect.hash = 'dashboard';
+      res.statusCode = 302;
+      res.setHeader('Location', redirect.toString());
+      return res.end();
+    } catch (e) {
+      res.statusCode = 500;
+      res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+      return res.end(e && e.message ? e.message : 'OAuth failed');
+    }
+  } catch (err) {
     res.statusCode = 500;
     res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-    return res.end(e && e.message ? e.message : 'OAuth failed');
+    return res.end(err && err.message ? err.message : 'Server error');
   }
 };

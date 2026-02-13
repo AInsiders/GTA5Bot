@@ -3,7 +3,7 @@
  * Starts Discord OAuth2 login (authorization code grant).
  */
 const crypto = require('crypto');
-const { serializeCookie } = require('../../lib/cookies');
+const { serializeCookie } = require('../../../lib/cookies');
 
 function buildAuthorizeUrl(params) {
   const url = new URL('https://discord.com/oauth2/authorize');
@@ -12,15 +12,20 @@ function buildAuthorizeUrl(params) {
 }
 
 module.exports = async function handler(req, res) {
-  if (req.method !== 'GET') {
-    return res.status(405).json({ error: 'Method not allowed' });
+  const method = (req.method || req.httpMethod || 'GET').toUpperCase();
+  if (method !== 'GET') {
+    res.statusCode = 405;
+    res.setHeader('Content-Type', 'application/json');
+    return res.end(JSON.stringify({ error: 'Method not allowed' }));
   }
 
   const clientId = process.env.DISCORD_CLIENT_ID;
   const redirectUri = process.env.DISCORD_REDIRECT_URI;
 
   if (!clientId || !redirectUri) {
-    return res.status(500).json({ error: 'Missing DISCORD_CLIENT_ID or DISCORD_REDIRECT_URI' });
+    res.statusCode = 500;
+    res.setHeader('Content-Type', 'application/json');
+    return res.end(JSON.stringify({ error: 'Missing DISCORD_CLIENT_ID or DISCORD_REDIRECT_URI' }));
   }
 
   const state = crypto.randomBytes(16).toString('hex');

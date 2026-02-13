@@ -29,32 +29,40 @@ function getBearerToken(req) {
   return m ? m[1].trim() : '';
 }
 
+function sendJson(res, statusCode, data) {
+  res.statusCode = statusCode;
+  res.setHeader('Content-Type', 'application/json');
+  res.end(JSON.stringify(data));
+}
+
 module.exports = async function handler(req, res) {
-  if (req.method === 'OPTIONS') {
+  const method = (req.method || req.httpMethod || 'GET').toUpperCase();
+  if (method === 'OPTIONS') {
     cors(req, res);
-    return res.status(204).end();
+    res.statusCode = 204;
+    return res.end();
   }
-  if (req.method !== 'GET') {
+  if (method !== 'GET') {
     cors(req, res);
-    return res.status(405).json({ error: 'Method not allowed' });
+    return sendJson(res, 405, { error: 'Method not allowed' });
   }
 
   const secret = (process.env.AUTH_JWT_SECRET || '').trim();
   if (!secret) {
     cors(req, res);
-    return res.status(500).json({ error: 'Missing AUTH_JWT_SECRET env var' });
+    return sendJson(res, 500, { error: 'Missing AUTH_JWT_SECRET env var' });
   }
 
   const token = getBearerToken(req);
   if (!token) {
     cors(req, res);
-    return res.status(401).json({ error: 'Missing bearer token' });
+    return sendJson(res, 401, { error: 'Missing bearer token' });
   }
 
   try {
     const payload = verifyJwt(token, secret);
     cors(req, res);
-    return res.status(200).json({
+    return sendJson(res, 200, {
       id: payload.id || payload.sub,
       username: payload.username || '',
       global_name: payload.global_name || '',
@@ -63,6 +71,6 @@ module.exports = async function handler(req, res) {
     });
   } catch (e) {
     cors(req, res);
-    return res.status(401).json({ error: e && e.message ? e.message : 'Invalid token' });
+    return sendJson(res, 401, { error: (e && e.message) ? e.message : 'Invalid token' });
   }
 };

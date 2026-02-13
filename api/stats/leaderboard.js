@@ -53,18 +53,42 @@ async function fetchViaDriver(connectionString, lbType, limit) {
   }));
 }
 
-module.exports = async function handler(req, res) {
-  if (req.method === 'OPTIONS') {
-    cors(res);
-    return res.status(204).end();
+function sendJson(res, statusCode, data) {
+  res.statusCode = statusCode;
+  res.setHeader('Content-Type', 'application/json');
+  res.end(JSON.stringify(data));
+}
+
+function getQuery(req) {
+  try {
+    const q = req.query;
+    if (q && typeof q === 'object') return q;
+    const url = req.url || '';
+    const i = url.indexOf('?');
+    if (i < 0) return {};
+    const params = {};
+    new URLSearchParams(url.slice(i)).forEach((v, k) => { params[k] = v; });
+    return params;
+  } catch (e) {
+    return {};
   }
-  if (req.method !== 'GET') {
+}
+
+module.exports = async function handler(req, res) {
+  const method = (req.method || req.httpMethod || 'GET').toUpperCase();
+  if (method === 'OPTIONS') {
     cors(res);
-    return res.status(405).json({ error: 'Method not allowed' });
+    res.statusCode = 204;
+    return res.end();
+  }
+  if (method !== 'GET') {
+    cors(res);
+    return sendJson(res, 405, { error: 'Method not allowed' });
   }
 
-  const type = (req.query && req.query.type) || 'net_worth';
-  const limit = Math.min(parseInt(req.query && req.query.limit, 10) || 100, 100);
+  const query = getQuery(req);
+  const type = query.type || 'net_worth';
+  const limit = Math.min(parseInt(query.limit, 10) || 100, 100);
   const lbType = type === 'notorious' ? 'rep' : type;
 
   const rest = getRestConfig();
@@ -72,7 +96,7 @@ module.exports = async function handler(req, res) {
 
   if (!rest && !connectionString) {
     cors(res);
-    return res.status(500).json({ error: 'Set NEON_REST_URL + NEON_API_KEY (or NEON_JWT), or DATABASE_URL' });
+    return sendJson(res, 500, { error: 'Set NEON_REST_URL + NEON_API_KEY (or NEON_JWT), or DATABASE_URL' });
   }
 
   try {
@@ -80,9 +104,9 @@ module.exports = async function handler(req, res) {
       ? await fetchViaRest(rest.base, rest.key, lbType, limit)
       : await fetchViaDriver(connectionString, lbType, limit);
     cors(res);
-    return res.status(200).json(out);
+    return sendJson(res, 200, out);
   } catch (e) {
     cors(res);
-    return res.status(500).json({ error: e.message || 'Database error' });
+    return sendJson(res, 500, { error: (e && e.message) || 'Database error' });
   }
 };

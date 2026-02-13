@@ -52,14 +52,22 @@ async function fetchViaDriver(connectionString) {
   return raw && typeof raw === 'object' ? raw : (typeof raw === 'string' ? JSON.parse(raw) : {});
 }
 
+function sendJson(res, statusCode, data) {
+  res.statusCode = statusCode;
+  res.setHeader('Content-Type', 'application/json');
+  res.end(JSON.stringify(data));
+}
+
 module.exports = async function handler(req, res) {
-  if (req.method === 'OPTIONS') {
+  const method = (req.method || req.httpMethod || 'GET').toUpperCase();
+  if (method === 'OPTIONS') {
     cors(res);
-    return res.status(204).end();
+    res.statusCode = 204;
+    return res.end();
   }
-  if (req.method !== 'GET') {
+  if (method !== 'GET') {
     cors(res);
-    return res.status(405).json({ error: 'Method not allowed' });
+    return sendJson(res, 405, { error: 'Method not allowed' });
   }
 
   const rest = getRestConfig();
@@ -67,7 +75,7 @@ module.exports = async function handler(req, res) {
 
   if (!rest && !connectionString) {
     cors(res);
-    return res.status(500).json({ error: 'Set NEON_REST_URL + NEON_API_KEY (or NEON_JWT), or DATABASE_URL' });
+    return sendJson(res, 500, { error: 'Set NEON_REST_URL + NEON_API_KEY (or NEON_JWT), or DATABASE_URL' });
   }
 
   try {
@@ -75,9 +83,9 @@ module.exports = async function handler(req, res) {
       ? await fetchViaRest(rest.base, rest.key)
       : await fetchViaDriver(connectionString);
     cors(res);
-    return res.status(200).json(data || {});
+    return sendJson(res, 200, data || {});
   } catch (e) {
     cors(res);
-    return res.status(500).json({ error: e.message || 'Database error' });
+    return sendJson(res, 500, { error: (e && e.message) || 'Database error' });
   }
 };
