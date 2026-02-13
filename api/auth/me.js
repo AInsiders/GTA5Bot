@@ -1,8 +1,54 @@
 /**
  * Vercel serverless: GET /api/auth/me
- * Verifies a session JWT and returns Discord user identity for the dashboard.
+ * Verifies a session JWT and returns Discord user identity.
  */
-const { verifyJwt } = require('../../lib/jwt');
+const crypto = require('crypto');
+
+function base64urlEncode(input) {
+  const buf = Buffer.isBuffer(input) ? input : Buffer.from(String(input), 'utf8');
+  return buf.toString('base64').replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
+}
+
+function base64urlDecodeToString(input) {
+  const str = String(input || '');
+  const pad = str.length % 4 === 0 ? '' : '='.repeat(4 - (str.length % 4));
+  const b64 = (str + pad).replace(/-/g, '+').replace(/_/g, '/');
+  return Buffer.from(b64, 'base64').toString('utf8');
+}
+
+function timingSafeEqualStr(a, b) {
+  const ba = Buffer.from(String(a), 'utf8');
+  const bb = Buffer.from(String(b), 'utf8');
+  if (ba.length !== bb.length) return false;
+  return crypto.timingSafeEqual(ba, bb);
+}
+
+function verifyJwt(token, secret) {
+  if (!token) throw new Error('Missing token');
+  if (!secret) throw new Error('Missing JWT secret');
+  const parts = String(token).split('.');
+  if (parts.length !== 3) throw new Error('Invalid token format');
+
+  const signingInput = parts[0] + '.' + parts[1];
+  const expectedSig = base64urlEncode(
+    crypto.createHmac('sha256', String(secret)).update(signingInput).digest()
+  );
+  if (!timingSafeEqualStr(parts[2], expectedSig)) throw new Error('Invalid token signature');
+
+  const payloadJson = base64urlDecodeToString(parts[1]);
+  let payload;
+  try {
+    payload = JSON.parse(payloadJson);
+  } catch (e) {
+    throw new Error('Invalid token payload');
+  }
+
+  const now = Math.floor(Date.now() / 1000);
+  if (payload && typeof payload.exp !== 'undefined' && Number(payload.exp) <= now) {
+    throw new Error('Token expired');
+  }
+  return payload;
+}
 
 function allowedOrigin() {
   const site = (process.env.SITE_URL || '').trim();
@@ -36,30 +82,30 @@ function sendJson(res, statusCode, data) {
 }
 
 module.exports = async function handler(req, res) {
-  const method = (req.method || req.httpMethod || 'GET').toUpperCase();
-  if (method === 'OPTIONS') {
-    cors(req, res);
-    res.statusCode = 204;
-    return res.end();
-  }
-  if (method !== 'GET') {
-    cors(req, res);
-    return sendJson(res, 405, { error: 'Method not allowed' });
-  }
-
-  const secret = (process.env.AUTH_JWT_SECRET || '').trim();
-  if (!secret) {
-    cors(req, res);
-    return sendJson(res, 500, { error: 'Missing AUTH_JWT_SECRET env var' });
-  }
-
-  const token = getBearerToken(req);
-  if (!token) {
-    cors(req, res);
-    return sendJson(res, 401, { error: 'Missing bearer token' });
-  }
-
   try {
+    const method = (req.method || req.httpMethod || 'GET').toUpperCase();
+    if (method === 'OPTIONS') {
+      cors(req, res);
+      res.statusCode = 204;
+      return res.end();
+    }
+    if (method !== 'GET') {
+      cors(req, res);
+      return sendJson(res, 405, { error: 'Method not allowed' });
+    }
+
+    const secret = (process.env.AUTH_JWT_SECRET || '').trim();
+    if (!secret) {
+      cors(req, res);
+      return sendJson(res, 500, { error: 'Missing AUTH_JWT_SECRET env var' });
+    }
+
+    const token = getBearerToken(req);
+    if (!token) {
+      cors(req, res);
+      return sendJson(res, 401, { error: 'Missing bearer token' });
+    }
+
     const payload = verifyJwt(token, secret);
     cors(req, res);
     return sendJson(res, 200, {
