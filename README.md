@@ -1,91 +1,21 @@
-# 🎮 GTA Bot — Los Santos in Discord
+# GTA Bot Website
 
-> **Build your criminal empire. All in text.** Jobs, heists, businesses, the casino, and the streets—experience GTA-style gameplay without leaving Discord.
+Static site for the GTA Discord Bot. Works on **GitHub Pages** and locally. Stats are powered by **Neon** (verified via Neon MCP: `get_website_global_stats()` and `get_leaderboard_top()`).
 
-[![Discord](https://img.shields.io/badge/Discord-Invite%20Bot-5865F2?style=for-the-badge&logo=discord)](https://discord.com/oauth2/authorize?client_id=1430646453033767013)
-[![Support Server](https://img.shields.io/badge/Support-Join%20Server-5865F2?style=for-the-badge&logo=discord)](https://discord.gg/fkQ972fmAs)
+## Deploy to GitHub Pages
 
----
+1. **Option A – Use the `Website` folder as the source**
+   - In your repo, go to **Settings → Pages**.
+   - Under "Build and deployment", set **Source** to "Deploy from a branch".
+   - Choose the branch (e.g. `main`) and set the folder to **`/ (root)`**.
+   - Put the *contents* of this `Website` folder (e.g. `index.html`, `css/`, `js/`, `privacy.html`, `terms.html`) in the **root** of that branch, or in a **`docs`** folder and select **`/docs`** as the source.
 
-## 🎯 For Users — What Is This?
+2. **Option B – Project site in a subfolder**
+   - Keep the site in a subfolder (e.g. `Website/`) and set Pages to deploy from that branch with root or `docs` as above. Then the site URL will be `https://username.github.io/repo-name/` and the base path is handled automatically.
 
-**GTA Bot** brings the world of Los Santos to your Discord server. Earn cash, climb the ranks, run heists, own businesses, and compete on global leaderboards—all through slash commands and interactive menus. No images, no voice: just pure text-based criminal roleplay.
+3. **Stats (Neon API)**
+   - **Local:** From project root run `python -m src.services.stats_api`; the site auto-uses `http://127.0.0.1:8765`.
+   - **GitHub Pages:** Deploy the repo’s **`api/`** folder to [Vercel](https://vercel.com): connect the repo, set **Root Directory** to the repo root (so Vercel finds `api/stats/global.js` and `api/stats/leaderboard.js`), add env **`DATABASE_URL`** with your Neon connection string (from [Neon Console](https://console.neon.tech) or MCP), then in `js/config.js` set `window.__NEON_STATS_API_URL__ = 'https://your-vercel-project.vercel.app';`.
+   - The Stats page then shows live graphs and leaderboards from Neon. The Python stats API is optional for local use only.
 
-- **💰 Dual economy** — Wallet (stealable) + Bank (protected). Play smart.
-- **💼 Jobs & heists** — Robbery, hitman, racing, car theft, major heists.
-- **🏢 Businesses** — MC businesses, nightclubs, warehouses, specialty shops.
-- **🎰 Casino** — Slots, blackjack, poker, and more. Buy chips, gamble, cash out.
-- **🔫 PvP stealing** — Target other players’ wallets. Protect yours by banking.
-- **📊 Leveling & RP** — Reputation, ranks, and leaderboards. Climb to the top.
-
-**Getting started:** Invite the bot → run `/start` → accept terms → run `/menu`. You’re in.
-
----
-
-## 📋 Discord Bot Description (Short)
-
-**Copy for bot listing / about section (~200 chars):**
-
-> Los Santos in Discord. Jobs, heists, businesses, casino & the streets. Build your criminal empire in text. Wallet + bank, leveling, leaderboards. `/start` to play.
-
----
-
-## 🛠 For Developers
-
-### Tech Stack
-
-| Layer        | Tech                                   |
-|-------------|-----------------------------------------|
-| **Bot**     | Python 3.10+, discord.py, slash commands |
-| **Database**| Neon (PostgreSQL), psycopg2             |
-| **Website** | Static HTML/JS, Vercel serverless API   |
-
-### Quick Setup
-
-1. **Clone** the repo.
-2. **Config:** Copy `config.json.template` → `config.json`:
-   - `discord_token` — from [Discord Developer Portal](https://discord.com/developers/applications)
-   - `neon.database_url` — from [Neon Console](https://console.neon.tech)
-3. **Install:**
-   ```bash
-   pip install -r requirements.txt
-   ```
-4. **Run:**
-   ```bash
-   python run_bot.py
-   ```
-
-### Project Structure
-
-```
-├── src/
-│   ├── bot.py           # Main bot, events, tasks
-│   ├── core/            # storage, economy, neon_client
-│   └── cogs/            # Commands (jobs, heist, casino, etc.)
-├── sql/                 # Schema, migrations, functions
-├── Website/             # Landing page, stats, leaderboards
-├── api/                 # Vercel serverless stats API
-└── config.json          # Token, Neon URL (not committed)
-```
-
-### Database (Neon)
-
-- **Tables:** `users`, `businesses`, `banking_transactions`, etc.
-- **Functions:** `get_website_global_stats`, `get_leaderboard_top`, `record_banking_transaction`, and more.
-- **Migrations:** `sql/migrations/` — idempotent, safe to re-run.
-
-### Website Stats
-
-- **Local:** `python -m src.services.stats_api` → site uses `http://127.0.0.1:8765`
-- **Production:** Deploy `api/` to Vercel, set `DATABASE_URL`, point `js/config.js` at the Vercel URL.
-- Live stats: total users, economy totals, top 100 leaderboards by net worth, cash, chips, level, rep, bank.
-
----
-
-## 📜 License & Support
-
-- **License:** MIT  
-- **Support:** [Discord Server](https://discord.gg/fkQ972fmAs)  
-- **Website:** See `Website/` folder for landing page and stats.
-
-*For entertainment only. No real money involved.*
+Paths work on both user sites (`username.github.io`) and project sites (`username.github.io/repo-name/`) via the in-page base path script.

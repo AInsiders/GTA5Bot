@@ -333,41 +333,6 @@ section {
   transform: translateY(0);
 }
 
-.hero-dust {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: -1;
-  background-image:
-    radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.16) 0, transparent 35px),
-    radial-gradient(circle at 80% 30%, rgba(255, 255, 255, 0.12) 0, transparent 40px),
-    radial-gradient(circle at 40% 80%, rgba(255, 255, 255, 0.14) 0, transparent 35px);
-  background-size: 260px 260px, 320px 320px, 280px 280px;
-  mix-blend-mode: screen;
-}
-
-.hero-dust--fast {
-  opacity: 0.55;
-  animation: hero-dust-float 38s linear infinite;
-}
-
-.hero-dust--slow {
-  opacity: 0.3;
-  animation: hero-dust-float 70s linear infinite reverse;
-}
-
-@keyframes hero-dust-float {
-  0% {
-    background-position: 0 0, 0 40px, -40px -20px;
-  }
-  50% {
-    background-position: 60px 80px, -80px 0, 40px -60px;
-  }
-  100% {
-    background-position: 120px 160px, -160px 40px, 80px -120px;
-  }
-}
-
 .hero-badge {
   display: inline-block;
   font-family: 'JetBrains Mono', monospace;
