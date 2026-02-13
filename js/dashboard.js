@@ -299,15 +299,21 @@
         showGuestView();
       });
     }
-    var refreshBtn = document.getElementById('dashboard-refresh');
-    if (refreshBtn) {
-      refreshBtn.addEventListener('click', function () {
-        refreshBtn.disabled = true;
+    function wireRefreshButtons() {
+      var refreshBtn = document.getElementById('dashboard-refresh');
+      var refreshFromError = document.getElementById('dashboard-refresh-from-error');
+      function doRefresh() {
+        if (refreshBtn) refreshBtn.disabled = true;
+        if (refreshFromError) refreshFromError.disabled = true;
         refreshDashboardStats().finally(function () {
-          refreshBtn.disabled = false;
+          if (refreshBtn) refreshBtn.disabled = false;
+          if (refreshFromError) refreshFromError.disabled = false;
         });
-      });
+      }
+      if (refreshBtn) refreshBtn.addEventListener('click', doRefresh);
+      if (refreshFromError) refreshFromError.addEventListener('click', doRefresh);
     }
+    wireRefreshButtons();
 
     var debounceTimer = null;
     var lastActive = false;

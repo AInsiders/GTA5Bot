@@ -1176,20 +1176,21 @@ section {
 .dashboard-logout {
   align-self: flex-start;
   margin-top: 0.5rem;
-  padding: 0.35rem 0.75rem;
-  font-size: 0.85rem;
-  background: transparent;
-  border: 1px solid var(--border-subtle);
-  color: var(--text-muted);
+  padding: 0.5rem 1rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  background: rgba(192, 57, 43, 0.2);
+  border: 2px solid var(--gta-red, #e74c3c);
+  color: #ff6b6b;
   border-radius: 6px;
   cursor: pointer;
   transition: color 0.2s, border-color 0.2s, background 0.2s;
 }
 
 .dashboard-logout:hover {
-  color: var(--text-primary);
-  border-color: var(--gta-red, #c0392b);
-  background: rgba(192, 57, 43, 0.1);
+  color: #fff;
+  border-color: var(--gta-red, #e74c3c);
+  background: rgba(192, 57, 43, 0.45);
 }
 
 .dashboard-refresh {
@@ -1434,6 +1435,28 @@ section {
   background: rgba(0, 0, 0, 0.2);
   padding: 0.1em 0.35em;
   border-radius: 4px;
+}
+
+.dashboard-stats-error-refresh {
+  margin-left: 0.35rem;
+  padding: 0.25rem 0.6rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--gta-green);
+  background: rgba(0, 255, 136, 0.15);
+  border: 1px solid var(--gta-green);
+  border-radius: 4px;
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+.dashboard-stats-error-refresh:hover:not(:disabled) {
+  background: rgba(0, 255, 136, 0.25);
+}
+
+.dashboard-stats-error-refresh:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
 .dashboard-section {

@@ -294,7 +294,7 @@
           </div>
 
           <div id="dashboard-user" class="dashboard-user" style="display: none;">
-            <p id="dashboard-stats-error" class="dashboard-stats-error" style="display: none;" role="alert">Couldn’t load your stats from the server. Check that your Vercel project has <code>DATABASE_URL</code> and <code>AUTH_JWT_SECRET</code> set.</p>
+            <p id="dashboard-stats-error" class="dashboard-stats-error" style="display: none;" role="alert"><span id="dashboard-stats-error-text">Couldn’t load your stats.</span> <button type="button" class="dashboard-stats-error-refresh" id="dashboard-refresh-from-error">Refresh stats</button> If you haven’t used the bot in Discord yet, run <code>/start</code> there first.</p>
             <!-- Profile header -->
             <header class="dashboard-profile">
               <div class="dashboard-profile-avatar" id="dashboard-avatar">👤</div>
