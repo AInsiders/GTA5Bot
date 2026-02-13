@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  var PAGE_ORDER = ['home', 'commands', 'stats', 'help', 'support'];
+  var PAGE_ORDER = ['home', 'commands', 'stats', 'login', 'dashboard', 'help', 'support', 'setup'];
   var pages = document.querySelectorAll('.page');
   var navLinks = document.querySelectorAll('.nav-link, .nav-brand[data-page]');
   var pageContainer = document.querySelector('.app-pages');
@@ -16,7 +16,8 @@
   function setStripPosition(index) {
     if (!pagesInner) return;
     currentIndex = index;
-    var tx = -index * 20;
+    var pct = 100 / Math.max(1, PAGE_ORDER.length);
+    var tx = -index * pct;
     pagesInner.style.transform = 'translateX(' + tx + '%)';
   }
 
@@ -55,17 +56,17 @@
     showPage(PAGE_ORDER[currentIndex + 1]);
   }
 
-  navLinks.forEach(function (link) {
-    link.addEventListener('click', function (e) {
-      var pageId = link.getAttribute('data-page');
-      if (!pageId) return;
-      e.preventDefault();
-      showPage(pageId);
-      var navLinksEl = document.querySelector('.nav-links');
-      if (navLinksEl && navLinksEl.classList.contains('is-open')) {
-        navLinksEl.classList.remove('is-open');
-      }
-    });
+  document.addEventListener('click', function (e) {
+    var el = e.target.closest('[data-page]');
+    if (!el) return;
+    var pageId = el.getAttribute('data-page');
+    if (!pageId || !document.getElementById('page-' + pageId)) return;
+    e.preventDefault();
+    showPage(pageId);
+    var navLinksEl = document.querySelector('.nav-links');
+    if (navLinksEl && navLinksEl.classList.contains('is-open')) {
+      navLinksEl.classList.remove('is-open');
+    }
   });
 
   var touchStartX = 0;

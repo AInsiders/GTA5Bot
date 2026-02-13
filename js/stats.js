@@ -4,6 +4,8 @@
   var config = typeof window.GTA_STATS_CONFIG !== 'undefined' ? window.GTA_STATS_CONFIG : {};
   var chartInstance = null;
   var chartDonutInstance = null;
+  var statsRefreshInterval = null;
+  var REFRESH_MS = 30000; // 30 seconds
 
   function getNeonApiBase() {
     return (config.neonStatsApiUrl || '').replace(/\/$/, '');
@@ -11,6 +13,13 @@
 
   function hasConfig() {
     return getNeonApiBase().length > 0;
+  }
+
+  function escapeHtml(text) {
+    if (text == null) return '';
+    var div = document.createElement('div');
+    div.textContent = String(text);
+    return div.innerHTML;
   }
 
   function formatCash(n) {
@@ -64,14 +73,14 @@
     requestAnimationFrame(step);
   }
 
-  function fetchGlobalStats() {
+  function fetchGlobalStats(silent) {
     if (!hasConfig()) {
       setConnectionStatus('', '');
       showConnectMsg(true);
       return;
     }
     showConnectMsg(false);
-    setConnectionStatus('checking', 'Checking connection…');
+    if (!silent) setConnectionStatus('checking', 'Checking connection…');
     var base = getNeonApiBase();
     fetch(base + '/api/stats/global')
       .then(function (r) {
@@ -247,18 +256,21 @@
     rows.forEach(function (r) {
       var tr = document.createElement('tr');
       var val = r.value != null ? (valueLabel === 'cash' ? '$' + formatCash(r.value) : formatCash(r.value)) : '—';
-      tr.innerHTML = '<td>' + (r.rank || '—') + '</td><td><code>' + (r.user_id || '').slice(0, 20) + '</code></td><td>' + val + '</td>';
+      var displayName = r.display || r.username || (r.user_id || '').slice(0, 20);
+      tr.innerHTML = '<td>' + (r.rank || '—') + '</td><td><span class="leaderboard-name">' + escapeHtml(displayName) + '</span></td><td>' + val + '</td>';
       tbody.appendChild(tr);
     });
   }
 
-  function fetchLeaderboard(type) {
+  function fetchLeaderboard(type, silent) {
     var loading = document.getElementById('leaderboard-loading');
     var wrap = document.getElementById('leaderboard-table-wrap');
     var errEl = document.getElementById('leaderboard-error');
-    if (loading) loading.style.display = 'block';
-    if (wrap) wrap.style.display = 'none';
-    if (errEl) errEl.style.display = 'none';
+    if (!silent) {
+      if (loading) loading.style.display = 'block';
+      if (wrap) wrap.style.display = 'none';
+      if (errEl) errEl.style.display = 'none';
+    }
 
     if (!hasConfig()) {
       if (loading) loading.style.display = 'none';
@@ -284,6 +296,20 @@
     fetchGlobalStats();
     var currentTab = document.querySelector('.leaderboard-tab.active');
     fetchLeaderboard(currentTab ? currentTab.getAttribute('data-board') : 'net_worth');
+    if (statsRefreshInterval) clearInterval(statsRefreshInterval);
+    statsRefreshInterval = setInterval(function () {
+      if (!page.classList.contains('is-active')) return;
+      fetchGlobalStats(true);
+      var tab = document.querySelector('.leaderboard-tab.active');
+      fetchLeaderboard(tab ? tab.getAttribute('data-board') : 'net_worth', true);
+    }, REFRESH_MS);
+  }
+
+  function onStatsPageInactive() {
+    if (statsRefreshInterval) {
+      clearInterval(statsRefreshInterval);
+      statsRefreshInterval = null;
+    }
   }
 
   document.querySelectorAll('.leaderboard-tab').forEach(function (tab) {
@@ -305,6 +331,7 @@
         debounceTimer = null;
         var isActive = statsPage.classList.contains('is-active');
         if (isActive && !lastActive) onStatsPageActive();
+        if (!isActive && lastActive) onStatsPageInactive();
         lastActive = isActive;
       }, 80);
     }

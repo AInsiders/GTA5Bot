@@ -101,7 +101,7 @@ section {
 .app-pages-inner {
   display: flex;
   flex-direction: row;
-  width: 500%;
+  width: 800%;
   min-height: 100vh;
   transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
   will-change: transform;
@@ -114,8 +114,8 @@ section {
 }
 
 .app-pages-inner .page {
-  width: 20%;
-  min-width: 20%;
+  width: 12.5%;
+  min-width: 12.5%;
   flex-shrink: 0;
   min-height: 100vh;
   position: relative;
@@ -1104,6 +1104,205 @@ section {
   100% {
     background-position: 240px 120px, -240px -120px;
   }
+}
+
+/* ========== Login Page ========== */
+.login-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 2.5rem;
+  max-width: 420px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.login-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  line-height: 1;
+}
+
+.login-desc {
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.login-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: #5865f2;
+  color: #fff;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.login-btn:hover {
+  background: #4752c4;
+  color: #fff;
+  transform: scale(1.02);
+}
+
+.login-btn-icon {
+  font-size: 1.25rem;
+  opacity: 0.9;
+}
+
+.login-note {
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.login-note code {
+  background: rgba(0, 255, 136, 0.15);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  color: var(--gta-green);
+}
+
+/* ========== Dashboard Page ========== */
+.dashboard-guest-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 2.5rem;
+  max-width: 420px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.dashboard-guest-card p {
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.dashboard-cta {
+  display: inline-block;
+  background: #5865f2;
+  color: #fff;
+  padding: 0.875rem 1.75rem;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.dashboard-cta:hover {
+  background: #4752c4;
+  color: #fff;
+  transform: scale(1.02);
+}
+
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.dashboard-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--bg-card-elevated);
+  border: 2px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  background-size: cover;
+  background-position: center;
+}
+
+.dashboard-username {
+  color: var(--gta-green);
+  margin-bottom: 0.25rem;
+}
+
+.dashboard-user-id {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.dashboard-cards {
+  margin-bottom: 1.5rem;
+}
+
+.dashboard-source {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.dashboard-source code {
+  background: rgba(0, 255, 136, 0.15);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  color: var(--gta-green);
+}
+
+/* ========== Coming Soon (Setup) Page ========== */
+.coming-soon-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 2.5rem;
+  max-width: 480px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.coming-soon-badge {
+  display: inline-block;
+  background: rgba(255, 215, 0, 0.2);
+  color: var(--gta-gold);
+  padding: 0.35rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.coming-soon-desc {
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.coming-soon-features {
+  list-style: none;
+  text-align: left;
+  max-width: 280px;
+  margin: 0 auto;
+}
+
+.coming-soon-features li {
+  padding: 0.5rem 0;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border-subtle);
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.coming-soon-features li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--gta-green);
+  font-weight: 600;
+}
+
+.coming-soon-features li:last-child {
+  border-bottom: none;
 }
 
 /* ========== Scroll reveal utility ========== */
