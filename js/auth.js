@@ -16,6 +16,7 @@
   function setToken(token) {
     try {
       localStorage.setItem(TOKEN_KEY, token);
+      notifyAuthChange(true);
       return true;
     } catch (e) {
       return false;
@@ -34,6 +35,19 @@
     try {
       localStorage.removeItem(TOKEN_KEY);
     } catch (e) {}
+    notifyAuthChange(false);
+  }
+
+  function isLoggedIn() {
+    return !!(getToken() || '').trim();
+  }
+
+  var authChangeListeners = [];
+  function onAuthStateChange(fn) {
+    if (typeof fn === 'function') authChangeListeners.push(fn);
+  }
+  function notifyAuthChange(loggedIn) {
+    authChangeListeners.forEach(function (fn) { fn(loggedIn); });
   }
 
   function consumeSessionFromUrl() {
@@ -80,12 +94,14 @@
     });
   }
 
-  // expose minimal helpers for dashboard.js
+  // expose minimal helpers for dashboard.js and nav
   window.GTA_AUTH = {
     getApiBase: getApiBase,
     getToken: getToken,
     clearToken: clearToken,
-    fetchMe: fetchMe
+    fetchMe: fetchMe,
+    isLoggedIn: isLoggedIn,
+    onAuthStateChange: onAuthStateChange
   };
 
   consumeSessionFromUrl();

@@ -791,7 +791,8 @@ section {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
 }
 .stat-card--cash .stat-value,
-.stat-card--earned .stat-value { color: var(--money-green); }
+.stat-card--earned .stat-value,
+.stat-card--networth .stat-value { color: var(--money-green); }
 .stat-card--users .stat-value { color: var(--gta-green); }
 .stat-card--chips .stat-value { color: var(--gta-gold); }
 .stat-card--level .stat-value { color: var(--cash-gold); }
@@ -1149,9 +1150,16 @@ section {
   background-position: center;
 }
 
+.dashboard-user-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
 .dashboard-username {
   color: var(--gta-green);
-  margin-bottom: 0.25rem;
+  margin-bottom: 0;
 }
 
 .dashboard-user-id {
@@ -1160,8 +1168,252 @@ section {
   font-family: 'JetBrains Mono', monospace;
 }
 
+.dashboard-logout {
+  align-self: flex-start;
+  margin-top: 0.5rem;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.85rem;
+  background: transparent;
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+
+.dashboard-logout:hover {
+  color: var(--text-primary);
+  border-color: var(--gta-red, #c0392b);
+  background: rgba(192, 57, 43, 0.1);
+}
+
+/* ========== Dashboard (Professional Layout) ========== */
+.dashboard-container {
+  padding: 2rem;
+}
+
+.dashboard-profile {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.5rem 1.75rem;
+  background: linear-gradient(135deg, rgba(26, 36, 26, 0.95) 0%, rgba(18, 26, 18, 0.98) 100%);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  margin-bottom: 2rem;
+}
+
+.dashboard-profile-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--bg-card-elevated);
+  border: 2px solid var(--gta-green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.25rem;
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
+}
+
+.dashboard-profile-meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.dashboard-profile-name {
+  font-size: 1.5rem;
+  color: var(--gta-green);
+  margin-bottom: 0.25rem;
+}
+
+.dashboard-profile-id {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.dashboard-profile-meta-line {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-top: 0.35rem;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.dashboard-panel {
+  background: linear-gradient(145deg, rgba(26, 36, 26, 0.92) 0%, rgba(20, 28, 20, 0.96) 100%);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: transform var(--transition-ui), box-shadow var(--transition-ui);
+}
+
+.dashboard-panel:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.dashboard-panel--full {
+  grid-column: 1 / -1;
+}
+
+.dashboard-panel-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--gta-green);
+  padding: 1rem 1.25rem;
+  margin: 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.dashboard-panel-icon {
+  font-size: 1.1rem;
+}
+
+.dashboard-panel-content {
+  padding: 1rem 1.25rem;
+}
+
+.dashboard-stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(0, 255, 136, 0.06);
+}
+
+.dashboard-stat-row:last-child,
+.dashboard-stat-row.dashboard-stat-row--total {
+  border-bottom: none;
+}
+
+.dashboard-stat-row--total {
+  padding-top: 0.75rem;
+  margin-top: 0.25rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.dashboard-stat-label {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.dashboard-stat-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-light);
+}
+
+.dashboard-stat-value--cash {
+  color: var(--money-green);
+}
+
+.dashboard-activity-breakdown {
+  padding: 1rem 1.25rem;
+  min-height: 80px;
+}
+
+.dashboard-activity-breakdown .dashboard-activity-group {
+  margin-bottom: 1.25rem;
+}
+
+.dashboard-activity-breakdown .dashboard-activity-group:last-child {
+  margin-bottom: 0;
+}
+
+.dashboard-activity-group-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--gta-gold-dim);
+  margin-bottom: 0.5rem;
+  text-transform: capitalize;
+}
+
+.dashboard-activity-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.dashboard-activity-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.75rem;
+  background: rgba(0, 255, 136, 0.08);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  font-size: 0.85rem;
+}
+
+.dashboard-activity-chip-name {
+  color: var(--text-muted);
+}
+
+.dashboard-activity-chip-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  color: var(--gta-green);
+}
+
+.dashboard-footer-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  padding: 1rem 0;
+  margin-bottom: 1rem;
+}
+
+.dashboard-footer-item {
+  font-size: 0.9rem;
+}
+
+.dashboard-footer-label {
+  color: var(--text-muted);
+  margin-right: 0.5rem;
+}
+
+.dashboard-loading {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.dashboard-section {
+  margin-bottom: 2rem;
+}
+
+.dashboard-section-title {
+  font-size: 1.1rem;
+  color: var(--gta-green);
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.dashboard-playing-since {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+}
+
+.stat-value--text {
+  font-size: 1rem;
+  font-family: inherit;
+}
+
 .dashboard-cards {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .dashboard-source {

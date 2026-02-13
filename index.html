@@ -26,9 +26,9 @@
       <ul class="nav-links">
         <li><a href="#" class="nav-link active" data-page="home">Home</a></li>
         <li><a href="#" class="nav-link" data-page="commands">Commands</a></li>
-        <li><a href="#" class="nav-link" data-page="stats">Stats</a></li>
-        <li><a href="#" class="nav-link" data-page="login">Login</a></li>
-        <li><a href="#" class="nav-link" data-page="dashboard">Dashboard</a></li>
+        <li><a href="#" class="nav-link" data-page="stats">Global Stats</a></li>
+        <li><a href="#" class="nav-link nav-auth-guest" data-page="login">Login</a></li>
+        <li><a href="#" class="nav-link nav-auth-user" data-page="dashboard">Dashboard</a></li>
         <li><a href="#" class="nav-link" data-page="help">Help</a></li>
         <li><a href="#" class="nav-link" data-page="support">Support</a></li>
         <li><a href="#" class="nav-link" data-page="setup">Setup</a></li>
@@ -175,7 +175,7 @@
       <div class="page-bg page-bg--money" data-parallax-speed="0.03"></div>
       <div class="page-scroll">
         <div class="container container--wide reveal">
-          <h2 class="page-title">Live Statistics</h2>
+          <h2 class="page-title">Global Stats</h2>
           <p class="page-subtitle">Economy totals and top 100 leaderboards. Data comes from the GTA Bot Neon database.</p>
           <p class="stats-connection" id="stats-connection" aria-live="polite"></p>
 
@@ -282,9 +282,9 @@
       <div class="page-bg page-bg--grid" data-parallax-speed="0.06"></div>
       <div class="page-bg page-bg--money" data-parallax-speed="0.03"></div>
       <div class="page-scroll">
-        <div class="container container--wide reveal">
+        <div class="container container--wide reveal dashboard-container">
           <h2 class="page-title">Your Dashboard</h2>
-          <p class="page-subtitle">Your GTA Bot stats and progress at a glance.</p>
+          <p class="page-subtitle">Track your criminal empire — stats, activity, and progress.</p>
 
           <div id="dashboard-guest" class="dashboard-guest">
             <div class="dashboard-guest-card">
@@ -294,36 +294,77 @@
           </div>
 
           <div id="dashboard-user" class="dashboard-user" style="display: none;">
-            <div class="dashboard-header">
-              <div class="dashboard-avatar" id="dashboard-avatar">👤</div>
-              <div class="dashboard-user-info">
-                <h3 class="dashboard-username" id="dashboard-username">Player</h3>
-                <p class="dashboard-user-id" id="dashboard-user-id"></p>
+            <!-- Profile header -->
+            <header class="dashboard-profile">
+              <div class="dashboard-profile-avatar" id="dashboard-avatar">👤</div>
+              <div class="dashboard-profile-meta">
+                <h3 class="dashboard-profile-name" id="dashboard-username">Player</h3>
+                <p class="dashboard-profile-id" id="dashboard-user-id"></p>
+                <p class="dashboard-profile-meta-line" id="dash-playing-since"></p>
+                <button type="button" class="dashboard-logout" id="dashboard-logout">Log out</button>
               </div>
+            </header>
+
+            <!-- Overview grid -->
+            <div class="dashboard-grid">
+              <section class="dashboard-panel dashboard-panel--economy">
+                <h4 class="dashboard-panel-title"><span class="dashboard-panel-icon">💰</span> Economy</h4>
+                <div class="dashboard-panel-content">
+                  <div class="dashboard-stat-row"><span class="dashboard-stat-label">Wallet</span><span class="dashboard-stat-value dashboard-stat-value--cash" id="dash-cash">—</span></div>
+                  <div class="dashboard-stat-row"><span class="dashboard-stat-label">Bank</span><span class="dashboard-stat-value dashboard-stat-value--cash" id="dash-bank">—</span></div>
+                  <div class="dashboard-stat-row"><span class="dashboard-stat-label">Chips</span><span class="dashboard-stat-value" id="dash-chips">—</span></div>
+                  <div class="dashboard-stat-row dashboard-stat-row--total"><span class="dashboard-stat-label">Net Worth</span><span class="dashboard-stat-value dashboard-stat-value--cash" id="dash-networth">—</span></div>
+                  <div class="dashboard-stat-row"><span class="dashboard-stat-label">Total Earned</span><span class="dashboard-stat-value dashboard-stat-value--cash" id="dash-total-earned">—</span></div>
+                </div>
+              </section>
+
+              <section class="dashboard-panel dashboard-panel--rank">
+                <h4 class="dashboard-panel-title"><span class="dashboard-panel-icon">🎖️</span> Rank & Level</h4>
+                <div class="dashboard-panel-content">
+                  <div class="dashboard-stat-row"><span class="dashboard-stat-label">Level</span><span class="dashboard-stat-value" id="dash-level">—</span></div>
+                  <div class="dashboard-stat-row"><span class="dashboard-stat-label">Rank</span><span class="dashboard-stat-value" id="dash-rank">—</span></div>
+                  <div class="dashboard-stat-row"><span class="dashboard-stat-label">Reputation</span><span class="dashboard-stat-value" id="dash-rep">—</span></div>
+                  <div class="dashboard-stat-row"><span class="dashboard-stat-label">Wanted</span><span class="dashboard-stat-value" id="dash-wanted">—</span></div>
+                </div>
+              </section>
+
+              <section class="dashboard-panel dashboard-panel--assets">
+                <h4 class="dashboard-panel-title"><span class="dashboard-panel-icon">🏠</span> Assets</h4>
+                <div class="dashboard-panel-content">
+                  <div class="dashboard-stat-row"><span class="dashboard-stat-label">Vehicles</span><span class="dashboard-stat-value" id="dash-vehicles">—</span></div>
+                  <div class="dashboard-stat-row"><span class="dashboard-stat-label">Properties</span><span class="dashboard-stat-value" id="dash-properties">—</span></div>
+                  <div class="dashboard-stat-row"><span class="dashboard-stat-label">Businesses</span><span class="dashboard-stat-value" id="dash-businesses">—</span></div>
+                  <div class="dashboard-stat-row"><span class="dashboard-stat-label">Warehouses</span><span class="dashboard-stat-value" id="dash-warehouses-combined">—</span></div>
+                </div>
+              </section>
+
+              <section class="dashboard-panel dashboard-panel--activity">
+                <h4 class="dashboard-panel-title"><span class="dashboard-panel-icon">📊</span> Activity Overview</h4>
+                <div class="dashboard-panel-content">
+                  <div class="dashboard-stat-row"><span class="dashboard-stat-label">Jobs Done</span><span class="dashboard-stat-value" id="dash-jobs-total">—</span></div>
+                  <div class="dashboard-stat-row"><span class="dashboard-stat-label">Heists</span><span class="dashboard-stat-value" id="dash-heists-total">—</span></div>
+                  <div class="dashboard-stat-row"><span class="dashboard-stat-label">Casino Games</span><span class="dashboard-stat-value" id="dash-casino-total">—</span></div>
+                  <div class="dashboard-stat-row"><span class="dashboard-stat-label">Trivia Correct</span><span class="dashboard-stat-value" id="dash-trivia-correct">—</span></div>
+                </div>
+              </section>
             </div>
-            <div class="stats-cards dashboard-cards">
-              <div class="stat-card stat-card--cash">
-                <span class="stat-label">Wallet</span>
-                <span class="stat-value stat-value--cash" id="dash-cash">—</span>
+
+            <!-- Detailed Activity Breakdown -->
+            <section class="dashboard-panel dashboard-panel--full" aria-label="Activity breakdown">
+              <h4 class="dashboard-panel-title"><span class="dashboard-panel-icon">📈</span> Activity Breakdown</h4>
+              <div class="dashboard-activity-breakdown" id="dashboard-activity-breakdown">
+                <p class="dashboard-loading" id="dashboard-activity-loading">Loading activity stats…</p>
               </div>
-              <div class="stat-card stat-card--earned">
-                <span class="stat-label">Bank</span>
-                <span class="stat-value stat-value--cash" id="dash-bank">—</span>
-              </div>
-              <div class="stat-card stat-card--chips">
-                <span class="stat-label">Chips</span>
-                <span class="stat-value" id="dash-chips">—</span>
-              </div>
-              <div class="stat-card stat-card--level">
-                <span class="stat-label">Level</span>
-                <span class="stat-value" id="dash-level">—</span>
-              </div>
-              <div class="stat-card stat-card--active">
-                <span class="stat-label">Reputation</span>
-                <span class="stat-value" id="dash-rep">—</span>
-              </div>
-            </div>
-            <p class="dashboard-source">Use <code>/profile</code> in Discord for live stats. API integration coming soon.</p>
+            </section>
+
+            <!-- Play time -->
+            <section class="dashboard-footer-stats">
+              <div class="dashboard-footer-item"><span class="dashboard-footer-label">Playing since</span><span id="dash-created-at">—</span></div>
+              <div class="dashboard-footer-item"><span class="dashboard-footer-label">Last active</span><span id="dash-last-activity">—</span></div>
+              <div class="dashboard-footer-item"><span class="dashboard-footer-label">Daily streak</span><span id="dash-daily-streak">—</span></div>
+            </section>
+
+            <p class="dashboard-source">Use <code>/profile</code> and <code>/menu</code> in Discord for live gameplay.</p>
           </div>
         </div>
       </div>

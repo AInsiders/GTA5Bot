@@ -24,6 +24,7 @@
 
   function showPage(pageId) {
     if (!pageId) return;
+    pageId = resolvePageForAuth ? resolvePageForAuth(pageId) : pageId;
     var target = document.getElementById('page-' + pageId);
     if (!target) return;
 
@@ -57,6 +58,27 @@
     showPage(PAGE_ORDER[currentIndex + 1]);
   }
 
+  function updateNavAuthState(loggedIn) {
+    var guestLinks = document.querySelectorAll('.nav-auth-guest');
+    var userLinks = document.querySelectorAll('.nav-auth-user');
+    guestLinks.forEach(function (el) {
+      el.style.display = loggedIn ? 'none' : '';
+      el.closest('li').style.display = loggedIn ? 'none' : '';
+    });
+    userLinks.forEach(function (el) {
+      el.style.display = loggedIn ? '' : 'none';
+      el.closest('li').style.display = loggedIn ? '' : 'none';
+    });
+  }
+
+  function resolvePageForAuth(pageId) {
+    var auth = typeof window.GTA_AUTH !== 'undefined' ? window.GTA_AUTH : null;
+    var loggedIn = auth && auth.isLoggedIn ? auth.isLoggedIn() : false;
+    if (pageId === 'dashboard' && !loggedIn) return 'login';
+    if (pageId === 'login' && loggedIn) return 'dashboard';
+    return pageId;
+  }
+
   document.addEventListener('click', function (e) {
     // Don't intercept login OAuth button - let it navigate to /api/auth/discord/start
     if (e.target.closest('#login-discord-btn')) return;
@@ -65,6 +87,8 @@
     var pageId = el.getAttribute('data-page');
     if (!pageId || !document.getElementById('page-' + pageId)) return;
     e.preventDefault();
+    pageId = resolvePageForAuth(pageId);
+    if (!document.getElementById('page-' + pageId)) return;
     showPage(pageId);
     var navLinksEl = document.querySelector('.nav-links');
     if (navLinksEl && navLinksEl.classList.contains('is-open')) {
@@ -89,13 +113,21 @@
   }
 
   var initialHash = (window.location.hash || '').replace('#', '');
-  if (initialHash && document.getElementById('page-' + initialHash)) {
-    currentIndex = indexOfPage(initialHash);
+  var resolvedHash = resolvePageForAuth ? resolvePageForAuth(initialHash) : initialHash;
+  if (resolvedHash && document.getElementById('page-' + resolvedHash)) {
+    currentIndex = indexOfPage(resolvedHash);
     setStripPosition(currentIndex);
-    showPage(initialHash);
+    showPage(resolvedHash);
   } else {
     setStripPosition(0);
     showPage('home');
+  }
+
+  // Auth-aware nav: hide Login when logged in, hide Dashboard when logged out
+  var auth = typeof window.GTA_AUTH !== 'undefined' ? window.GTA_AUTH : null;
+  if (auth && auth.onAuthStateChange && auth.isLoggedIn) {
+    auth.onAuthStateChange(updateNavAuthState);
+    updateNavAuthState(auth.isLoggedIn());
   }
 
   // ---------- Parallax (scroll-based; scoped to active page) ----------
