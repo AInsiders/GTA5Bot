@@ -22,7 +22,7 @@
     pagesInner.style.transform = 'translateX(' + tx + '%)';
   }
 
-  function showPage(pageId) {
+  function showPage(pageId, skipHashUpdate) {
     if (!pageId) return;
     pageId = resolvePageForAuth ? resolvePageForAuth(pageId) : pageId;
     var target = document.getElementById('page-' + pageId);
@@ -46,6 +46,10 @@
     target.querySelectorAll('.reveal').forEach(function (el) {
       el.classList.add('is-visible');
     });
+
+    if (!skipHashUpdate && window.location.hash.replace('#', '') !== pageId) {
+      window.history.replaceState(null, '', (window.location.pathname || '') + (window.location.search || '') + '#' + pageId);
+    }
   }
 
   function goPrev() {
@@ -110,16 +114,32 @@
     }, { passive: true });
   }
 
+  function applyHashToPage() {
+    var hash = (window.location.hash || '').replace('#', '');
+    var resolved = resolvePageForAuth ? resolvePageForAuth(hash) : hash;
+    if (resolved && document.getElementById('page-' + resolved)) {
+      currentIndex = indexOfPage(resolved);
+      setStripPosition(currentIndex);
+      showPage(resolved, true);
+    } else {
+      setStripPosition(0);
+      showPage('home', true);
+    }
+  }
+
   var initialHash = (window.location.hash || '').replace('#', '');
   var resolvedHash = resolvePageForAuth ? resolvePageForAuth(initialHash) : initialHash;
   if (resolvedHash && document.getElementById('page-' + resolvedHash)) {
     currentIndex = indexOfPage(resolvedHash);
     setStripPosition(currentIndex);
-    showPage(resolvedHash);
+    showPage(resolvedHash, true);
   } else {
     setStripPosition(0);
-    showPage('home');
+    showPage('home', true);
+    if (!initialHash) window.history.replaceState(null, '', (window.location.pathname || '') + (window.location.search || '') + '#home');
   }
+
+  window.addEventListener('hashchange', applyHashToPage);
 
   // Auth-aware nav: show Dashboard when logged in, show Login when logged out
   var auth = typeof window.GTA_AUTH !== 'undefined' ? window.GTA_AUTH : null;
