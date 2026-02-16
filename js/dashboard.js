@@ -1,14 +1,12 @@
 /**
  * Dashboard: Connect Discord when logged out; user stats when logged in.
  * Fetches identity from /api/auth/me and game stats from /api/stats/user.
- * Displays user stats in the same style as the Global Stats page (cards, charts, animations).
  */
 (function () {
   'use strict';
 
   var USER_KEY = 'gta_dashboard_user';
   var STATS_CACHE_MS = 5 * 60 * 1000; // 5 minutes – stats fetched once, reused until stale
-  var dashboardDonutInstance = null;
 
   function getStoredUser() {
     try {
@@ -98,97 +96,6 @@
     } catch (e) { return '—'; }
   }
 
-  function setStat(id, value) {
-    var el = document.getElementById(id);
-    if (el) el.textContent = value != null && value !== '' ? value : '—';
-  }
-
-  function animateStat(id, endValue, formatter, prefix) {
-    var el = document.getElementById(id);
-    if (!el) return;
-    prefix = prefix || '';
-    formatter = formatter || function (x) { return String(x); };
-    var start = 0;
-    var startStr = el.getAttribute('data-last-num');
-    if (startStr !== null && startStr !== '') start = parseFloat(startStr, 10) || 0;
-    el.setAttribute('data-last-num', String(endValue));
-    var duration = 700;
-    var startTime = null;
-    function step(now) {
-      if (!startTime) startTime = now;
-      var t = Math.min((now - startTime) / duration, 1);
-      var ease = 1 - Math.pow(1 - t, 2);
-      var current = start + (endValue - start) * ease;
-      el.textContent = prefix + formatter(current);
-      if (t < 1) requestAnimationFrame(step);
-    }
-    requestAnimationFrame(step);
-  }
-
-  function drawUserDonutChart(data) {
-    var canvas = document.getElementById('chart-dashboard-donut');
-    if (!canvas || typeof window.Chart === 'undefined') return;
-    if (dashboardDonutInstance) dashboardDonutInstance.destroy();
-    var ctx = canvas.getContext('2d');
-    var wallet = Number(data.cash) || 0;
-    var bank = Number(data.bank_balance != null ? data.bank_balance : data.bank) || 0;
-    var chips = Number(data.chips) || 0;
-    var total = wallet + bank + chips;
-    var labels = ['Wallet', 'Bank', 'Chips'];
-    var values = [wallet, bank, chips];
-    var colors = ['rgba(0, 255, 136, 0.8)', 'rgba(0, 230, 118, 0.7)', 'rgba(255, 215, 0, 0.8)'];
-    var borders = ['#00ff88', '#00e676', '#ffd700'];
-    if (total <= 0) {
-      values = [1];
-      labels = ['No data yet'];
-      colors = ['rgba(122, 138, 122, 0.5)'];
-      borders = ['#7a8a7a'];
-    }
-    dashboardDonutInstance = new window.Chart(ctx, {
-      type: 'doughnut',
-      data: {
-        labels: labels,
-        datasets: [{
-          data: values,
-          backgroundColor: colors,
-          borderColor: borders,
-          borderWidth: 2,
-          hoverOffset: 8
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: true,
-        animation: { duration: 900 },
-        cutout: '62%',
-        plugins: {
-          legend: { position: 'bottom', labels: { color: '#7a8a7a', padding: 12 } },
-          tooltip: {
-            callbacks: {
-              label: function (item) {
-                var v = item.raw;
-                var pct = total > 0 ? ((v / total) * 100).toFixed(1) : 0;
-                return item.label + ': $' + fmt(v) + (total > 0 ? ' (' + pct + '%)' : '');
-              }
-            },
-            backgroundColor: 'rgba(10, 14, 10, 0.95)',
-            titleColor: '#00ff88',
-            bodyColor: '#e8f0e8',
-            borderColor: 'rgba(0, 255, 136, 0.4)',
-            borderWidth: 1
-          }
-        }
-      }
-    });
-  }
-
-  function setDashboardConnectionStatus(status, text) {
-    var el = document.getElementById('dashboard-stats-connection');
-    if (!el) return;
-    el.textContent = text || '';
-    el.className = 'stats-connection' + (status ? ' stats-connection--' + status : '');
-  }
-
   function showDashboardStatsError(show, message) {
     var el = document.getElementById('dashboard-stats-error');
     var textEl = document.getElementById('dashboard-stats-error-text');
@@ -202,7 +109,6 @@
     if (guest) guest.style.display = 'block';
     if (user) user.style.display = 'none';
     showDashboardStatsError(false);
-    setDashboardConnectionStatus('', '');
   }
 
   function showUserView(userData) {
@@ -229,24 +135,17 @@
       avatar.textContent = '👤';
     }
 
-    /* Populate top stat cards (like Global Stats page) with animated values */
-    setDashboardConnectionStatus('live', 'Connected');
-    var cashVal = userData.cash != null ? Number(userData.cash) : 0;
-    var bankVal = (userData.bank != null || userData.bank_balance != null) ? Number(userData.bank_balance != null ? userData.bank_balance : userData.bank) : 0;
-    var chipsVal = userData.chips != null ? Number(userData.chips) : 0;
-    var netVal = userData.net_worth != null ? Number(userData.net_worth) : (cashVal + bankVal + chipsVal);
-    var levelVal = userData.level != null ? Number(userData.level) : 1;
-    var repVal = userData.rep != null ? Number(userData.rep) : 0;
-    animateStat('dash-stat-wallet', cashVal, fmt, '$');
-    animateStat('dash-stat-bank', bankVal, fmt, '$');
-    animateStat('dash-stat-chips', chipsVal, fmt, '');
-    animateStat('dash-stat-networth', netVal, fmt, '$');
-    animateStat('dash-stat-level', levelVal, function (x) { return String(Math.round(x)); }, '');
-    animateStat('dash-stat-rep', repVal, fmt, '');
-    drawUserDonutChart(userData);
-
     var set = function (id, val) { var el = document.getElementById(id); if (el) el.textContent = val != null && val !== '' ? val : '—'; };
     var counts = userData.counts || {};
+
+    // Top stat cards (same style as Global Stats)
+    set('dash-stat-cash', userData.cash != null ? '$' + fmt(userData.cash) : null);
+    set('dash-stat-bank', (userData.bank != null || userData.bank_balance != null) ? '$' + fmt(userData.bank != null ? userData.bank : userData.bank_balance) : null);
+    set('dash-stat-chips', userData.chips != null ? fmt(userData.chips) : null);
+    set('dash-stat-networth', userData.net_worth != null ? '$' + fmt(userData.net_worth) : null);
+    set('dash-stat-level', userData.level);
+    set('dash-stat-rank', userData.rank || userData.level_title);
+    set('dash-stat-rp', userData.total_rp != null ? fmt(userData.total_rp) + ' RP' : null);
 
     set('dash-cash', userData.cash != null ? '$' + fmt(userData.cash) : null);
     set('dash-bank', (userData.bank != null || userData.bank_balance != null) ? '$' + fmt(userData.bank != null ? userData.bank : userData.bank_balance) : null);
@@ -367,7 +266,6 @@
     var token = auth && auth.getToken ? auth.getToken() : '';
     if (!token || !auth) return Promise.reject(new Error('Not logged in'));
     if (window.__GTA_DEBUG__) console.log('[GTA Dashboard] Fetching /api/auth/me and /api/stats/user…');
-    setDashboardConnectionStatus('checking', 'Loading stats…');
     return auth.fetchMe().then(function (me) {
       if (window.__GTA_DEBUG__) console.log('[GTA Dashboard] /api/auth/me OK', me && me.id ? 'user ' + me.id : 'no id');
       if (!me || !me.id) return showGuestView();
@@ -381,7 +279,6 @@
         showUserView(merged);
       }).catch(function (err) {
         if (window.__GTA_DEBUG__) console.warn('[GTA Dashboard] /api/stats/user failed', err && err.message);
-        setDashboardConnectionStatus('error', 'Stats unavailable');
         showUserView(me);
         showDashboardStatsError(true, (err && err.message) || 'Couldn\'t load your stats.');
       });

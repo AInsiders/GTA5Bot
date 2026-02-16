@@ -307,6 +307,39 @@
 
           <div id="dashboard-user" class="dashboard-user" style="display: none;">
             <p id="dashboard-stats-error" class="dashboard-stats-error" style="display: none;" role="alert"><span id="dashboard-stats-error-text">Couldn’t load your stats.</span> <button type="button" class="dashboard-stats-error-refresh" id="dashboard-refresh-from-error">Refresh stats</button> If you haven’t used the bot in Discord yet, run <code>/start</code> there first.</p>
+            <!-- User stats cards (same layout as Global Stats) -->
+            <div id="dashboard-stats-cards" class="stats-global" style="margin-bottom: 1.5rem;">
+              <div class="stats-cards">
+                <div class="stat-card stat-card--cash">
+                  <span class="stat-label">Wallet</span>
+                  <span class="stat-value stat-value--cash" id="dash-stat-cash">—</span>
+                </div>
+                <div class="stat-card stat-card--cash">
+                  <span class="stat-label">Bank</span>
+                  <span class="stat-value stat-value--cash" id="dash-stat-bank">—</span>
+                </div>
+                <div class="stat-card stat-card--chips">
+                  <span class="stat-label">Chips</span>
+                  <span class="stat-value" id="dash-stat-chips">—</span>
+                </div>
+                <div class="stat-card stat-card--earned">
+                  <span class="stat-label">Net Worth</span>
+                  <span class="stat-value stat-value--cash" id="dash-stat-networth">—</span>
+                </div>
+                <div class="stat-card stat-card--level">
+                  <span class="stat-label">Level</span>
+                  <span class="stat-value" id="dash-stat-level">—</span>
+                </div>
+                <div class="stat-card stat-card--active">
+                  <span class="stat-label">Rank</span>
+                  <span class="stat-value" id="dash-stat-rank">—</span>
+                </div>
+                <div class="stat-card stat-card--active">
+                  <span class="stat-label">Total RP</span>
+                  <span class="stat-value" id="dash-stat-rp">—</span>
+                </div>
+              </div>
+            </div>
             <!-- Profile header -->
             <header class="dashboard-profile">
               <div class="dashboard-profile-avatar" id="dashboard-avatar">👤</div>
@@ -318,44 +351,6 @@
                 <button type="button" class="dashboard-logout" id="dashboard-logout">Log out</button>
               </div>
             </header>
-
-            <p class="stats-connection" id="dashboard-stats-connection" aria-live="polite" style="margin-bottom: 1rem;"></p>
-
-            <!-- User stats cards (like Global Stats) -->
-            <div id="dashboard-stats-cards" class="stats-cards">
-              <div class="stat-card stat-card--cash">
-                <span class="stat-label">Wallet</span>
-                <span class="stat-value stat-value--cash" id="dash-stat-wallet">—</span>
-              </div>
-              <div class="stat-card">
-                <span class="stat-label">Bank</span>
-                <span class="stat-value stat-value--cash" id="dash-stat-bank">—</span>
-              </div>
-              <div class="stat-card stat-card--chips">
-                <span class="stat-label">Chips</span>
-                <span class="stat-value" id="dash-stat-chips">—</span>
-              </div>
-              <div class="stat-card stat-card--networth">
-                <span class="stat-label">Net Worth</span>
-                <span class="stat-value stat-value--cash" id="dash-stat-networth">—</span>
-              </div>
-              <div class="stat-card stat-card--level">
-                <span class="stat-label">Level</span>
-                <span class="stat-value" id="dash-stat-level">—</span>
-              </div>
-              <div class="stat-card stat-card--active">
-                <span class="stat-label">Reputation</span>
-                <span class="stat-value" id="dash-stat-rep">—</span>
-              </div>
-            </div>
-
-            <!-- User economy chart -->
-            <div class="stats-charts" id="dashboard-charts">
-              <div class="stats-chart-wrap stats-chart-wrap--donut">
-                <h3 class="stats-chart-title">Your Economy</h3>
-                <canvas id="chart-dashboard-donut" class="stats-chart stats-chart--donut" width="260" height="260"></canvas>
-              </div>
-            </div>
 
             <!-- Overview grid -->
             <div class="dashboard-grid">
