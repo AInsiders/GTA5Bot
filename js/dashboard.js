@@ -246,14 +246,17 @@
     if (!base) return Promise.reject(new Error('Missing API URL. Set __GTA_API_URL__ in config.js.'));
     if (!token) return Promise.reject(new Error('Not logged in'));
 
-    return fetch(base + '/api/stats/user', {
+    var url = base + '/api/stats/user';
+    return fetch(url, {
       method: 'GET',
       headers: { 'Authorization': 'Bearer ' + token },
       mode: 'cors'
     }).then(function (r) {
+      if (window.__GTA_DEBUG__) console.log('[GTA Dashboard] /api/stats/user response', r.status, r.statusText);
       if (!r.ok) {
         var msg = r.status === 401 ? 'Session expired. Please log in again.' : 'Stats fetch failed (' + r.status + ')';
         return r.json().catch(function () { return {}; }).then(function (d) {
+          if (window.__GTA_DEBUG__) console.warn('[GTA Dashboard] /api/stats/user error body', d);
           throw new Error((d && d.error) || msg);
         });
       }
@@ -269,7 +272,6 @@
     return auth.fetchMe().then(function (me) {
       if (window.__GTA_DEBUG__) console.log('[GTA Dashboard] /api/auth/me OK', me && me.id ? 'user ' + me.id : 'no id');
       if (!me || !me.id) return showGuestView();
-      setStoredUser(me);
       return fetchUserStats().then(function (stats) {
         if (window.__GTA_DEBUG__) console.log('[GTA Dashboard] /api/stats/user OK', stats && (stats.cash !== undefined) ? 'has stats' : 'no stats');
         showDashboardStatsError(false);
@@ -278,9 +280,14 @@
         setStoredUser(merged);
         showUserView(merged);
       }).catch(function (err) {
-        if (window.__GTA_DEBUG__) console.warn('[GTA Dashboard] /api/stats/user failed', err && err.message);
-        showUserView(me);
-        showDashboardStatsError(true, (err && err.message) || 'Couldn\'t load your stats.');
+        console.warn('[GTA Dashboard] Stats fetch failed:', err && err.message);
+        var cached = getStoredUser();
+        var displayData = (cached && cached.id === me.id && hasCachedStats(cached))
+          ? Object.assign({}, cached, me)
+          : me;
+        setStoredUser(displayData);
+        showUserView(displayData);
+        showDashboardStatsError(true, (err && err.message) || 'Couldn\'t load your stats. Add ?debug=1 to URL and open console (F12) for details.');
       });
     }).catch(function (err) {
       if (window.__GTA_DEBUG__) console.warn('[GTA Dashboard] /api/auth/me failed', err && err.message);
