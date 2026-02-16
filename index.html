@@ -175,6 +175,10 @@
       <div class="page-bg page-bg--money" data-parallax-speed="0.03"></div>
       <div class="page-scroll">
         <div class="container container--wide reveal">
+          <nav class="page-nav" aria-label="Page navigation">
+            <a href="#" class="page-nav-link" data-page="commands">↩️ Previous</a>
+            <a href="#" class="page-nav-link" data-page="home">🏠 Main</a>
+          </nav>
           <h2 class="page-title">Global Stats</h2>
           <p class="page-subtitle">Economy totals and top 100 leaderboards. Data comes from the GTA Bot Neon database.</p>
           <p class="stats-connection" id="stats-connection" aria-live="polite"></p>
@@ -262,6 +266,10 @@
       <div class="page-bg page-bg--money" data-parallax-speed="0.03"></div>
       <div class="page-scroll page-scroll--center">
         <div class="container reveal">
+          <nav class="page-nav" aria-label="Page navigation">
+            <a href="#" class="page-nav-link" data-page="stats">↩️ Previous</a>
+            <a href="#" class="page-nav-link" data-page="home">🏠 Main</a>
+          </nav>
           <h2 class="page-title">Connect Discord</h2>
           <p class="page-subtitle">Link your Discord account to view your GTA Bot stats on the dashboard.</p>
           <div class="login-card">
@@ -283,6 +291,10 @@
       <div class="page-bg page-bg--money" data-parallax-speed="0.03"></div>
       <div class="page-scroll">
         <div class="container container--wide reveal dashboard-container">
+          <nav class="page-nav" aria-label="Page navigation">
+            <a href="#" class="page-nav-link" data-page="stats">↩️ Previous</a>
+            <a href="#" class="page-nav-link" data-page="home">🏠 Main</a>
+          </nav>
           <h2 class="page-title">Your Dashboard</h2>
           <p class="page-subtitle">Track your criminal empire — stats, activity, and progress.</p>
 
@@ -306,6 +318,44 @@
                 <button type="button" class="dashboard-logout" id="dashboard-logout">Log out</button>
               </div>
             </header>
+
+            <p class="stats-connection" id="dashboard-stats-connection" aria-live="polite" style="margin-bottom: 1rem;"></p>
+
+            <!-- User stats cards (like Global Stats) -->
+            <div id="dashboard-stats-cards" class="stats-cards">
+              <div class="stat-card stat-card--cash">
+                <span class="stat-label">Wallet</span>
+                <span class="stat-value stat-value--cash" id="dash-stat-wallet">—</span>
+              </div>
+              <div class="stat-card">
+                <span class="stat-label">Bank</span>
+                <span class="stat-value stat-value--cash" id="dash-stat-bank">—</span>
+              </div>
+              <div class="stat-card stat-card--chips">
+                <span class="stat-label">Chips</span>
+                <span class="stat-value" id="dash-stat-chips">—</span>
+              </div>
+              <div class="stat-card stat-card--networth">
+                <span class="stat-label">Net Worth</span>
+                <span class="stat-value stat-value--cash" id="dash-stat-networth">—</span>
+              </div>
+              <div class="stat-card stat-card--level">
+                <span class="stat-label">Level</span>
+                <span class="stat-value" id="dash-stat-level">—</span>
+              </div>
+              <div class="stat-card stat-card--active">
+                <span class="stat-label">Reputation</span>
+                <span class="stat-value" id="dash-stat-rep">—</span>
+              </div>
+            </div>
+
+            <!-- User economy chart -->
+            <div class="stats-charts" id="dashboard-charts">
+              <div class="stats-chart-wrap stats-chart-wrap--donut">
+                <h3 class="stats-chart-title">Your Economy</h3>
+                <canvas id="chart-dashboard-donut" class="stats-chart stats-chart--donut" width="260" height="260"></canvas>
+              </div>
+            </div>
 
             <!-- Overview grid -->
             <div class="dashboard-grid">

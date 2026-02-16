@@ -151,6 +151,20 @@ section {
   flex-direction: column;
 }
 
+.page-nav {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.page-nav-link {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  transition: color 0.2s;
+}
+.page-nav-link:hover {
+  color: var(--gta-green);
+}
+
 .page-scroll {
   flex: 1;
   overflow-y: auto;
