@@ -116,22 +116,9 @@ function buildEmptyResponse(userId, payload) {
 
 async function fetchUserFromDb(connectionString, userId) {
   const sql = neon(connectionString);
-  const rows = await sql`
-    SELECT
-      user_id, username,
-      cash, bank_balance, chips, rep, level, rank, level_title, wanted_level,
-      COALESCE(total_cash_earned, 0) as total_cash_earned,
-      total_rp, rp_to_next_level, level_progress_percentage,
-      total_level_ups, highest_level_reached, total_cash_earned_from_levels,
-      daily_streak, daily_last_claim_at,
-      leaderboard_position, rank_display,
-      created_at, last_activity, tos_accepted_at,
-      inventory, vehicles, properties,
-      businesses, mc_businesses, warehouse_data, nightclub,
-      vehicle_warehouse, cargo_warehouse, stolen_cars,
-      banking_stats, casino_stats, trivia_stats, lockpick_stats, game_statistics
-    FROM users WHERE user_id = ${userId} LIMIT 1
-  `;
+  // Use SELECT * to stay resilient to schema changes (missing/extra columns) across bot versions.
+  // The response below only picks the fields it needs.
+  const rows = await sql`SELECT * FROM users WHERE user_id = ${userId} LIMIT 1`;
   return (rows && rows[0]) || null;
 }
 
@@ -244,7 +231,7 @@ module.exports = async function handler(req, res) {
       rank: row.rank || 'Thug',
       level_title: row.level_title || 'Rank 1',
       wanted_level: Number(row.wanted_level) || 0,
-      total_cash_earned: Number(row.total_cash_earned) || 0,
+      total_cash_earned: Number(row.total_cash_earned ?? row.total_cash_earned_from_levels) || 0,
       total_rp: Number(row.total_rp) || 0,
       rp_to_next_level: Number(row.rp_to_next_level) || 0,
       level_progress_percentage: Number(row.level_progress_percentage) || 0,
@@ -280,8 +267,19 @@ module.exports = async function handler(req, res) {
         properties: Array.isArray(properties) ? properties.length : 0,
         businesses: Array.isArray(ownedBusinesses) ? ownedBusinesses.length : 0,
         mc_businesses: mcCount,
-        vehicle_warehouse: Array.isArray(vehicleWarehouse) ? vehicleWarehouse.length : 0,
-        cargo_warehouse: Array.isArray(cargoWarehouse) ? cargoWarehouse.length : 0,
+        vehicle_warehouse: (() => {
+          if (!vehicleWarehouse) return 0;
+          if (Array.isArray(vehicleWarehouse)) return vehicleWarehouse.length;
+          const v = vehicleWarehouse.vehicles;
+          if (v && typeof v === 'object' && !Array.isArray(v)) return Object.values(v).reduce((s, n) => s + (Number(n) || 0), 0);
+          return 0;
+        })(),
+        cargo_warehouse: (() => {
+          if (!cargoWarehouse) return 0;
+          if (Array.isArray(cargoWarehouse)) return cargoWarehouse.length;
+          const c = Number(cargoWarehouse.crates);
+          return isNaN(c) ? 0 : c;
+        })(),
         stolen_cars: Array.isArray(stolenCars) ? stolenCars.length : 0,
       },
       activity_stats: activityStats || {},
