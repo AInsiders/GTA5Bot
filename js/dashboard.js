@@ -103,12 +103,20 @@
     if (textEl && message) textEl.textContent = message;
   }
 
+  function showNoGameDataHint(show, message) {
+    var el = document.getElementById('dashboard-no-game-data-hint');
+    if (!el) return;
+    el.style.display = show ? 'block' : 'none';
+    if (show && typeof message === 'string') el.textContent = message;
+  }
+
   function showGuestView() {
     var guest = document.getElementById('dashboard-guest');
     var user = document.getElementById('dashboard-user');
     if (guest) guest.style.display = 'block';
     if (user) user.style.display = 'none';
     showDashboardStatsError(false);
+    showNoGameDataHint(false);
   }
 
   function showUserView(userData) {
@@ -279,6 +287,7 @@
         merged.stats_fetched_at = Date.now();
         setStoredUser(merged);
         showUserView(merged);
+        showNoGameDataHint(!!(stats && stats.no_game_data_yet), (stats && stats.no_game_data_yet) ? 'You\'re signed in, but you don\'t have game data yet. Use the bot in Discord (run /start in a server with the bot) to create your character; your stats will then appear here.' : undefined);
       }).catch(function (err) {
         console.warn('[GTA Dashboard] Stats fetch failed:', err && err.message);
         var cached = getStoredUser();
@@ -287,7 +296,9 @@
           : me;
         setStoredUser(displayData);
         showUserView(displayData);
-        showDashboardStatsError(true, (err && err.message) || 'Couldn\'t load your stats. Add ?debug=1 to URL and open console (F12) for details.');
+        var errMsg = (err && err.message) || 'Couldn\'t load your stats. Add ?debug=1 to URL and open console (F12) for details.';
+        showDashboardStatsError(true, errMsg);
+        showNoGameDataHint(true, errMsg + ' If you have game data in Discord, check Vercel env: AUTH_JWT_SECRET and DATABASE_URL (same Neon DB as the bot).');
       });
     }).catch(function (err) {
       if (window.__GTA_DEBUG__) console.warn('[GTA Dashboard] /api/auth/me failed', err && err.message);

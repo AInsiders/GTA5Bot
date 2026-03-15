@@ -1473,6 +1473,24 @@ section {
   cursor: not-allowed;
 }
 
+.dashboard-no-game-data-hint {
+  background: rgba(255, 180, 0, 0.15);
+  border: 1px solid rgba(255, 180, 0, 0.45);
+  color: var(--text-primary, #e8e8e8);
+  padding: 1rem 1.25rem;
+  border-radius: 8px;
+  margin-bottom: 1.25rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  font-weight: 500;
+}
+.dashboard-no-game-data-hint code {
+  background: rgba(0, 0, 0, 0.25);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
 .dashboard-section {
   margin-bottom: 2rem;
 }

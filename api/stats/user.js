@@ -178,7 +178,7 @@ module.exports = async function handler(req, res) {
 
     if (!row) {
       cors(res);
-      return sendJson(res, 200, Object.assign(buildEmptyResponse(userId, payload), { activity_stats: activityStats || {} }));
+      return sendJson(res, 200, Object.assign(buildEmptyResponse(userId, payload), { activity_stats: activityStats || {}, no_game_data_yet: true }));
     }
 
     const cash = Number(row.cash) || 0;
@@ -286,6 +286,10 @@ module.exports = async function handler(req, res) {
     });
   } catch (e) {
     cors(res);
-    return sendJson(res, 401, { error: (e && e.message) ? e.message : 'Auth failed' });
+    const msg = (e && e.message) ? e.message : 'Request failed';
+    // Auth errors (JWT verify, missing token) → 401; DB/network errors → 500 so dashboard doesn't show "Session expired"
+    const isAuthError = /token|missing bearer|invalid token|expired|no user id/i.test(msg);
+    const status = isAuthError ? 401 : 500;
+    return sendJson(res, status, { error: isAuthError ? msg : 'Could not load user stats. Try again later.' });
   }
 };
