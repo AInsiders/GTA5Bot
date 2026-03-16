@@ -257,6 +257,35 @@
               <div class="leaderboard-error" id="leaderboard-error" style="display: none;"></div>
             </div>
           </div>
+
+          <div class="stats-leaderboards stats-leaderboards--club">
+            <h3 class="page-title">Club Leaderboards</h3>
+            <p class="page-subtitle" style="margin-bottom: 1rem;">Top MC clubs by treasury, level, reputation, members, prestige, and club wars.</p>
+            <div class="leaderboard-tabs leaderboard-tabs--club">
+              <button type="button" class="leaderboard-tab leaderboard-tab--club active" data-board="treasury">🏦 Treasury</button>
+              <button type="button" class="leaderboard-tab leaderboard-tab--club" data-board="level">🎖️ Level</button>
+              <button type="button" class="leaderboard-tab leaderboard-tab--club" data-board="reputation">⭐ Reputation</button>
+              <button type="button" class="leaderboard-tab leaderboard-tab--club" data-board="members">👥 Members</button>
+              <button type="button" class="leaderboard-tab leaderboard-tab--club" data-board="prestige">💎 Prestige</button>
+              <button type="button" class="leaderboard-tab leaderboard-tab--club" data-board="war">⚔️ Club Wars</button>
+            </div>
+            <div class="leaderboard-content">
+              <div class="leaderboard-loading" id="club-leaderboard-loading">Loading club leaderboard…</div>
+              <div class="leaderboard-table-wrap" id="club-leaderboard-table-wrap" style="display: none;">
+                <table class="leaderboard-table leaderboard-table--club" id="club-leaderboard-table">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Club</th>
+                      <th>Value</th>
+                    </tr>
+                  </thead>
+                  <tbody id="club-leaderboard-tbody"></tbody>
+                </table>
+              </div>
+              <div class="leaderboard-error" id="club-leaderboard-error" style="display: none;"></div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -455,11 +484,7 @@
             <a href="#" class="page-nav-link" data-page="home">🏠 Main</a>
           </nav>
           <h2 class="page-title">Guide</h2>
-          <p class="page-subtitle">Invite the bot, join our server, or read the full guide below.</p>
-          <div class="support-actions reveal" style="margin-bottom: 2rem;">
-            <a href="https://discord.com/oauth2/authorize?client_id=1430646453033767013" target="_blank" rel="noopener noreferrer" class="support-cta support-cta--primary">Invite GTA Bot</a>
-            <a href="https://discord.gg/fkQ972fmAs" target="_blank" rel="noopener noreferrer" class="support-cta support-cta--secondary">Join Our Support Server</a>
-          </div>
+          <p class="page-subtitle">Click a topic card to expand and read the full guide below.</p>
           <h3 class="page-title" style="font-size: 1.35rem; margin-top: 1.5rem;">Full Guide</h3>
           <p class="page-subtitle">Click a topic card to expand and read. Scroll inside the card to see all content. Everything about how GTA Bot works: starting, jobs, hustle, weapon draw, properties, restrictions, and all systems.</p>
 
@@ -491,7 +516,7 @@
                     <h3>First Commands</h3>
                     <p><code>/menu</code> (main hub), <code>/profile</code> (stats), <code>/help</code> (in-Discord help). From the main menu you get buttons for Jobs, Bank, Steal, Business, Shop, Profile, Leaderboards, Casino, Help.</p>
                     <h3>Understanding Money</h3>
-                    <p><strong>Wallet</strong> — Cash you carry (can be stolen). <strong>Bank</strong> — Protected funds (safe from theft). <strong>Chips</strong> — Casino currency; buy/sell at the Cashier's Cage. <strong>Net Worth</strong> — Total value of all your assets. <strong>/hustle</strong> — Street cash every 10s; base $2–$300 × multiplier (more weapon levels = more payout).</p>
+                    <p><strong>Wallet</strong> — Cash you carry (can be stolen). <strong>Bank</strong> — Protected funds (safe from theft). <strong>Chips</strong> — Casino currency; buy/sell at the Cashier's Cage. <strong>Net Worth</strong> — Total value of all your assets. <strong>/hustle</strong> — Street cash every 3s; base $2–$300 × multiplier (more weapon levels = more payout).</p>
                     <h3>Your Progress</h3>
                     <p><strong>Cash</strong>, <strong>RP (Reputation)</strong> — drives your Rank. <strong>Rank</strong> — derived from total RP. <strong>Wanted Level</strong> — heat from crimes; affects some odds.</p>
                     <h3>Protection Strategy</h3>
@@ -550,7 +575,7 @@
                     <p><code>/hustle</code> — Pick up street cash ($2–$300 per claim). No target; works in any server. Cooldown is enforced across all guilds and instances (atomic).</p>
                     <ul>
                       <li><strong>Payout:</strong> Base $2–$300 (configurable). Your <strong>total weapon levels</strong> multiply the payout — more levels = higher hustle income.</li>
-                      <li><strong>Cooldown:</strong> 10 seconds between claims, shared globally.</li>
+                      <li><strong>Cooldown:</strong> 3 seconds between claims, shared globally.</li>
                       <li><strong>When to use:</strong> Quick filler between jobs and heists.</li>
                     </ul>
                   </div>
@@ -568,15 +593,16 @@
               <div class="guide-card-body" role="region">
                 <div class="guide-card-body-scroll">
                   <div class="guide-card-body-inner">
-                    <p><code>/weapondraw @opponent</code> — Challenge another player to a <strong>Best 3 of 5</strong> duel. No cash cost; bragging rights (and optional match logging).</p>
+                    <p><code>/weapondraw @opponent</code> — Challenge another player to a <strong>Best 3 of 5</strong> duel. Optional cash wager; bragging rights.</p>
                     <h3>How It Works</h3>
                     <ol>
-                      <li>You send the challenge; the opponent has 60 seconds to <strong>Accept</strong> or <strong>Decline</strong>.</li>
+                      <li>You send the challenge (optional <code>wager</code> in cash). The opponent can <strong>Accept Bet</strong> or <strong>Decline</strong>; others can <strong>Challenge Instead</strong>; you can <strong>Cancel</strong>.</li>
+                      <li>If someone else requests to fight instead, you can <strong>Accept Alt</strong> or <strong>Keep Waiting</strong> for the original target.</li>
                       <li>Each round both players choose privately: <strong>🔫 Pistol</strong>, <strong>🎯 Sniper</strong>, or <strong>💥 Shotgun</strong>.</li>
                       <li>Beats: <strong>Pistol beats Sniper</strong>, <strong>Sniper beats Shotgun</strong>, <strong>Shotgun beats Pistol</strong>. Same weapon = draw (no point).</li>
-                      <li>First to win 3 rounds wins the match. After the match you can click <strong>Rematch</strong> to play again.</li>
+                      <li>First to win 3 rounds wins the match. Winner takes the full pot if there was a wager. After the match you can click <strong>Rematch</strong> (no cooldown).</li>
                     </ol>
-                    <p>Round timeout 60s. Cooldown: 30s new opponent, 5 min same opponent.</p>
+                    <p>Round timeout 60s. No rematch cooldown.</p>
                   </div>
                 </div>
               </div>

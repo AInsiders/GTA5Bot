@@ -7,6 +7,7 @@ Endpoints mirror the Python `src.services.stats_api` so the **GitHub Pages** sit
 - `GET /api/stats/health` — check Neon connectivity
 - `GET /api/stats/global` — global stats (users, cash, chips, level, etc.)
 - `GET /api/stats/leaderboard?type=net_worth|cash|chips|level|rep|bank&limit=100` — top 100 leaderboard
+- `GET /api/stats/club-leaderboard?category=reputation|treasury|level|prestige|members|war&limit=100` — top 100 club leaderboard (MC clubs)
 - `GET /api/stats/user` — **dashboard**: logged-in user’s stats from Neon (requires `Authorization: Bearer <JWT>`). Uses same Neon connection as global.
 
 ## Neon: two ways to connect

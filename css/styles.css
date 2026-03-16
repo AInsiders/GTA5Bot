@@ -1045,6 +1045,11 @@ section {
 .stats-leaderboards {
   margin-top: 2rem;
 }
+.stats-leaderboards--club {
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-subtle);
+}
 .stats-leaderboards .page-title {
   margin-bottom: 1rem;
 }

@@ -262,6 +262,69 @@
     });
   }
 
+  function getClubValueForCategory(r, category) {
+    switch (category) {
+      case 'treasury': return r.treasury_cash != null ? '$' + formatCash(r.treasury_cash) : '—';
+      case 'level': return r.level != null ? String(r.level) : '—';
+      case 'reputation': return r.reputation != null ? formatCash(r.reputation) : '—';
+      case 'members': return r.member_count != null ? String(r.member_count) : '—';
+      case 'prestige': return r.prestige_tier != null ? String(r.prestige_tier) : '—';
+      case 'war': return (r.wins != null && r.losses != null) ? (r.wins + 'W / ' + r.losses + 'L') : '—';
+      default: return '—';
+    }
+  }
+
+  function renderClubLeaderboard(rows, category) {
+    var tbody = document.getElementById('club-leaderboard-tbody');
+    var wrap = document.getElementById('club-leaderboard-table-wrap');
+    var loading = document.getElementById('club-leaderboard-loading');
+    var errEl = document.getElementById('club-leaderboard-error');
+    if (!tbody) return;
+    if (loading) loading.style.display = 'none';
+    if (errEl) errEl.style.display = 'none';
+    if (!rows || rows.length === 0) {
+      if (wrap) wrap.style.display = 'none';
+      if (errEl) { errEl.textContent = 'No club data.'; errEl.style.display = 'block'; }
+      return;
+    }
+    wrap.style.display = 'block';
+    tbody.innerHTML = '';
+    rows.forEach(function (r) {
+      var tr = document.createElement('tr');
+      var displayName = (r.club_name || r.club_id || '') + ' [' + (r.club_tag || '') + ']';
+      var val = getClubValueForCategory(r, category);
+      tr.innerHTML = '<td>' + (r.rank || '—') + '</td><td><span class="leaderboard-name">' + escapeHtml(displayName) + '</span></td><td>' + val + '</td>';
+      tbody.appendChild(tr);
+    });
+  }
+
+  function fetchClubLeaderboard(category, silent) {
+    var loading = document.getElementById('club-leaderboard-loading');
+    var wrap = document.getElementById('club-leaderboard-table-wrap');
+    var errEl = document.getElementById('club-leaderboard-error');
+    if (!silent) {
+      if (loading) loading.style.display = 'block';
+      if (wrap) wrap.style.display = 'none';
+      if (errEl) errEl.style.display = 'none';
+    }
+    if (!hasConfig()) {
+      if (loading) loading.style.display = 'none';
+      if (errEl) { errEl.textContent = 'Set Neon Stats API URL to load club leaderboards.'; errEl.style.display = 'block'; }
+      return;
+    }
+    var base = getNeonApiBase();
+    fetch(base + '/api/stats/club-leaderboard?category=' + encodeURIComponent(category) + '&limit=100')
+      .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error(r.statusText)); })
+      .then(function (data) {
+        var rows = Array.isArray(data) ? data : [];
+        renderClubLeaderboard(rows, category);
+      })
+      .catch(function (e) {
+        if (loading) loading.style.display = 'none';
+        if (errEl) { errEl.textContent = e.message || 'Request failed.'; errEl.style.display = 'block'; }
+      });
+  }
+
   function fetchLeaderboard(type, silent) {
     var loading = document.getElementById('leaderboard-loading');
     var wrap = document.getElementById('leaderboard-table-wrap');
@@ -294,14 +357,18 @@
     var page = document.getElementById('page-stats');
     if (!page || !page.classList.contains('is-active')) return;
     fetchGlobalStats();
-    var currentTab = document.querySelector('.leaderboard-tab.active');
+    var currentTab = document.querySelector('.leaderboard-tab.active:not(.leaderboard-tab--club)');
     fetchLeaderboard(currentTab ? currentTab.getAttribute('data-board') : 'net_worth');
+    var clubTab = document.querySelector('.leaderboard-tab--club.active');
+    fetchClubLeaderboard(clubTab ? clubTab.getAttribute('data-board') : 'treasury');
     if (statsRefreshInterval) clearInterval(statsRefreshInterval);
     statsRefreshInterval = setInterval(function () {
       if (!page.classList.contains('is-active')) return;
       fetchGlobalStats(true);
-      var tab = document.querySelector('.leaderboard-tab.active');
+      var tab = document.querySelector('.leaderboard-tab.active:not(.leaderboard-tab--club)');
       fetchLeaderboard(tab ? tab.getAttribute('data-board') : 'net_worth', true);
+      var cTab = document.querySelector('.leaderboard-tab--club.active');
+      fetchClubLeaderboard(cTab ? cTab.getAttribute('data-board') : 'treasury', true);
     }, REFRESH_MS);
   }
 
@@ -312,11 +379,19 @@
     }
   }
 
-  document.querySelectorAll('.leaderboard-tab').forEach(function (tab) {
+  document.querySelectorAll('.leaderboard-tab:not(.leaderboard-tab--club)').forEach(function (tab) {
     tab.addEventListener('click', function () {
-      document.querySelectorAll('.leaderboard-tab').forEach(function (t) { t.classList.remove('active'); });
+      document.querySelectorAll('.leaderboard-tab:not(.leaderboard-tab--club)').forEach(function (t) { t.classList.remove('active'); });
       tab.classList.add('active');
       fetchLeaderboard(tab.getAttribute('data-board'));
+    });
+  });
+
+  document.querySelectorAll('.leaderboard-tab--club').forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      document.querySelectorAll('.leaderboard-tab--club').forEach(function (t) { t.classList.remove('active'); });
+      tab.classList.add('active');
+      fetchClubLeaderboard(tab.getAttribute('data-board'));
     });
   });
 
