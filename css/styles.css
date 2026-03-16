@@ -315,7 +315,7 @@ section {
   inset: 0;
   pointer-events: none;
   z-index: 0;
-  background: url('../assets/gta5_emblem.svg') center / 55% contain no-repeat;
+  background: url('../assets/gta5_emblem.svg') center / 80% contain no-repeat;
   opacity: 0.22;
 }
 
