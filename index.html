@@ -29,9 +29,7 @@
         <li><a href="#" class="nav-link" data-page="stats">Global Stats</a></li>
         <li class="nav-item--auth-guest"><a href="#" class="nav-link nav-auth-guest" data-page="login">Login</a></li>
         <li class="nav-item--auth-user" style="display: none;"><a href="#" class="nav-link nav-auth-user" data-page="dashboard">Dashboard</a></li>
-        <li><a href="#" class="nav-link" data-page="help">Help</a></li>
-        <li><a href="#" class="nav-link" data-page="guide">Guide</a></li>
-        <li><a href="#" class="nav-link" data-page="support">Support</a></li>
+        <li><a href="#" class="nav-link" data-page="guide">Guide &amp; Support</a></li>
         <li><a href="#" class="nav-link" data-page="setup">Setup</a></li>
       </ul>
       <button type="button" class="nav-toggle" aria-label="Toggle menu">Menu</button>
@@ -50,7 +48,7 @@
           <p class="hero-tagline">Los Santos in Discord. Jobs, heists, businesses, warehouses, and the streets. Build your criminal empire—all in text.</p>
           <div class="hero-actions">
             <a href="https://discord.com/oauth2/authorize?client_id=1430646453033767013" target="_blank" rel="noopener noreferrer" class="hero-cta hero-cta--primary">Invite GTA Bot</a>
-            <a href="#" class="hero-cta hero-cta--secondary" data-page="support">Support &amp; Guide</a>
+            <a href="#" class="hero-cta hero-cta--secondary" data-page="guide">Guide &amp; Support</a>
           </div>
         </div>
       </header>
@@ -554,139 +552,22 @@
       </div>
     </section>
 
-    <!-- PAGE: Help -->
-    <section id="page-help" class="page page--full" data-page="help">
-      <div class="page-bg page-bg--grid" data-parallax-speed="0.05"></div>
-      <div class="page-scroll">
-        <div class="container">
-          <h2 class="page-title reveal">Help & How to Play</h2>
-          <p class="page-subtitle reveal" style="text-align: center; margin-bottom: 1.5rem;">Follow the steps below, then expand a category for more detail.</p>
-
-          <div class="help-instructions reveal">
-            <h3>Quick start</h3>
-            <ol>
-              <li><strong>Invite the bot</strong> — Ask your server admin to add GTA Bot, or use an invite from the <a href="https://discord.gg/fkQ972fmAs" target="_blank" rel="noopener noreferrer">support server</a>.</li>
-              <li><strong>Accept the Terms</strong> — In Discord, run <code>/start</code> and accept the Terms of Service to create your character.</li>
-              <li><strong>Open the main menu</strong> — Run <code>/menu</code> to see your wallet, bank, and all activities (Jobs, Shop, Bank, Heists, etc.).</li>
-              <li><strong>Earn and protect</strong> — Do jobs or heists to earn cash, then use <code>/bank</code> to deposit money so it can't be stolen.</li>
-              <li><strong>Get in-Discord help</strong> — Use <code>/help</code> in any server with the bot for the full help menu.</li>
-            </ol>
-          </div>
-
-          <p class="page-subtitle reveal" style="text-align: center; margin-bottom: 2rem;">Expand any category below for the full guide.</p>
-
-          <div class="accordion reveal">
-            <div class="accordion-item">
-              <button type="button" class="accordion-trigger" aria-expanded="false">Getting Started</button>
-              <div class="accordion-panel">
-                <div class="accordion-content">
-                  <div class="accordion-body">
-                    <h3>First Steps</h3>
-                    <ul>
-                      <li><strong>Use /menu</strong> — Access the main game interface</li>
-                      <li><strong>Check your profile</strong> — See your current stats</li>
-                      <li><strong>Start with easy jobs</strong> — Build your reputation</li>
-                      <li><strong>Open a bank account</strong> — Protect your earnings</li>
-                    </ul>
-                    <h3>Understanding Money</h3>
-                    <ul>
-                      <li><strong>Wallet Money</strong> — Cash you carry (can be stolen)</li>
-                      <li><strong>Bank Money</strong> — Protected funds (safe from theft)</li>
-                      <li><strong>Chips</strong> — Casino currency (buy/sell at Cashier's Cage)</li>
-                      <li><strong>Net Worth</strong> — Total value of all your assets</li>
-                    </ul>
-                    <h3>Your Stats</h3>
-                    <ul>
-                      <li><strong>Cash</strong> — Money in your wallet</li>
-                      <li><strong>Reputation</strong> — Your criminal standing</li>
-                      <li><strong>Rank</strong> — Your criminal title</li>
-                      <li><strong>Wanted Level</strong> — How much heat you're carrying</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="accordion-item">
-              <button type="button" class="accordion-trigger" aria-expanded="false">Banking System</button>
-              <div class="accordion-panel">
-                <div class="accordion-content">
-                  <div class="accordion-body">
-                    <h3>Dual Currency System</h3>
-                    <ul>
-                      <li><strong>Wallet Money</strong> — Stealable by other players</li>
-                      <li><strong>Bank Money</strong> — Cannot be stolen</li>
-                      <li>Keep spending money in wallet, savings in bank</li>
-                    </ul>
-                    <h3>Banking Commands</h3>
-                    <ul>
-                      <li><code>/bank</code> — Open banking interface</li>
-                      <li><code>/deposit &lt;amount&gt;</code> — Deposit wallet to bank</li>
-                      <li><code>/withdraw &lt;amount&gt;</code> — Withdraw bank to wallet</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="accordion-item">
-              <button type="button" class="accordion-trigger" aria-expanded="false">Stealing System</button>
-              <div class="accordion-panel">
-                <div class="accordion-content">
-                  <div class="accordion-body">
-                    <h3>Basics</h3>
-                    <ul>
-                      <li>Target <strong>wallet only</strong> — Bank money is protected</li>
-                      <li>Players need $500+ in wallet to be targeted</li>
-                      <li>Cooldowns: 30 minutes between attempts</li>
-                    </ul>
-                    <h3>Commands</h3>
-                    <ul>
-                      <li><code>/steal @player</code> — Regular theft (60% success)</li>
-                      <li><code>/mug @player</code> — High-risk mugging (higher reward)</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="accordion-item">
-              <button type="button" class="accordion-trigger" aria-expanded="false">Jobs, Heists, Business, Casino, Shop</button>
-              <div class="accordion-panel">
-                <div class="accordion-content">
-                  <div class="accordion-body">
-                    <p>Full details for Jobs, Heists, Business, Casino, and Shop are available in the in-Discord <code>/help</code> menu. Use <code>/menu</code> to access all activities.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="accordion-item" id="faq">
-              <button type="button" class="accordion-trigger" aria-expanded="false">FAQ</button>
-              <div class="accordion-panel">
-                <div class="accordion-content">
-                  <div class="accordion-body">
-                    <h3>How do I start?</h3>
-                    <p>Run <code>/start</code>, accept the Terms, then <code>/menu</code>.</p>
-                    <h3>Can my bank be robbed?</h3>
-                    <p>No. Only <strong>wallet</strong> cash can be stolen. Keep savings in the bank.</p>
-                    <h3>Where do I get help?</h3>
-                    <p>Use <code>/help</code> in Discord or join the <a href="https://discord.gg/fkQ972fmAs" target="_blank" rel="noopener noreferrer">Support server</a>.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- PAGE: Guide (comprehensive) -->
+    <!-- PAGE: Guide & Support (combined) -->
     <section id="page-guide" class="page page--full" data-page="guide">
       <div class="page-bg page-bg--grid" data-parallax-speed="0.05"></div>
       <div class="page-scroll">
         <div class="container">
           <nav class="page-nav" aria-label="Page navigation">
-            <a href="#" class="page-nav-link" data-page="help">↩️ Previous</a>
+            <a href="#" class="page-nav-link" data-page="dashboard">↩️ Previous</a>
             <a href="#" class="page-nav-link" data-page="home">🏠 Main</a>
           </nav>
-          <h2 class="page-title">Full Guide</h2>
+          <h2 class="page-title">Guide &amp; Support</h2>
+          <p class="page-subtitle">Invite the bot, join our server, or read the full guide below.</p>
+          <div class="support-actions reveal" style="margin-bottom: 2rem;">
+            <a href="https://discord.com/oauth2/authorize?client_id=1430646453033767013" target="_blank" rel="noopener noreferrer" class="support-cta support-cta--primary">Invite GTA Bot</a>
+            <a href="https://discord.gg/fkQ972fmAs" target="_blank" rel="noopener noreferrer" class="support-cta support-cta--secondary">Join Our Support Server</a>
+          </div>
+          <h3 class="page-title" style="font-size: 1.35rem; margin-top: 1.5rem;">Full Guide</h3>
           <p class="page-subtitle">Everything about how GTA Bot works: starting, jobs, hustle, weapon draw, properties, restrictions, and all systems.</p>
 
           <div class="accordion reveal" id="guide-accordion">
@@ -956,21 +837,6 @@
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- PAGE: Support -->
-    <section id="page-support" class="page page--full" data-page="support">
-      <div class="page-bg page-bg--support" data-parallax-speed="0.1"></div>
-      <div class="page-scroll page-scroll--center">
-        <div class="container reveal">
-          <h2 class="page-title">Support</h2>
-          <p class="page-subtitle">Invite the bot to your server or join the support server for help, updates, and community.</p>
-          <div class="support-actions">
-            <a href="https://discord.com/oauth2/authorize?client_id=1430646453033767013" target="_blank" rel="noopener noreferrer" class="support-cta support-cta--primary">Invite GTA Bot</a>
-            <a href="https://discord.gg/fkQ972fmAs" target="_blank" rel="noopener noreferrer" class="support-cta support-cta--secondary">Join Support Server</a>
           </div>
         </div>
       </div>

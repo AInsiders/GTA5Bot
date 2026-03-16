@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  var PAGE_ORDER = ['home', 'commands', 'stats', 'login', 'dashboard', 'help', 'guide', 'support', 'setup'];
+  var PAGE_ORDER = ['home', 'commands', 'stats', 'login', 'dashboard', 'guide', 'setup'];
   var pages = document.querySelectorAll('.page');
   var navLinks = document.querySelectorAll('.nav-link, .nav-brand[data-page]');
   var pageContainer = document.querySelector('.app-pages');
@@ -242,26 +242,35 @@
   }
 
   // ---------- Accordions ----------
-  var accordionItems = document.querySelectorAll('.accordion-item');
-  accordionItems.forEach(function (item) {
-    var trigger = item.querySelector('.accordion-trigger');
-    var panel = item.querySelector('.accordion-panel');
-    if (!trigger || !panel) return;
+  var accordions = document.querySelectorAll('.accordion');
+  accordions.forEach(function (accordion) {
+    var items = accordion.querySelectorAll('.accordion-item');
+    items.forEach(function (item) {
+      var trigger = item.querySelector('.accordion-trigger');
+      var panel = item.querySelector('.accordion-panel');
+      if (!trigger || !panel) return;
 
-    trigger.addEventListener('click', function () {
-      var isOpen = item.classList.contains('is-open');
-      accordionItems.forEach(function (other) {
-        other.classList.remove('is-open');
+      trigger.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var isOpen = item.classList.contains('is-open');
+        items.forEach(function (other) {
+          other.classList.remove('is-open');
+          var t = other.querySelector('.accordion-trigger');
+          if (t) t.setAttribute('aria-expanded', 'false');
+        });
+        if (!isOpen) {
+          item.classList.add('is-open');
+          trigger.setAttribute('aria-expanded', 'true');
+        }
       });
-      if (!isOpen) {
-        item.classList.add('is-open');
-      }
     });
+    if (items.length) {
+      items[0].classList.add('is-open');
+      var firstTrigger = items[0].querySelector('.accordion-trigger');
+      if (firstTrigger) firstTrigger.setAttribute('aria-expanded', 'true');
+    }
   });
-
-  if (accordionItems.length) {
-    accordionItems[0].classList.add('is-open');
-  }
 
   // ---------- Scroll reveal (only for visible page) ----------
   var revealEls = document.querySelectorAll('.reveal');
