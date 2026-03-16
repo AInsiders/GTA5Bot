@@ -84,6 +84,8 @@
   document.addEventListener('click', function (e) {
     // Don't intercept login OAuth button - let it navigate to /api/auth/discord/start
     if (e.target.closest('#login-discord-btn')) return;
+    // Don't treat accordion or guide card clicks as navigation
+    if (e.target.closest('.accordion-trigger') || e.target.closest('.guide-card-head')) return;
     var el = e.target.closest('[data-page]');
     if (!el) return;
     var pageId = el.getAttribute('data-page');
@@ -241,36 +243,59 @@
     observer.observe(pageContainer, { attributes: true, subtree: true, attributeFilter: ['class'] });
   }
 
-  // ---------- Accordions ----------
-  var accordions = document.querySelectorAll('.accordion');
-  accordions.forEach(function (accordion) {
+  // ---------- Accordions (delegated so clicks always toggle, never navigate) ----------
+  document.addEventListener('click', function (e) {
+    var trigger = e.target.closest('.accordion-trigger');
+    if (!trigger) return;
+    e.preventDefault();
+    e.stopPropagation();
+    var item = trigger.closest('.accordion-item');
+    var accordion = item && item.closest('.accordion');
+    if (!accordion) return;
     var items = accordion.querySelectorAll('.accordion-item');
-    items.forEach(function (item) {
-      var trigger = item.querySelector('.accordion-trigger');
-      var panel = item.querySelector('.accordion-panel');
-      if (!trigger || !panel) return;
-
-      trigger.addEventListener('click', function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        var isOpen = item.classList.contains('is-open');
-        items.forEach(function (other) {
-          other.classList.remove('is-open');
-          var t = other.querySelector('.accordion-trigger');
-          if (t) t.setAttribute('aria-expanded', 'false');
-        });
-        if (!isOpen) {
-          item.classList.add('is-open');
-          trigger.setAttribute('aria-expanded', 'true');
-        }
-      });
+    var isOpen = item.classList.contains('is-open');
+    items.forEach(function (other) {
+      other.classList.remove('is-open');
+      var t = other.querySelector('.accordion-trigger');
+      if (t) t.setAttribute('aria-expanded', 'false');
     });
+    if (!isOpen) {
+      item.classList.add('is-open');
+      trigger.setAttribute('aria-expanded', 'true');
+    }
+  }, true);
+
+  // Open first item in each accordion on load
+  document.querySelectorAll('.accordion').forEach(function (accordion) {
+    var items = accordion.querySelectorAll('.accordion-item');
     if (items.length) {
       items[0].classList.add('is-open');
       var firstTrigger = items[0].querySelector('.accordion-trigger');
       if (firstTrigger) firstTrigger.setAttribute('aria-expanded', 'true');
     }
   });
+
+  // ---------- Guide cards (click to expand; in-block scroll; one open at a time) ----------
+  document.addEventListener('click', function (e) {
+    var head = e.target.closest('.guide-card-head');
+    if (!head) return;
+    e.preventDefault();
+    e.stopPropagation();
+    var card = head.closest('.guide-card');
+    var container = card && card.closest('.guide-cards');
+    if (!container) return;
+    var cards = container.querySelectorAll('.guide-card');
+    var isOpen = card.classList.contains('is-open');
+    cards.forEach(function (other) {
+      other.classList.remove('is-open');
+      var h = other.querySelector('.guide-card-head');
+      if (h) h.setAttribute('aria-expanded', 'false');
+    });
+    if (!isOpen) {
+      card.classList.add('is-open');
+      head.setAttribute('aria-expanded', 'true');
+    }
+  }, true);
 
   // ---------- Scroll reveal (only for visible page) ----------
   var revealEls = document.querySelectorAll('.reveal');

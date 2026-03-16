@@ -629,6 +629,180 @@ section {
 
 .accordion-body strong { color: var(--gta-gold-dim); }
 
+/* ---------- Guide: Interactive cards (expand + in-block scroll) ---------- */
+.guide-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.guide-card {
+  background: rgba(26, 36, 26, 0.92);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.guide-card:hover {
+  border-color: rgba(46, 204, 113, 0.35);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
+}
+
+.guide-card.is-open {
+  border-color: var(--gta-green-dim);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+}
+
+.guide-card-head {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  background: var(--bg-card);
+  border: none;
+  color: var(--text-light);
+  font-size: 1.05rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.guide-card-head:hover {
+  background: #2a2a2a;
+  color: var(--gta-green);
+}
+
+.guide-card.is-open .guide-card-head {
+  background: rgba(26, 46, 26, 0.95);
+  color: var(--gta-green);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.guide-card-icon {
+  font-size: 1.35rem;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.guide-card-title {
+  flex: 1;
+}
+
+.guide-card-chevron {
+  width: 14px;
+  height: 14px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+
+.guide-card.is-open .guide-card-chevron {
+  transform: rotate(-135deg);
+}
+
+.guide-card-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.35s ease;
+}
+
+.guide-card.is-open .guide-card-body {
+  grid-template-rows: 1fr;
+}
+
+.guide-card-body-scroll {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.guide-card.is-open .guide-card-body-scroll {
+  max-height: 65vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+.guide-card-body-inner {
+  padding: 1rem 1.25rem 1.25rem;
+  border-top: 1px solid transparent;
+}
+
+.guide-card.is-open .guide-card-body-inner {
+  border-top-color: var(--border-subtle);
+}
+
+.guide-card-body-inner h3 {
+  color: var(--gta-gold-dim);
+  font-size: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 0.35rem;
+}
+
+.guide-card-body-inner h3:first-child {
+  margin-top: 0;
+}
+
+.guide-card-body-inner ul,
+.guide-card-body-inner p {
+  margin-bottom: 0.75rem;
+  color: var(--text-light);
+  font-size: 0.95rem;
+}
+
+.guide-card-body-inner ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.guide-card-body-inner li {
+  padding: 0.2rem 0 0.2rem 1rem;
+  position: relative;
+}
+
+.guide-card-body-inner li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: var(--gta-green);
+}
+
+.guide-card-body-inner strong {
+  color: var(--gta-gold-dim);
+}
+
+.guide-card-body-inner a {
+  color: var(--gta-green);
+  text-decoration: none;
+}
+
+.guide-card-body-inner a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 640px) {
+  .guide-card.is-open .guide-card-body-scroll {
+    max-height: 55vh;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .guide-card,
+  .guide-card-head,
+  .guide-card-chevron,
+  .guide-card-body {
+    transition: none;
+  }
+}
+
 /* Commands table inside Help */
 .commands-table {
   width: 100%;
