@@ -1,11 +1,55 @@
 /**
  * Vercel serverless: GET /api/stats/user
  * Returns the authenticated user's game stats from Neon (same DB as /api/stats/global).
- * Connection: DATABASE_URL or NEON_DATABASE_URL (same as global.js).
+ * Supports same config as global: (1) NEON_REST_URL + NEON_API_KEY, or (2) DATABASE_URL / NEON_DATABASE_URL.
  * Requires Bearer token (JWT). Uses user id from JWT to fetch from users table + get_user_activity_stats().
  */
 const crypto = require('crypto');
 const { neon } = require('@neondatabase/serverless');
+
+function getRestConfig() {
+  const base = (process.env.NEON_REST_URL || '').replace(/\/$/, '');
+  const key = process.env.NEON_API_KEY || process.env.NEON_JWT || '';
+  return base && key ? { base, key } : null;
+}
+
+async function fetchUserViaRest(base, key, userId) {
+  const url = base + '/users?user_id=eq.' + encodeURIComponent(userId) + '&limit=1';
+  const res = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ' + key,
+      'apikey': key,
+    },
+  });
+  if (!res.ok) {
+    const t = await res.text();
+    throw new Error(t || res.statusText || 'REST users fetch failed');
+  }
+  const data = await res.json();
+  return Array.isArray(data) && data[0] ? data[0] : null;
+}
+
+async function fetchActivityStatsViaRest(base, key, userId) {
+  try {
+    const url = base + '/rpc/get_user_activity_stats';
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + key,
+        'apikey': key,
+      },
+      body: JSON.stringify({ p_user_id: userId }),
+    });
+    if (!res.ok) return null;
+    const raw = await res.json();
+    if (raw && typeof raw === 'object' && !Array.isArray(raw)) return raw;
+    if (Array.isArray(raw) && raw[0] != null) return raw[0].data != null ? raw[0].data : raw[0];
+    return typeof raw === 'string' ? JSON.parse(raw) : null;
+  } catch (e) { return null; }
+}
 
 function base64urlEncode(input) {
   const buf = Buffer.isBuffer(input) ? input : Buffer.from(String(input), 'utf8');
@@ -165,16 +209,24 @@ module.exports = async function handler(req, res) {
       return sendJson(res, 401, { error: 'Invalid token: no user id' });
     }
 
-    const connectionString = process.env.DATABASE_URL || process.env.NEON_DATABASE_URL;
-    if (!connectionString) {
+    const rest = getRestConfig();
+    const connectionString = (process.env.DATABASE_URL || process.env.NEON_DATABASE_URL || '').trim();
+    if (!rest && !connectionString) {
       cors(res);
-      return sendJson(res, 500, { error: 'Set DATABASE_URL or NEON_DATABASE_URL' });
+      return sendJson(res, 500, { error: 'Set NEON_REST_URL + NEON_API_KEY (same as global stats), or DATABASE_URL / NEON_DATABASE_URL' });
     }
 
-    const [row, activityStats] = await Promise.all([
-      fetchUserFromDb(connectionString, userId),
-      fetchActivityStats(connectionString, userId),
-    ]);
+    let row;
+    let activityStats;
+    if (rest) {
+      row = await fetchUserViaRest(rest.base, rest.key, userId);
+      activityStats = await fetchActivityStatsViaRest(rest.base, rest.key, userId);
+    } else {
+      [row, activityStats] = await Promise.all([
+        fetchUserFromDb(connectionString, userId),
+        fetchActivityStats(connectionString, userId),
+      ]);
+    }
 
     if (!row) {
       cors(res);
@@ -287,9 +339,11 @@ module.exports = async function handler(req, res) {
   } catch (e) {
     cors(res);
     const msg = (e && e.message) ? e.message : 'Request failed';
-    // Auth errors (JWT verify, missing token) → 401; DB/network errors → 500 so dashboard doesn't show "Session expired"
+    // Auth errors (JWT verify, missing token) → 401; DB/network errors → 500
     const isAuthError = /token|missing bearer|invalid token|expired|no user id/i.test(msg);
     const status = isAuthError ? 401 : 500;
-    return sendJson(res, status, { error: isAuthError ? msg : 'Could not load user stats. Try again later.' });
+    if (!isAuthError && e) console.error('[api/stats/user]', e.message || e);
+    const clientError = isAuthError ? msg : 'Database error. Use the same Neon config as global stats: NEON_REST_URL + NEON_API_KEY, or DATABASE_URL. Then redeploy.';
+    return sendJson(res, status, { error: clientError });
   }
 };

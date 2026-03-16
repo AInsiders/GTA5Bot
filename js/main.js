@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  var PAGE_ORDER = ['home', 'commands', 'stats', 'login', 'dashboard', 'help', 'support', 'setup'];
+  var PAGE_ORDER = ['home', 'commands', 'stats', 'login', 'dashboard', 'help', 'guide', 'support', 'setup'];
   var pages = document.querySelectorAll('.page');
   var navLinks = document.querySelectorAll('.nav-link, .nav-brand[data-page]');
   var pageContainer = document.querySelector('.app-pages');

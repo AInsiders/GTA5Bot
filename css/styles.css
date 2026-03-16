@@ -115,7 +115,7 @@ section {
 .app-pages-inner {
   display: flex;
   flex-direction: row;
-  width: 800%;
+  width: 900%;
   min-height: 100vh;
   transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
   will-change: transform;
@@ -128,8 +128,8 @@ section {
 }
 
 .app-pages-inner .page {
-  width: 12.5%;
-  min-width: 12.5%;
+  width: 11.111%;
+  min-width: 11.111%;
   flex-shrink: 0;
   min-height: 100vh;
   position: relative;
