@@ -13,42 +13,26 @@ function getRestConfig() {
   return base && key ? { base, key } : null;
 }
 
-async function fetchUserViaRest(base, key, userId) {
-  const url = base + '/users?user_id=eq.' + encodeURIComponent(userId) + '&limit=1';
+async function fetchUserStatsViaRest(base, key, userId) {
+  const url = base + '/rpc/get_website_user_stats';
   const res = await fetch(url, {
-    method: 'GET',
+    method: 'POST',
     headers: {
-      'Accept': 'application/json',
+      'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + key,
       'apikey': key,
     },
+    body: JSON.stringify({ p_user_id: userId }),
   });
   if (!res.ok) {
     const t = await res.text();
-    throw new Error(t || res.statusText || 'REST users fetch failed');
+    throw new Error(t || res.statusText || 'REST user stats fetch failed');
   }
-  const data = await res.json();
-  return Array.isArray(data) && data[0] ? data[0] : null;
-}
-
-async function fetchActivityStatsViaRest(base, key, userId) {
-  try {
-    const url = base + '/rpc/get_user_activity_stats';
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + key,
-        'apikey': key,
-      },
-      body: JSON.stringify({ p_user_id: userId }),
-    });
-    if (!res.ok) return null;
-    const raw = await res.json();
-    if (raw && typeof raw === 'object' && !Array.isArray(raw)) return raw;
-    if (Array.isArray(raw) && raw[0] != null) return raw[0].data != null ? raw[0].data : raw[0];
-    return typeof raw === 'string' ? JSON.parse(raw) : null;
-  } catch (e) { return null; }
+  const raw = await res.json();
+  if (raw == null) return null;
+  if (Array.isArray(raw)) return raw[0] || null;
+  if (raw && typeof raw === 'object' && raw.data !== undefined) return raw.data;
+  return raw;
 }
 
 function base64urlEncode(input) {
@@ -155,25 +139,16 @@ function buildEmptyResponse(userId, payload) {
     game_statistics: {},
     counts: { inventory: 0, vehicles: 0, properties: 0, businesses: 0, mc_businesses: 0, vehicle_warehouse: 0, cargo_warehouse: 0, stolen_cars: 0 },
     activity_stats: {},
+    club_home: null,
   };
 }
 
-async function fetchUserFromDb(connectionString, userId) {
+async function fetchUserStatsFromDb(connectionString, userId) {
   const sql = neon(connectionString);
-  // Use SELECT * to stay resilient to schema changes (missing/extra columns) across bot versions.
-  // The response below only picks the fields it needs.
-  const rows = await sql`SELECT * FROM users WHERE user_id = ${userId} LIMIT 1`;
-  return (rows && rows[0]) || null;
-}
-
-async function fetchActivityStats(connectionString, userId) {
-  try {
-    const sql = neon(connectionString);
-    const rows = await sql`SELECT get_user_activity_stats(${userId}) AS data`;
-    const raw = rows && rows[0] && rows[0].data;
-    if (raw && typeof raw === 'object') return raw;
-    if (typeof raw === 'string') return JSON.parse(raw);
-  } catch (e) { /* ignore */ }
+  const rows = await sql`SELECT get_website_user_stats(${userId}) AS data`;
+  const raw = rows && rows[0] && rows[0].data;
+  if (raw && typeof raw === 'object') return raw;
+  if (typeof raw === 'string') return JSON.parse(raw);
   return null;
 }
 
@@ -216,21 +191,20 @@ module.exports = async function handler(req, res) {
       return sendJson(res, 500, { error: 'Set NEON_REST_URL + NEON_API_KEY (same as global stats), or DATABASE_URL / NEON_DATABASE_URL' });
     }
 
-    let row;
-    let activityStats;
-    if (rest) {
-      row = await fetchUserViaRest(rest.base, rest.key, userId);
-      activityStats = await fetchActivityStatsViaRest(rest.base, rest.key, userId);
-    } else {
-      [row, activityStats] = await Promise.all([
-        fetchUserFromDb(connectionString, userId),
-        fetchActivityStats(connectionString, userId),
-      ]);
-    }
+    const row = rest
+      ? await fetchUserStatsViaRest(rest.base, rest.key, userId)
+      : await fetchUserStatsFromDb(connectionString, userId);
+
+    const activityStats = row && row.activity_stats ? row.activity_stats : null;
+    const clubHome = row && row.club_home ? row.club_home : null;
 
     if (!row) {
       cors(res);
-      return sendJson(res, 200, Object.assign(buildEmptyResponse(userId, payload), { activity_stats: activityStats || {}, no_game_data_yet: true }));
+      return sendJson(res, 200, Object.assign(buildEmptyResponse(userId, payload), {
+        activity_stats: activityStats || {},
+        club_home: clubHome || null,
+        no_game_data_yet: true,
+      }));
     }
 
     const cash = Number(row.cash) || 0;
@@ -259,6 +233,8 @@ module.exports = async function handler(req, res) {
     const triviaStats = parseJson(row.trivia_stats);
     const lockpickStats = parseJson(row.lockpick_stats);
     const gameStats = parseJson(row.game_statistics);
+    const activityStatsData = parseJson(activityStats) || {};
+    const clubHomeData = parseJson(clubHome);
 
     const ownedBusinesses = (businesses && businesses.owned_businesses) || [];
     const mcCount = (() => {
@@ -334,7 +310,8 @@ module.exports = async function handler(req, res) {
         })(),
         stolen_cars: Array.isArray(stolenCars) ? stolenCars.length : 0,
       },
-      activity_stats: activityStats || {},
+      activity_stats: activityStatsData,
+      club_home: clubHomeData || null,
     });
   } catch (e) {
     cors(res);

@@ -96,6 +96,14 @@
     } catch (e) { return '—'; }
   }
 
+  function fmtClubRank(rankKey) {
+    if (!rankKey) return '—';
+    return String(rankKey)
+      .split('_')
+      .map(function (part) { return part ? part.charAt(0).toUpperCase() + part.slice(1) : ''; })
+      .join(' ');
+  }
+
   function showDashboardStatsError(show, message) {
     var el = document.getElementById('dashboard-stats-error');
     var textEl = document.getElementById('dashboard-stats-error-text');
@@ -170,7 +178,10 @@
     set('dash-vehicles', counts.vehicles);
     set('dash-properties', counts.properties);
     set('dash-businesses', counts.businesses);
+    set('dash-mc-businesses', counts.mc_businesses);
     set('dash-warehouses-combined', vWh + cWh);
+
+    renderClubHome(userData.club_home);
 
     var act = userData.activity_stats || {};
     set('dash-jobs-total', act.jobs_total);
@@ -186,6 +197,33 @@
     if (playingSinceEl) playingSinceEl.textContent = userData.created_at ? 'Playing for ' + fmtDuration(userData.created_at) : '';
 
     renderActivityBreakdown(act);
+  }
+
+  function renderClubHome(clubHome) {
+    var set = function (id, val) {
+      var el = document.getElementById(id);
+      if (el) el.textContent = val != null && val !== '' ? val : '—';
+    };
+
+    if (!clubHome || !clubHome.club_id) {
+      set('dash-club-name', 'Not in an MC club');
+      set('dash-club-rank', null);
+      set('dash-club-level', null);
+      set('dash-club-members', null);
+      set('dash-club-treasury', null);
+      set('dash-club-applications', null);
+      return;
+    }
+
+    var clubName = clubHome.club_name || 'Unnamed Club';
+    if (clubHome.club_tag) clubName += ' [' + clubHome.club_tag + ']';
+
+    set('dash-club-name', clubName);
+    set('dash-club-rank', fmtClubRank(clubHome.rank_key));
+    set('dash-club-level', clubHome.level);
+    set('dash-club-members', clubHome.member_count);
+    set('dash-club-treasury', clubHome.treasury_cash != null ? '$' + fmt(clubHome.treasury_cash) : null);
+    set('dash-club-applications', clubHome.pending_applications);
   }
 
   function renderActivityBreakdown(act) {
