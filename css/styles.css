@@ -1681,6 +1681,125 @@ section {
   font-weight: 600;
 }
 
+.dashboard-empty,
+.dashboard-muted {
+  color: var(--text-muted);
+}
+
+.dashboard-subsection {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(0, 255, 136, 0.08);
+}
+
+.dashboard-subsection:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+.dashboard-subsection-title {
+  color: var(--gta-gold-dim);
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.dashboard-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem;
+}
+
+.dashboard-input {
+  width: 100%;
+  padding: 0.65rem 0.8rem;
+  background: rgba(0, 0, 0, 0.18);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  color: var(--text-light);
+  font: inherit;
+}
+
+.dashboard-input--compact {
+  min-width: 150px;
+  padding: 0.45rem 0.6rem;
+}
+
+.dashboard-textarea {
+  min-height: 88px;
+  resize: vertical;
+  grid-column: 1 / -1;
+}
+
+.dashboard-check {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-light);
+  font-size: 0.9rem;
+}
+
+.dashboard-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(0, 255, 136, 0.06);
+}
+
+.dashboard-list-item:last-child {
+  border-bottom: none;
+}
+
+.dashboard-inline-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.dashboard-inline-value {
+  color: var(--money-green);
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+}
+
+.dashboard-action-btn {
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid var(--gta-green);
+  background: rgba(0, 255, 136, 0.14);
+  color: var(--gta-green);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.dashboard-action-btn--secondary {
+  border-color: rgba(255, 255, 255, 0.2);
+  color: var(--text-light);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.dashboard-action-btn--danger {
+  border-color: rgba(255, 90, 90, 0.55);
+  color: #ff8f8f;
+  background: rgba(255, 90, 90, 0.12);
+}
+
+.dashboard-action-btn:hover {
+  filter: brightness(1.08);
+}
+
+@media (max-width: 700px) {
+  .dashboard-list-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
 .dashboard-playing-since {
   font-size: 0.85rem;
   color: var(--text-muted);
