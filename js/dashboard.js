@@ -762,7 +762,12 @@
     var cached = getStoredUser();
     if (cached) showUserView(cached);
 
-    // Load from API only if cache is missing/stale; manual button handles user-triggered refresh.
+    // Always refresh management panels so server/club state is current even when stats are cached.
+    fetchGarageState();
+    fetchClubState();
+    fetchServerState();
+
+    // Load full stats from API only if cache is missing/stale; manual button handles user-triggered refresh.
     if (!cached || !isStatsCacheFresh(cached)) {
       refreshDashboardStats();
     }
