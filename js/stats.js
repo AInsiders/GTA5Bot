@@ -4,8 +4,7 @@
   var config = typeof window.GTA_STATS_CONFIG !== 'undefined' ? window.GTA_STATS_CONFIG : {};
   var chartInstance = null;
   var chartDonutInstance = null;
-  var statsRefreshInterval = null;
-  var REFRESH_MS = 30000; // 30 seconds
+  var hasLoadedStatsPageOnce = false;
 
   function getNeonApiBase() {
     return (config.neonStatsApiUrl || '').replace(/\/$/, '');
@@ -77,12 +76,12 @@
     if (!hasConfig()) {
       setConnectionStatus('', '');
       showConnectMsg(true);
-      return;
+      return Promise.resolve();
     }
     showConnectMsg(false);
     if (!silent) setConnectionStatus('checking', 'Checking connection…');
     var base = getNeonApiBase();
-    fetch(base + '/api/stats/global')
+    return fetch(base + '/api/stats/global')
       .then(function (r) {
         if (!r.ok) return Promise.reject(new Error(r.statusText || 'Connection failed'));
         return r.json();
@@ -107,6 +106,7 @@
       .catch(function (err) {
         setConnectionStatus('error', 'Connection failed. Start the stats API or check config.');
         showConnectMsg(true);
+        throw err;
       });
   }
 
@@ -310,10 +310,10 @@
     if (!hasConfig()) {
       if (loading) loading.style.display = 'none';
       if (errEl) { errEl.textContent = 'Set Neon Stats API URL to load club leaderboards.'; errEl.style.display = 'block'; }
-      return;
+      return Promise.resolve();
     }
     var base = getNeonApiBase();
-    fetch(base + '/api/stats/club-leaderboard?category=' + encodeURIComponent(category) + '&limit=100')
+    return fetch(base + '/api/stats/club-leaderboard?category=' + encodeURIComponent(category) + '&limit=100')
       .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error(r.statusText)); })
       .then(function (data) {
         var rows = Array.isArray(data) ? data : [];
@@ -322,6 +322,7 @@
       .catch(function (e) {
         if (loading) loading.style.display = 'none';
         if (errEl) { errEl.textContent = e.message || 'Request failed.'; errEl.style.display = 'block'; }
+        throw e;
       });
   }
 
@@ -338,10 +339,10 @@
     if (!hasConfig()) {
       if (loading) loading.style.display = 'none';
       if (errEl) { errEl.textContent = 'Set Neon Stats API URL to load leaderboards.'; errEl.style.display = 'block'; }
-      return;
+      return Promise.resolve();
     }
     var base = getNeonApiBase();
-    fetch(base + '/api/stats/leaderboard?type=' + encodeURIComponent(type) + '&limit=100')
+    return fetch(base + '/api/stats/leaderboard?type=' + encodeURIComponent(type) + '&limit=100')
       .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error(r.statusText)); })
       .then(function (data) {
         var valueLabel = (type === 'net_worth' || type === 'wealth' || type === 'cash' || type === 'bank') ? 'cash' : 'number';
@@ -350,33 +351,24 @@
       .catch(function (e) {
         if (loading) loading.style.display = 'none';
         if (errEl) { errEl.textContent = e.message || 'Request failed.'; errEl.style.display = 'block'; }
+        throw e;
       });
   }
 
   function onStatsPageActive() {
     var page = document.getElementById('page-stats');
     if (!page || !page.classList.contains('is-active')) return;
+    if (hasLoadedStatsPageOnce) return;
     fetchGlobalStats();
     var currentTab = document.querySelector('.leaderboard-tab.active:not(.leaderboard-tab--club)');
     fetchLeaderboard(currentTab ? currentTab.getAttribute('data-board') : 'net_worth');
     var clubTab = document.querySelector('.leaderboard-tab--club.active');
     fetchClubLeaderboard(clubTab ? clubTab.getAttribute('data-board') : 'treasury');
-    if (statsRefreshInterval) clearInterval(statsRefreshInterval);
-    statsRefreshInterval = setInterval(function () {
-      if (!page.classList.contains('is-active')) return;
-      fetchGlobalStats(true);
-      var tab = document.querySelector('.leaderboard-tab.active:not(.leaderboard-tab--club)');
-      fetchLeaderboard(tab ? tab.getAttribute('data-board') : 'net_worth', true);
-      var cTab = document.querySelector('.leaderboard-tab--club.active');
-      fetchClubLeaderboard(cTab ? cTab.getAttribute('data-board') : 'treasury', true);
-    }, REFRESH_MS);
+    hasLoadedStatsPageOnce = true;
   }
 
   function onStatsPageInactive() {
-    if (statsRefreshInterval) {
-      clearInterval(statsRefreshInterval);
-      statsRefreshInterval = null;
-    }
+    // Intentionally no background refresh timer.
   }
 
   document.querySelectorAll('.leaderboard-tab:not(.leaderboard-tab--club)').forEach(function (tab) {
@@ -398,6 +390,7 @@
   document.addEventListener('DOMContentLoaded', function () {
     var statsPage = document.getElementById('page-stats');
     if (!statsPage) return;
+    var refreshBtn = document.getElementById('stats-refresh');
     var debounceTimer = null;
     var lastActive = false;
     function scheduleCheck() {
@@ -414,6 +407,20 @@
       scheduleCheck();
     });
     observer.observe(document.querySelector('.app-pages') || document.body, { attributes: true, subtree: true, attributeFilter: ['class'] });
+    if (refreshBtn) {
+      refreshBtn.addEventListener('click', function () {
+        var currentTab = document.querySelector('.leaderboard-tab.active:not(.leaderboard-tab--club)');
+        var clubTab = document.querySelector('.leaderboard-tab--club.active');
+        refreshBtn.disabled = true;
+        Promise.allSettled([
+          fetchGlobalStats(),
+          fetchLeaderboard(currentTab ? currentTab.getAttribute('data-board') : 'net_worth'),
+          fetchClubLeaderboard(clubTab ? clubTab.getAttribute('data-board') : 'treasury')
+        ]).finally(function () {
+          refreshBtn.disabled = false;
+        });
+      });
+    }
     if (statsPage.classList.contains('is-active')) {
       lastActive = true;
       onStatsPageActive();

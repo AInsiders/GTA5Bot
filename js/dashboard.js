@@ -762,8 +762,10 @@
     var cached = getStoredUser();
     if (cached) showUserView(cached);
 
-    /* Always refresh when dashboard becomes active so stats stay current; use cache only as initial placeholder. */
-    refreshDashboardStats();
+    // Load from API only if cache is missing/stale; manual button handles user-triggered refresh.
+    if (!cached || !isStatsCacheFresh(cached)) {
+      refreshDashboardStats();
+    }
   }
 
   document.addEventListener('DOMContentLoaded', function () {
